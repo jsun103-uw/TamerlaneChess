@@ -1,4 +1,4 @@
-import { ActiveTamerlanePiece } from "./Board";
+import { TamerlanePiece } from "./Board";
 import { Player } from "./Player";
 
 export class TamerlanePieceType {
@@ -11,7 +11,7 @@ export class TamerlanePieceType {
     }
 
     makeActive(player: Player) {
-        return new ActiveTamerlanePiece(this, player);
+        return new TamerlanePiece(this, player);
     }
 }
 

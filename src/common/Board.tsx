@@ -140,13 +140,24 @@ export class Board {
         }
         return boardstr;
     }
+    *getPieces(): Generator<PositionedTamerlanePiece> {
+        
+        for (let i = 0; i < BOARD_FILES; i ++) {
+            for (let j = 0; j < BOARD_RANKS; j ++) {
+                let piece = this.#field[i][j];
+                if (piece != null) yield new PositionedTamerlanePiece(new BoardPosition(i, j), piece);
+            }
+        }
+        if (this.#citadelLeft.piece != null) yield new PositionedTamerlanePiece(this.#citadelLeft.position, this.#citadelLeft.piece);
+        if (this.#citadelRight.piece != null) yield new PositionedTamerlanePiece(this.#citadelLeft.position, this.#citadelRight.piece);
+    }
 }
 
-export type BoardPiece = ActiveTamerlanePiece | null
+export type BoardPiece = TamerlanePiece | null
 /**
- * An object that describes a tamerlane piece in play
+ * A tamerlane piece that belongs to a player
  */
-export class ActiveTamerlanePiece {
+export class TamerlanePiece {
     #piece: TamerlanePieceType;
     #side: Player;
 
@@ -171,5 +182,15 @@ export class ActiveTamerlanePiece {
     }
 }
 
+export class PositionedTamerlanePiece {
+    public readonly position: Position;
+    public readonly piece: TamerlanePieceType;
+    public readonly side: Player;
 
+    constructor(position: Position, piece: TamerlanePiece) {
+        this.position = position;
+        this.side = piece.side;
+        this.piece = piece.piece;
+    }
 
+}
