@@ -1,6 +1,6 @@
+//npx tsx src/common/testboard.tsx 
 import { Board } from "./Board";
 
-console.log("who");
 let board: Board = Board.buildStartingBoard();
 
 
