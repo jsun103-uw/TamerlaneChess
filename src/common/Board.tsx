@@ -2,126 +2,12 @@
 
 // [File][Rank]
 
-export type PositionUnion = CitadelPosition | BoardPosition;
-abstract class Position {
-    abstract readonly kind: "board" | "citadel";
-}
+import { Player, PlayerENUM } from "./Player";
+import { BoardPosition, Citadel, CitadelPosition, Position, PositionUnion } from "./Position";
+import { TamerlanePieces, TamerlanePieceType } from "./TamerlanePieces";
 
-export const PlayerENUM = {
-    White: "white",
-    Black: "black",
-} as const;
-export type Player = typeof PlayerENUM.White | typeof PlayerENUM.Black;
-
-
-export class CitadelPosition extends Position {
-    readonly kind = "citadel" as const;
-    #rank: number;
-    get rank(): number { return this.#rank; }
-
-    private constructor() {
-        super();
-        this.#rank = 0;
-    }
-
-    static getLeft(): CitadelPosition {
-        var pos = new CitadelPosition();
-        pos.#rank = 8; // rank 9, index 8.
-        Object.freeze(pos);
-        return pos;
-    }
-    static getRight(): CitadelPosition {
-        var pos = new CitadelPosition();
-        pos.#rank = 1; // rank 2, index 1.
-        Object.freeze(pos);
-        return pos;
-    }
-
-    equals(other: CitadelPosition): boolean {
-        return this.#rank == other.#rank;
-    }
-}
-class BoardPosition extends Position {
-    readonly kind = "board" as const;
-    #rank: number;
-    #file: number;
-
-    get rank(): number {
-        return this.#rank;
-    }
-    get file(): number {
-        return this.#file;
-    }
-
-    constructor(file: number, rank: number) {
-        super();
-        this.#file = file;
-        this.#rank = rank;
-
-
-        if (rank >= BOARD_RANKS || rank < 0) throw new RangeError(`Rank must be between 0 and ${BOARD_RANKS - 1}, but was ${rank}`)
-        if (file >= BOARD_FILES || file < 0) throw new RangeError(`File must be between 0 and ${BOARD_FILES - 1}, but was ${file}`)
-    }
-
-    equals(other: BoardPosition): boolean {
-        return this.rank === other.rank 
-            && this.file === other.file;
-    }
-
-    static get rankNames(): string[] {
-        return [ "A","B","C","D","E","F","G","H","I","J" ]
-    }
-    rankName(): string {
-        return BoardPosition.rankNames[this.rank];
-    }
-    fileName(): string {
-        return (this.file + 1).toString();
-    }
-    squareName(): string {
-        return this.rankName() + this.fileName();
-    }
-}
-
-
-class TakeMove {
-    #start: BoardPosition;
-    #end: BoardPosition;
-
-
-    get start(): BoardPosition {
-        return this.#start;
-    }
-    get end(): BoardPosition {
-        return this.#end;
-    }
-
-    
-    constructor(start: BoardPosition, end: BoardPosition) {
-        this.#start = start;
-        this.#end = end;
-    }
-}
-class ExchangeMove extends TakeMove {
-    constructor(start: BoardPosition, end: BoardPosition) {
-        super(start, end);
-    }
-}
-
-
-class Citadel {
-
-    piece: BoardPiece;
-    #position: CitadelPosition;
-    get position() { return this.#position; }
-
-    constructor(position: CitadelPosition) {
-        this.#position = position;
-        this.piece = null;
-    }
-}
-
-const BOARD_FILES = 11;
-const BOARD_RANKS = 10;
+export const BOARD_FILES = 11;
+export const BOARD_RANKS = 10;
 export class Board {
     #field: BoardPiece[][];
     #citadelLeft: Citadel;
@@ -256,11 +142,11 @@ export class Board {
     }
 }
 
-type BoardPiece = ActiveTamerlanePiece | null
+export type BoardPiece = ActiveTamerlanePiece | null
 /**
  * An object that describes a tamerlane piece in play
  */
-class ActiveTamerlanePiece {
+export class ActiveTamerlanePiece {
     #piece: TamerlanePieceType;
     #side: Player;
 
@@ -286,148 +172,4 @@ class ActiveTamerlanePiece {
 }
 
 
-class TamerlanePieceType {
-    charRep: string;
-    name: string;
-    royal: boolean = false;
-    constructor(charRep: string, name: string) {
-        this.charRep = charRep;
-        this.name = name;
-    }
 
-    makeActive(player: Player) {
-        return new ActiveTamerlanePiece(this, player);
-    }
-}
-class PawnType extends TamerlanePieceType {
-    promotion: TamerlanePieceType;
-    constructor(promotion: TamerlanePieceType,
-        charRep: string, name: string) {
-        super(charRep, name)
-        this.promotion = promotion;
-    }
-}
-
-class TamerlanePieces {
-    static Elephant: TamerlanePieceType = TamerlanePieces.createPiece(
-        "E",
-        "Elephant",
-    );
-    static Camel: TamerlanePieceType = TamerlanePieces.createPiece(
-        "C",
-        "Camel"
-    )
-    static Dabbaba: TamerlanePieceType = TamerlanePieces.createPiece(
-        "D",
-        "Dabbaba"
-    )
-    static Rook: TamerlanePieceType = TamerlanePieces.createPiece(
-        "R",
-        "Rook"
-    )
-    static Picket: TamerlanePieceType = TamerlanePieces.createPiece(
-        "B",
-        "Picket"
-    )
-    static Knight: TamerlanePieceType = TamerlanePieces.createPiece(
-        "N",
-        "Knight"
-    )
-    static Giraffe: TamerlanePieceType = TamerlanePieces.createPiece(
-        "F",
-        "Giraffe"
-    )
-    static General: TamerlanePieceType = TamerlanePieces.createPiece(
-        "G",
-        "General"
-    )
-    static Vizier: TamerlanePieceType = TamerlanePieces.createPiece(
-        "V",
-        "Vizier"
-    )
-
-
-
-    static PawnOfElephant: PawnType = TamerlanePieces.createPawn(
-        TamerlanePieces.Elephant
-    )
-    static PawnOfCamel: PawnType = TamerlanePieces.createPawn(
-        TamerlanePieces.Camel
-    )
-    static PawnOfDabbaba: PawnType = TamerlanePieces.createPawn(
-        TamerlanePieces.Dabbaba
-    )
-    static PawnOfRook: PawnType = TamerlanePieces.createPawn(
-        TamerlanePieces.Rook
-    )
-    static PawnOfPicket: PawnType = TamerlanePieces.createPawn(
-        TamerlanePieces.Picket
-    )
-    static PawnOfKnight: PawnType = TamerlanePieces.createPawn(
-        TamerlanePieces.Knight
-    )
-    static PawnOfGiraffe: PawnType = TamerlanePieces.createPawn(
-        TamerlanePieces.Giraffe
-    )
-    static PawnOfGeneral: PawnType = TamerlanePieces.createPawn(
-        TamerlanePieces.General
-    )
-    static PawnOfVizier: PawnType = TamerlanePieces.createPawn(
-        TamerlanePieces.Vizier
-    )
-
-    static King: TamerlanePieceType = TamerlanePieces.createRoyal(
-        "K",
-        "King"
-    )
-    static Prince: TamerlanePieceType = TamerlanePieces.createRoyal(
-        "P",
-        "Prince"
-    )
-    static AdventitiousKing: TamerlanePieceType = TamerlanePieces.createRoyal(
-        "A",
-        "Adventitious King"
-    )
-
-    static PawnOfKing: PawnType = TamerlanePieces.createPawnNamed(
-        TamerlanePieces.Prince,
-        "k",
-        "Pawn of Kings",
-    )
-    static PawnOfPawns: PawnType = TamerlanePieces.createPawnNamed(
-        TamerlanePieces.AdventitiousKing,
-        "p",
-        "Pawn of Pawns",
-    )
-
-
-    private static createPiece(charRep: string, name: string): TamerlanePieceType {
-        let piece = new TamerlanePieceType(charRep, name);
-        Object.freeze(piece);
-        return piece;
-    }
-    private static createRoyal(charRep: string, name: string): TamerlanePieceType {
-        let piece = new TamerlanePieceType(charRep, name);
-        piece.royal = true;
-        Object.freeze(piece);
-        return piece;
-    }
-    private static createPawnNamed(promotion: TamerlanePieceType, charRep: string, name: string): PawnType {
-        let pawn = new PawnType(
-            promotion,
-            charRep,
-            name,
-        )
-        Object.freeze(pawn);
-        return pawn;
-    }
-    private static createPawn(promotion: TamerlanePieceType): PawnType {
-        let pawn = new PawnType(
-            promotion,
-            promotion.charRep.toLowerCase(),
-            `Pawn of ${promotion.name}s`,
-        )
-        Object.freeze(pawn);
-        return pawn;
-    }
-}
