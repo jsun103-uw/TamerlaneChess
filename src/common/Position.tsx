@@ -33,6 +33,16 @@ export class CitadelPosition extends Position {
 }
 
 export class BoardPosition extends Position {
+    static valid(rank: number, file: number): boolean {
+        return (rank < BOARD_RANKS && rank >= 0) 
+            && (file < BOARD_FILES && file >= 0);
+    }
+    static trymake(rank: number, file: number): BoardPosition | null {
+        if (this.valid(rank, file)) {
+            return new BoardPosition(rank, file);
+        }
+        return null;
+    }
     readonly kind = "board" as const;
     #rank: number;
     #file: number;
@@ -71,15 +81,13 @@ export class BoardPosition extends Position {
     squareName(): string {
         return this.rankName() + this.fileName();
     }
-    [Symbol.toPrimitive](hint: string) {
-        if (hint === "string") {
-            return this.squareName();
-        }
+
+    toString(): string {
+        return this.squareName();
     }
 }
 
 export class Citadel {
-
     piece: BoardPiece;
     #position: CitadelPosition;
     get position() { return this.#position; }
@@ -88,10 +96,7 @@ export class Citadel {
         this.#position = position;
         this.piece = null;
     }
-
-    [Symbol.toPrimitive](hint: string) {
-        if (hint === "string") {
-            return `X${this.#position.rank}`;
-        }
+    toString(): string {
+        return `X${this.#position.rank}`;
     }
 }
