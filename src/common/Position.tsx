@@ -71,6 +71,11 @@ export class BoardPosition extends Position {
     squareName(): string {
         return this.rankName() + this.fileName();
     }
+    [Symbol.toPrimitive](hint: string) {
+        if (hint === "string") {
+            return this.squareName();
+        }
+    }
 }
 
 export class Citadel {
@@ -82,5 +87,11 @@ export class Citadel {
     constructor(position: CitadelPosition) {
         this.#position = position;
         this.piece = null;
+    }
+
+    [Symbol.toPrimitive](hint: string) {
+        if (hint === "string") {
+            return `X${this.#position.rank}`;
+        }
     }
 }

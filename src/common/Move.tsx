@@ -1,6 +1,10 @@
 import { BoardPosition } from "./Position";
-
-type Move = TakeMove | ExchangeMove;export class TakeMove {
+export abstract class Move {
+    abstract readonly kind: "take" | "exchange";
+}
+export type MoveUnion = TakeMove | ExchangeMove;
+abstract class BoardMove extends Move {
+    
     #start: BoardPosition;
     #end: BoardPosition;
 
@@ -14,12 +18,22 @@ type Move = TakeMove | ExchangeMove;export class TakeMove {
 
 
     constructor(start: BoardPosition, end: BoardPosition) {
+        super();
         this.#start = start;
         this.#end = end;
     }
 }
+export class TakeMove extends BoardMove {
+    readonly kind = "take" as const;
 
-export class ExchangeMove extends TakeMove {
+    constructor(start: BoardPosition, end: BoardPosition) {
+        super(start, end);
+    }
+}
+
+export class ExchangeMove extends BoardMove {
+    readonly kind = "exchange" as const;
+
     constructor(start: BoardPosition, end: BoardPosition) {
         super(start, end);
     }

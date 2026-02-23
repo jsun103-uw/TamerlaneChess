@@ -2,6 +2,7 @@
 
 // [File][Rank]
 
+import { MoveUnion } from "./Move";
 import { Player, PlayerENUM } from "./Player";
 import { BoardPosition, Citadel, CitadelPosition, Position, PositionUnion } from "./Position";
 import { TamerlanePieces, TamerlanePieceType } from "./TamerlanePieces";
@@ -16,16 +17,25 @@ export class Board {
     getPiece(position: PositionUnion): BoardPiece {
         //If citadel, return the piece in the correct citadel position
         if (position.kind === "citadel") {
-
-            return this.#citadelLeft.position == position 
+            return this.#citadelLeft.position === position 
                 ? this.#citadelLeft.piece 
                 : this.#citadelRight.piece;
         }
         else if (position.kind === "board") {
-            
             return this.#field[position.file][position.rank]
         }
         throw new TypeError(`${typeof position} is not a valid position kind`);
+    }
+    setPiece(position: PositionUnion, piece: BoardPiece) {
+        //If citadel, set the piece in the correct citadel position
+        if (position.kind === "citadel") {
+            if (this.#citadelLeft.position === position) this.#citadelLeft.piece = piece;
+            else this.#citadelRight.piece = piece;
+        }
+        else if (position.kind === "board") {
+            this.#field[position.file][position.rank] = piece;
+        }
+        else throw new TypeError(`${typeof position} is not a valid position kind`);
     }
 
 
@@ -141,7 +151,6 @@ export class Board {
         return boardstr;
     }
     *getPieces(): Generator<PositionedTamerlanePiece> {
-        
         for (let i = 0; i < BOARD_FILES; i ++) {
             for (let j = 0; j < BOARD_RANKS; j ++) {
                 let piece = this.#field[i][j];
@@ -150,6 +159,28 @@ export class Board {
         }
         if (this.#citadelLeft.piece != null) yield new PositionedTamerlanePiece(this.#citadelLeft.position, this.#citadelLeft.piece);
         if (this.#citadelRight.piece != null) yield new PositionedTamerlanePiece(this.#citadelLeft.position, this.#citadelRight.piece);
+    }
+    /**
+     * Executes the move. If a piece has been taken, return it.
+     * @param move 
+     */
+    move(move: MoveUnion): BoardPiece {
+        if (move.kind === "take") {
+            // replaces piece at end with start, returning it
+            let atEnd = this.getPiece(move.end);
+            this.setPiece(move.end, this.getPiece(move.start));
+            this.setPiece(move.start, null);
+            return atEnd;
+        }
+        else if (move.kind === "exchange") {
+            // swaps end and start
+            let atEnd = this.getPiece(move.end);
+            this.setPiece(move.end, this.getPiece(move.start));
+            this.setPiece(move.start, atEnd);
+            return null;
+        }
+        throw new TypeError(`${typeof move} does not have a valid move kind`);
+        // return null;
     }
 }
 
@@ -183,11 +214,11 @@ export class TamerlanePiece {
 }
 
 export class PositionedTamerlanePiece {
-    public readonly position: Position;
+    public readonly position: PositionUnion;
     public readonly piece: TamerlanePieceType;
     public readonly side: Player;
 
-    constructor(position: Position, piece: TamerlanePiece) {
+    constructor(position: PositionUnion, piece: TamerlanePiece) {
         this.position = position;
         this.side = piece.side;
         this.piece = piece.piece;
