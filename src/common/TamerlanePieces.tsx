@@ -47,7 +47,7 @@ export class TamerlanePieces {
     static Dabbaba: TamerlanePieceType = TamerlanePieces.createPiece(
         "D",
         "Dabbaba",
-        TamerlanePieces.getMovesStub,
+        (board: Board, position: PositionUnion, side: Player) => (TamerlanePieces.getMovesDiagonal(board, position, side, 1, 2)),
     );
     static Rook: TamerlanePieceType = TamerlanePieces.createPiece(
         "R",
@@ -189,6 +189,21 @@ export class TamerlanePieces {
             if (BoardPosition.valid(position.rank - i, position.file + i)) 
                 yield new TakeMove(position, new BoardPosition(position.rank - i, position.file + i));
         }
+    }
+    /**
+     * returns a generator of moves on the orthogonal directions of the position.
+     * @param side The player side of the piece being moved
+     * @param max maximum spaces to move
+     * @param min minimum spaces that must be clear
+     * @returns list of pseudo legal moves
+     */
+    private static *getMovesOrthogonal(board: Board, position: PositionUnion, side: Player, min: number, max: number): Generator<MoveUnion> {
+        if (position.kind != "board") return;
+
+        yield* this.getLine(board, position, side, min, max, (i: number) => BoardPosition.trymake(position.rank + i, position.file));
+        yield* this.getLine(board, position, side, min, max, (i: number) => BoardPosition.trymake(position.rank, position.file + i));
+        yield* this.getLine(board, position, side, min, max, (i: number) => BoardPosition.trymake(position.rank - i, position.file));
+        yield* this.getLine(board, position, side, min, max, (i: number) => BoardPosition.trymake(position.rank, position.file - i));
     }
 
     /**
