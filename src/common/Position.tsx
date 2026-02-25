@@ -33,13 +33,13 @@ export class CitadelPosition extends Position {
 }
 
 export class BoardPosition extends Position {
-    static valid(rank: number, file: number): boolean {
+    static valid(file: number, rank: number): boolean {
         return (rank < BOARD_RANKS && rank >= 0) 
             && (file < BOARD_FILES && file >= 0);
     }
-    static trymake(rank: number, file: number): BoardPosition | null {
-        if (this.valid(rank, file)) {
-            return new BoardPosition(rank, file);
+    static trymake(file: number, rank: number): BoardPosition | null {
+        if (this.valid(file, rank)) {
+            return new BoardPosition(file, rank);
         }
         return null;
     }

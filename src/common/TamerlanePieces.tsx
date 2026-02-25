@@ -1,6 +1,6 @@
 import { Board, BOARD_FILES, TamerlanePiece } from "./Board";
 import { MoveUnion, TakeMove } from "./Move";
-import { opposingPlayerTo, Player } from "./Player";
+import { opposingPlayerTo, Player, PlayerENUM } from "./Player";
 import { BoardPosition, PositionUnion } from "./Position";
 
 export class TamerlanePieceType {
@@ -191,17 +191,17 @@ export class TamerlanePieces {
     private static *getMovesStub(board: Board, position: PositionUnion, side: Player): Generator<MoveUnion> {
         return;
     }
-    private static *getMovesPawn(board: Board, position: PositionUnion, max: number): Generator<MoveUnion> {
+    private static *getMovesPawn(board: Board, position: PositionUnion, side: Player): Generator<MoveUnion> {
         if (position.kind != "board") return;
-        for (let i = 1; i < BOARD_FILES; i ++) {
-            if (BoardPosition.valid(position.rank + i, position.file + i)) 
-                yield new TakeMove(position, new BoardPosition(position.rank + i, position.file + i));
-            if (BoardPosition.valid(position.rank + i, position.file - i)) 
-                yield new TakeMove(position, new BoardPosition(position.rank + i, position.file - i));
-            if (BoardPosition.valid(position.rank - i, position.file - i)) 
-                yield new TakeMove(position, new BoardPosition(position.rank - i, position.file - i));
-            if (BoardPosition.valid(position.rank - i, position.file + i)) 
-                yield new TakeMove(position, new BoardPosition(position.rank - i, position.file + i));
+        
+        let attackl: (BoardPosition | null);
+        let attackr: (BoardPosition | null);
+        let move: BoardPosition | null;
+        if (side === PlayerENUM.White) {
+            attackl = BoardPosition.trymake(position.file, position.rank)
+        }
+        else if (side === PlayerENUM.Black) {
+            
         }
     }
     /**
@@ -214,10 +214,10 @@ export class TamerlanePieces {
     private static *getMovesOrthogonal(board: Board, position: PositionUnion, side: Player, min: number, max: number): Generator<MoveUnion> {
         if (position.kind != "board") return;
 
-        yield* this.getLine(board, position, side, min, max, (i: number) => BoardPosition.trymake(position.rank + i, position.file));
-        yield* this.getLine(board, position, side, min, max, (i: number) => BoardPosition.trymake(position.rank, position.file + i));
-        yield* this.getLine(board, position, side, min, max, (i: number) => BoardPosition.trymake(position.rank - i, position.file));
-        yield* this.getLine(board, position, side, min, max, (i: number) => BoardPosition.trymake(position.rank, position.file - i));
+        yield* this.getLine(board, position, side, min, max, (i: number) => BoardPosition.trymake(position.file, position.rank + i));
+        yield* this.getLine(board, position, side, min, max, (i: number) => BoardPosition.trymake(position.file + i, position.rank));
+        yield* this.getLine(board, position, side, min, max, (i: number) => BoardPosition.trymake(position.file, position.rank - i));
+        yield* this.getLine(board, position, side, min, max, (i: number) => BoardPosition.trymake(position.file - i, position.rank));
     }
 
     /**
@@ -230,10 +230,10 @@ export class TamerlanePieces {
     private static *getMovesDiagonal(board: Board, position: PositionUnion, side: Player, min: number, max: number): Generator<MoveUnion> {
         if (position.kind != "board") return;
 
-        yield* this.getLine(board, position, side, min, max, (i: number) => BoardPosition.trymake(position.rank + i, position.file + i));
-        yield* this.getLine(board, position, side, min, max, (i: number) => BoardPosition.trymake(position.rank + i, position.file - i));
-        yield* this.getLine(board, position, side, min, max, (i: number) => BoardPosition.trymake(position.rank - i, position.file - i));
-        yield* this.getLine(board, position, side, min, max, (i: number) => BoardPosition.trymake(position.rank - i, position.file + i));
+        yield* this.getLine(board, position, side, min, max, (i: number) => BoardPosition.trymake(position.file + i, position.rank + i, ));
+        yield* this.getLine(board, position, side, min, max, (i: number) => BoardPosition.trymake(position.file - i, position.rank + i, ));
+        yield* this.getLine(board, position, side, min, max, (i: number) => BoardPosition.trymake(position.file - i, position.rank - i, ));
+        yield* this.getLine(board, position, side, min, max, (i: number) => BoardPosition.trymake(position.file + i, position.rank - i, ));
     }
     /**
      * Starts at position. May move up to max steps until it hits a border, enemy, or its own piece. min steps must be clear.
