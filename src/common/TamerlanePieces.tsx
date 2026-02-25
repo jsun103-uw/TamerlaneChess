@@ -34,6 +34,7 @@ export class PawnType extends TamerlanePieceType {
 type MoveRequestFunc = (board: Board, position: PositionUnion, side: Player) => Generator<MoveUnion>;
 
 export class TamerlanePieces {
+    //#region main units
     static Elephant: TamerlanePieceType = TamerlanePieces.createPiece(
         "E",
         "Elephant",
@@ -47,12 +48,12 @@ export class TamerlanePieces {
     static Dabbaba: TamerlanePieceType = TamerlanePieces.createPiece(
         "D",
         "Dabbaba",
-        (board: Board, position: PositionUnion, side: Player) => (TamerlanePieces.getMovesDiagonal(board, position, side, 1, 2)),
+        (board: Board, position: PositionUnion, side: Player) => (TamerlanePieces.getMovesOrthogonal(board, position, side, 1, 2)),
     );
     static Rook: TamerlanePieceType = TamerlanePieces.createPiece(
         "R",
         "Rook",
-        TamerlanePieces.getMovesStub,
+        (board: Board, position: PositionUnion, side: Player) => (TamerlanePieces.getMovesOrthogonal(board, position, side, 0, BOARD_FILES)),
     );
     static Picket: TamerlanePieceType = TamerlanePieces.createPiece(
         "B",
@@ -77,10 +78,12 @@ export class TamerlanePieces {
     static Vizier: TamerlanePieceType = TamerlanePieces.createPiece(
         "V",
         "Vizier",
-        TamerlanePieces.getMovesStub,
+        (board: Board, position: PositionUnion, side: Player) => (TamerlanePieces.getMovesOrthogonal(board, position, side, 0, 1)),
     );
 
+    //#endregion
 
+    //#region pawn units
 
     static PawnOfElephant: PawnType = TamerlanePieces.createPawn(
         TamerlanePieces.Elephant
@@ -110,20 +113,23 @@ export class TamerlanePieces {
         TamerlanePieces.Vizier
     );
 
+    //#endregion
+
+    //#region king and specil units
     static King: TamerlanePieceType = TamerlanePieces.createRoyal(
         "K",
         "King",
-        TamerlanePieces.getMovesStub,
+        (board: Board, position: PositionUnion, side: Player) => TamerlanePieces.getMovesKing(board, position, side),
     );
     static Prince: TamerlanePieceType = TamerlanePieces.createRoyal(
         "P",
         "Prince",
-        TamerlanePieces.getMovesStub,
+        (board: Board, position: PositionUnion, side: Player) => TamerlanePieces.getMovesKing(board, position, side),
     );
     static AdventitiousKing: TamerlanePieceType = TamerlanePieces.createRoyal(
         "A",
         "Adventitious King",
-        TamerlanePieces.getMovesStub,
+        (board: Board, position: PositionUnion, side: Player) => TamerlanePieces.getMovesKing(board, position, side),
     );
 
     static PawnOfKing: PawnType = TamerlanePieces.createPawnNamed(
@@ -138,6 +144,8 @@ export class TamerlanePieces {
         "Pawn of Pawns",
         TamerlanePieces.getMovesStub,
     );
+    
+    //#endregion
 
     //#region creating pieces mathods
 
@@ -173,10 +181,16 @@ export class TamerlanePieces {
         return pawn;
     }
 
+    //#endregion 
+
+    //#region move generators
+    private static *getMovesKing(board: Board, position: PositionUnion, side: Player): Generator<MoveUnion> {
+        yield *this.getMovesDiagonal(board, position, side, 0, 1);
+        yield *this.getMovesOrthogonal(board, position, side, 0, 1);
+    }
     private static *getMovesStub(board: Board, position: PositionUnion, side: Player): Generator<MoveUnion> {
         return;
     }
-    //#endregion 
     private static *getMovesPawn(board: Board, position: PositionUnion, max: number): Generator<MoveUnion> {
         if (position.kind != "board") return;
         for (let i = 1; i < BOARD_FILES; i ++) {
@@ -250,5 +264,6 @@ export class TamerlanePieces {
             if (piece?.side === opposingPlayerTo(side)) return;
         }
     }
+    //#endregion
     
 }
