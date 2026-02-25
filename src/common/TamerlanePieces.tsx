@@ -230,10 +230,10 @@ export class TamerlanePieces {
     private static *getMovesDiagonal(board: Board, position: PositionUnion, side: Player, min: number, max: number): Generator<MoveUnion> {
         if (position.kind != "board") return;
 
-        yield* this.getLine(board, position, side, min, max, (i: number) => BoardPosition.trymake(position.file + i, position.rank + i, ));
-        yield* this.getLine(board, position, side, min, max, (i: number) => BoardPosition.trymake(position.file - i, position.rank + i, ));
-        yield* this.getLine(board, position, side, min, max, (i: number) => BoardPosition.trymake(position.file - i, position.rank - i, ));
-        yield* this.getLine(board, position, side, min, max, (i: number) => BoardPosition.trymake(position.file + i, position.rank - i, ));
+        yield* this.getLine(board, position, side, min, max, (i: number) => BoardPosition.trymake(position.file + i, position.rank + i));
+        yield* this.getLine(board, position, side, min, max, (i: number) => BoardPosition.trymake(position.file - i, position.rank + i));
+        yield* this.getLine(board, position, side, min, max, (i: number) => BoardPosition.trymake(position.file - i, position.rank - i));
+        yield* this.getLine(board, position, side, min, max, (i: number) => BoardPosition.trymake(position.file + i, position.rank - i));
     }
     /**
      * Starts at position. May move up to max steps until it hits a border, enemy, or its own piece. min steps must be clear.
