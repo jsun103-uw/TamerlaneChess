@@ -2,7 +2,7 @@
 
 // [File][Rank]
 
-import { MoveUnion } from "./Move";
+import { MoveUnion, TakeMove } from "./Move";
 import { Player, PlayerENUM } from "./Player";
 import { BoardPosition, Citadel, CitadelPosition, Position, PositionUnion } from "./Position";
 import { TamerlanePieces, TamerlanePieceType } from "./TamerlanePieces";
@@ -14,7 +14,7 @@ export class Board {
     #citadelLeft: Citadel;
     #citadelRight: Citadel;
 
-    getPiece(position: PositionUnion): BoardPiece {
+    public getPiece(position: PositionUnion): BoardPiece {
         //If citadel, return the piece in the correct citadel position
         if (position.kind === "citadel") {
             return this.#citadelLeft.position === position 
@@ -26,7 +26,12 @@ export class Board {
         }
         throw new TypeError(`${typeof position} is not a valid position kind`);
     }
-    setPiece(position: PositionUnion, piece: BoardPiece) {
+    public *getMoves(position: PositionUnion): Generator<MoveUnion> {
+        const piece = this.getPiece(position);
+        if (piece === null) return;
+        return piece.piece.getMoves(this, position, piece.side);
+    }
+    private setPiece(position: PositionUnion, piece: BoardPiece) {
         //If citadel, set the piece in the correct citadel position
         if (position.kind === "citadel") {
             if (this.#citadelLeft.position === position) this.#citadelLeft.piece = piece;
@@ -49,7 +54,7 @@ export class Board {
         this.#citadelRight = new Citadel(CitadelPosition.getRight())
     }
 
-    static buildStartingBoard(): Board {
+    public static buildStartingBoard(): Board {
         let board = new Board();
         board.#field[0][0] = TamerlanePieces.Elephant.makeActive(PlayerENUM.White);
         board.#field[2][0] = TamerlanePieces.Camel.makeActive(PlayerENUM.White);
@@ -121,7 +126,7 @@ export class Board {
         return board;
     }
 
-    debugGet(): string {
+    public debugGet(): string {
         let boardstr: string = "";
         for (let rank = BOARD_RANKS - 1; rank >= 0; rank --) {
             let items: string = "";
@@ -151,7 +156,7 @@ export class Board {
         }
         return boardstr;
     }
-    *getPieces(): Generator<PositionedTamerlanePiece> {
+    public *getPieces(): Generator<PositionedTamerlanePiece> {
         for (let i = 0; i < BOARD_FILES; i ++) {
             for (let j = 0; j < BOARD_RANKS; j ++) {
                 let piece = this.#field[i][j];
@@ -161,11 +166,17 @@ export class Board {
         if (this.#citadelLeft.piece != null) yield new PositionedTamerlanePiece(this.#citadelLeft.position, this.#citadelLeft.piece);
         if (this.#citadelRight.piece != null) yield new PositionedTamerlanePiece(this.#citadelLeft.position, this.#citadelRight.piece);
     }
+
+    public trymove(move: MoveUnion): boolean {
+        if (this.getMoves(move.start))
+        this.move(move);
+        return true;
+    }
     /**
      * Executes the move. If a piece has been taken, return it.
      * @param move 
      */
-    move(move: MoveUnion): BoardPiece {
+    private move(move: MoveUnion): BoardPiece {
         if (move.kind === "take") {
             // replaces piece at end with start, returning it
             let atEnd = this.getPiece(move.end);
@@ -182,6 +193,16 @@ export class Board {
         }
         throw new TypeError(`${typeof move} does not have a valid move kind`);
         // return null;
+    }
+
+    private containsMove(moves: Generator<MoveUnion>, search: MoveUnion) {
+        for(const move of moves) {
+            if (move.kind === search.kind) {
+                if (move.kind === "exchange" || move.kind === "take") {
+                    return move.end.equals(search.end) && move.start.equals(search.start) 
+                }
+            }
+        }
     }
 }
 
@@ -224,5 +245,4 @@ export class PositionedTamerlanePiece {
         this.side = piece.side;
         this.piece = piece.piece;
     }
-
 }

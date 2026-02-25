@@ -10,7 +10,7 @@ let board: Board = Board.buildStartingBoard();
 
 console.log("State 1");
 console.log(board.debugGet());
-board.move(new TakeMove(new BoardPosition(1, 1), new BoardPosition(1, 4)));
+board.trymove(new TakeMove(new BoardPosition(1, 1), new BoardPosition(1, 4)));
 console.log("State 2");
 console.log(board.debugGet());
 
@@ -37,3 +37,32 @@ for (const move of TamerlanePieces.Knight.getMoves(board, testpawnpos, PlayerENU
 for (const piece of board.getPieces()) {
     // console.log(`${piece.side}'s ${piece.piece.name} at ${piece.position}`);
 }
+
+
+//* Command line board
+import * as readline from "readline";
+
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
+  terminal: true,
+});
+
+const moveReg = /MV\s*(\w)(\d+)\s*(\w)(\d+)/;
+
+let side = PlayerENUM.White;
+// function makeMove(move: MoveUnion) {
+
+// }
+
+rl.on("line", (input: string) => {
+    let matches: RegExpExecArray | null = moveReg.exec(input);
+    if (matches !== null) {
+        process.stdout.write(`matched reg ${matches[1]}\n`);
+
+    }
+});
+
+rl.on("close", () => {
+  process.exit(0);
+});
