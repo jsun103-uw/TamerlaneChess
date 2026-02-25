@@ -43,7 +43,7 @@ export class TamerlanePieces {
     static Camel: TamerlanePieceType = TamerlanePieces.createPiece(
         "C",
         "Camel",
-        TamerlanePieces.getMovesStub,
+        (board: Board, position: PositionUnion, side: Player) => (TamerlanePieces.getMovesKnightlike(board, position, side, 2, 3, 2)),
     );
     static Dabbaba: TamerlanePieceType = TamerlanePieces.createPiece(
         "D",
@@ -63,12 +63,12 @@ export class TamerlanePieces {
     static Knight: TamerlanePieceType = TamerlanePieces.createPiece(
         "N",
         "Knight",
-        TamerlanePieces.getMovesStub,
+        (board: Board, position: PositionUnion, side: Player) => (TamerlanePieces.getMovesKnightlike(board, position, side, 1, 2, 1)),
     );
     static Giraffe: TamerlanePieceType = TamerlanePieces.createPiece(
         "F",
         "Giraffe",
-        TamerlanePieces.getMovesStub,
+        (board: Board, position: PositionUnion, side: Player) => (TamerlanePieces.getMovesKnightlike(board, position, side, 3, BOARD_FILES, 0)),
     );
     static General: TamerlanePieceType = TamerlanePieces.createPiece(
         "G",
@@ -188,11 +188,8 @@ export class TamerlanePieces {
         yield *this.getMovesDiagonal(board, position, side, 0, 1);
         yield *this.getMovesOrthogonal(board, position, side, 0, 1);
     }
-    private static *getMovesStub(board: Board, position: PositionUnion, side: Player): Generator<MoveUnion> {
-        return;
-    }
     private static *getMovesPawn(board: Board, position: PositionUnion, side: Player): Generator<MoveUnion> {
-        if (position.kind != "board") return;
+        if (position.kind !== "board") return;
         
         let direction = 1;
         if (side === PlayerENUM.White) direction = 1;
@@ -202,9 +199,9 @@ export class TamerlanePieces {
         const attack2:  (BoardPosition | null) = BoardPosition.trymake(position.file - 1, position.rank + direction);;
         const move:     (BoardPosition | null) = BoardPosition.trymake(position.file, position.rank + direction);
 
-        if (attack1 != null && board.getPiece(attack1)?.side === opposingPlayerTo(side)) yield new TakeMove(position, attack1);
-        if (attack2 != null && board.getPiece(attack2)?.side === opposingPlayerTo(side)) yield new TakeMove(position, attack2);
-        if (move != null && board.getPiece(move) === null) yield new TakeMove(position, move);
+        if (attack1 !== null && board.getPiece(attack1)?.side === opposingPlayerTo(side)) yield new TakeMove(position, attack1);
+        if (attack2 !== null && board.getPiece(attack2)?.side === opposingPlayerTo(side)) yield new TakeMove(position, attack2);
+        if (move !== null && board.getPiece(move) === null) yield new TakeMove(position, move);
     }
     /**
      * returns a generator of moves on the orthogonal directions of the position.
@@ -214,7 +211,7 @@ export class TamerlanePieces {
      * @returns list of pseudo legal moves
      */
     private static *getMovesOrthogonal(board: Board, position: PositionUnion, side: Player, min: number, max: number): Generator<MoveUnion> {
-        if (position.kind != "board") return;
+        if (position.kind !== "board") return;
 
         yield* this.getLine(board, position, side, min, max, (i: number) => BoardPosition.trymake(position.file, position.rank + i));
         yield* this.getLine(board, position, side, min, max, (i: number) => BoardPosition.trymake(position.file + i, position.rank));
@@ -230,7 +227,7 @@ export class TamerlanePieces {
      * @returns list of pseudo legal moves
      */
     private static *getMovesDiagonal(board: Board, position: PositionUnion, side: Player, min: number, max: number): Generator<MoveUnion> {
-        if (position.kind != "board") return;
+        if (position.kind !== "board") return;
 
         yield* this.getLine(board, position, side, min, max, (i: number) => BoardPosition.trymake(position.file + i, position.rank + i));
         yield* this.getLine(board, position, side, min, max, (i: number) => BoardPosition.trymake(position.file - i, position.rank + i));
@@ -250,9 +247,9 @@ export class TamerlanePieces {
     private static *getLine(board: Board, position: BoardPosition, side: Player, min: number, max: number, posFunc: (i: number) => (BoardPosition | null)): Generator<MoveUnion> {
         for (let i = 1; i <= min; i ++) {
             const pos = posFunc(i);
-            // if (pos != null) console.log(board.getPiece(pos));
+            // if (pos !== null) console.log(board.getPiece(pos));
             // if position doesn't exist or the position is occupied in min, do not move.
-            if (pos === null || board.getPiece(pos) != null) return;
+            if (pos === null || board.getPiece(pos) !== null) return;
         }
         for (let i = min + 1; i <= max; i ++) {
             const pos = posFunc(i);
@@ -266,6 +263,69 @@ export class TamerlanePieces {
             if (piece?.side === opposingPlayerTo(side)) return;
         }
     }
+
+    static #knightTemplates: KnightTemplate[] = [
+        { diagonal: { file: -1, rank: 1, }, straight: { file: 0, rank: 1, }, },
+        { diagonal: { file: -1, rank: 1, }, straight: { file: -1, rank: 0, }, },
+
+        { diagonal: { file: 1, rank: -1, }, straight: { file: 0, rank: -1, }, },
+        { diagonal: { file: 1, rank: -1, }, straight: { file: 1, rank: 0, }, },
+
+        { diagonal: { file: 1, rank: 1, }, straight: { file: 0, rank: 1, }, },
+        { diagonal: { file: 1, rank: 1, }, straight: { file: 1, rank: 0, }, },
+
+        { diagonal: { file: -1, rank: -1, }, straight: { file: 0, rank: -1, }, },
+        { diagonal: { file: -1, rank: -1, }, straight: { file: -1, rank: 0, }, },
+    ]
+    static #adjacents: Vector2I[] = [
+        { file: 0, rank: 1, },
+        { file: 0, rank: -1, },
+        { file: 1, rank: 0, },
+        { file: -1, rank: 0, },
+    ]
+    /**
+     * returns moves wher the unit jumps in an L shape (1 diagonal, configurable orthogonal).
+     * One step is one diagonal or orthogonal jump. E.g., the standard knight move is 2 steps (diagonal 1, orthogonal 1)
+     * @param board 
+     * @param position 
+     * @param side 
+     * @param min Number of steps this units must have travelled before being able to move
+     * @param max How many steps can this piece travel in total.
+     * @param jump How many steps this piece should be able to leap over.
+     * @returns 
+     */
+    private static *getMovesKnightlike(board: Board, position: PositionUnion, side: Player, min: number, max: number, jump: number): Generator<MoveUnion> {
+        if (position.kind !== "board") return;
+        min = min - jump;
+        max = max - jump;
+
+        for (const template of this.#knightTemplates) {
+            yield* this.getLine(board, position, side, 0, max, (i: number) => this.getLeap(position, template.diagonal, template.straight, i, jump));
+        }
+    }
+    private static getLeap(position: BoardPosition, initial: Vector2I, later: Vector2I, i: number, skip: number): BoardPosition | null {
+        let step = i + skip;
+        if (step <= 0) return position;
+        else if (step === 1) 
+            return BoardPosition.trymake(
+                position.file + initial.file, 
+                position.rank + initial.rank,
+            );
+        else {
+            return BoardPosition.trymake(
+                position.file + initial.file + later.file * (step - 1), 
+                position.rank + initial.rank + later.rank * (step - 1),
+            );
+        }
+    }
     //#endregion
     
+}
+type Vector2I = {
+    file: number,
+    rank: number,
+}
+type KnightTemplate = {
+    diagonal: Vector2I,
+    straight: Vector2I,
 }

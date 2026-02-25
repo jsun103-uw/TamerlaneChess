@@ -27,6 +27,12 @@ for (const move of TamerlanePieces.PawnOfCamel.getMoves(board, testpawnpos, Play
 }
 
 
+console.log(`Knight @ ${testpawnpos}`);
+for (const move of TamerlanePieces.Knight.getMoves(board, testpawnpos, PlayerENUM.Black)) {
+    console.log(move.toString());
+}
+
+
 // Examples for using getPieces();
 for (const piece of board.getPieces()) {
     // console.log(`${piece.side}'s ${piece.piece.name} at ${piece.position}`);
