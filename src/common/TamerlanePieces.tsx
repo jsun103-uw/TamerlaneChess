@@ -136,13 +136,13 @@ export class TamerlanePieces {
         TamerlanePieces.Prince,
         "k",
         "Pawn of Kings",
-        TamerlanePieces.getMovesStub,
+        TamerlanePieces.getMovesPawn,
     );
     static PawnOfPawns: PawnType = TamerlanePieces.createPawnNamed(
         TamerlanePieces.AdventitiousKing,
         "p",
         "Pawn of Pawns",
-        TamerlanePieces.getMovesStub,
+        TamerlanePieces.getMovesPawn,
     );
     
     //#endregion
@@ -165,7 +165,7 @@ export class TamerlanePieces {
             promotion,
             charRep,
             name,
-            getMoves
+            this.getMovesPawn,
         );
         Object.freeze(pawn);
         return pawn;
@@ -175,7 +175,7 @@ export class TamerlanePieces {
             promotion,
             promotion.charRep.toLowerCase(),
             `Pawn of ${promotion.name}s`,
-            TamerlanePieces.getMovesStub
+            this.getMovesPawn,
         );
         Object.freeze(pawn);
         return pawn;
@@ -194,15 +194,17 @@ export class TamerlanePieces {
     private static *getMovesPawn(board: Board, position: PositionUnion, side: Player): Generator<MoveUnion> {
         if (position.kind != "board") return;
         
-        let attackl: (BoardPosition | null);
-        let attackr: (BoardPosition | null);
-        let move: BoardPosition | null;
-        if (side === PlayerENUM.White) {
-            attackl = BoardPosition.trymake(position.file, position.rank)
-        }
-        else if (side === PlayerENUM.Black) {
-            
-        }
+        let direction = 1;
+        if (side === PlayerENUM.White) direction = 1;
+        else if (side === PlayerENUM.Black) direction = -1;
+
+        const attack1:  (BoardPosition | null) = BoardPosition.trymake(position.file + 1, position.rank + direction);;
+        const attack2:  (BoardPosition | null) = BoardPosition.trymake(position.file - 1, position.rank + direction);;
+        const move:     (BoardPosition | null) = BoardPosition.trymake(position.file, position.rank + direction);
+
+        if (attack1 != null && board.getPiece(attack1)?.side === opposingPlayerTo(side)) yield new TakeMove(position, attack1);
+        if (attack2 != null && board.getPiece(attack2)?.side === opposingPlayerTo(side)) yield new TakeMove(position, attack2);
+        if (move != null && board.getPiece(move) === null) yield new TakeMove(position, move);
     }
     /**
      * returns a generator of moves on the orthogonal directions of the position.

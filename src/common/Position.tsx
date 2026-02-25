@@ -69,17 +69,17 @@ export class BoardPosition extends Position {
             && this.file === other.file;
     }
 
-    static get rankNames(): string[] {
-        return [ "A","B","C","D","E","F","G","H","I","J" ]
+    static get fileNames(): string[] {
+        return [ "A","B","C","D","E","F","G","H","I","J","K" ]
     }
     rankName(): string {
-        return BoardPosition.rankNames[this.rank];
+        return (this.rank + 1).toString();
     }
     fileName(): string {
-        return (this.file + 1).toString();
+        return BoardPosition.fileNames[this.file];
     }
     squareName(): string {
-        return this.rankName() + this.fileName();
+        return this.fileName() + this.rankName();
     }
 
     toString(): string {

@@ -43,6 +43,7 @@ export class Board {
         this.#field = new Array<BoardPiece[]>(BOARD_FILES);
         for (let i = 0; i < BOARD_FILES; i ++) {
             this.#field[i] = new Array<BoardPiece>(BOARD_RANKS)
+            this.#field[i].fill(null);
         }
         this.#citadelLeft = new Citadel(CitadelPosition.getLeft())
         this.#citadelRight = new Citadel(CitadelPosition.getRight())

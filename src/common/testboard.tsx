@@ -15,7 +15,14 @@ console.log("State 2");
 console.log(board.debugGet());
 
 
+console.log(`imaginary Picket @ 2, 2`);
 for (const move of TamerlanePieces.Picket.getMoves(board, new BoardPosition(2, 2), PlayerENUM.White)) {
+    console.log(move.toString());
+}
+
+const testpawnpos = new BoardPosition(4, 4);
+console.log(`Pawn @ ${testpawnpos}`);
+for (const move of TamerlanePieces.PawnOfCamel.getMoves(board, testpawnpos, PlayerENUM.Black)) {
     console.log(move.toString());
 }
 
