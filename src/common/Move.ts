@@ -28,7 +28,17 @@ abstract class BoardMove extends Move {
     }
 }
 export class TakeMove extends BoardMove {
+    static tryMake(f1: number, r1: number, f2: number, r2: number, ): TakeMove | null {
+        const start = BoardPosition.trymake(f1, r1);
+        const end = BoardPosition.trymake(f2, r2);
+        if (start !== null && end !== null) return new TakeMove(start, end);
+        return null;
+    }
+
+
+
     readonly kind = "take" as const;
+
 
     constructor(start: BoardPosition, end: BoardPosition) {
         super(start, end);

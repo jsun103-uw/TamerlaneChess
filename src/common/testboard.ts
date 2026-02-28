@@ -1,4 +1,4 @@
-//npx tsx src/common/testboard.tsx 
+//npx tsx src/common/testboard.ts
 import { Board } from "./Board";
 import { Game } from "./Game";
 import { ExchangeMove, Move, MoveUnion, TakeMove } from "./Move";
@@ -57,6 +57,10 @@ let side = PlayerENUM.White;
 let moves: MoveUnion[] = [];
 
 rl.on("line", (input: string) => {
+    if (/^\s*test\s*$/.test(input)) {
+        testBoardPromotion();
+        return;
+    }
     let matches: RegExpExecArray | null;
     matches = moveReg.exec(input);
     if (matches !== null) {
@@ -89,3 +93,51 @@ rl.on("line", (input: string) => {
 rl.on("close", () => {
   process.exit(0);
 });
+
+
+
+
+
+
+let state = 0;
+// * testing boards
+function testBoardPromotion() {
+    let game: Game = new Game();
+    state = 0;
+
+    printStart(game);
+
+    // advance K and J file pawn of rooks
+    moveState(game, TakeMove.tryMake(10, 2, 10, 3));
+    moveState(game, TakeMove.tryMake(9, 7, 9, 6));
+    moveState(game, TakeMove.tryMake(10, 3, 10, 4));
+    moveState(game, TakeMove.tryMake(9, 6, 9, 5));
+    moveState(game, TakeMove.tryMake(10, 4, 10, 5));
+    printMoves(game.getMovesFor(new BoardPosition(10, 4)));
+    // moveState(game, TakeMove.tryMake(9, 5, 9, 4));
+    // moveState(game, TakeMove.tryMake(10, 5, 10, 6));
+    // moveState(game, TakeMove.tryMake(9, 4, 9, 3));
+    // moveState(game, TakeMove.tryMake(10, 6, 10, 7));
+    // moveState(game, TakeMove.tryMake(9, 6, 9, 7));
+    // moveState(game, TakeMove.tryMake(10, 7, 10, 8));
+    // moveState(game, TakeMove.tryMake(9, 7, 9, 8));
+}
+function printStart(game: Game) {
+    console.log(`=======================`)
+    console.log(`=======================`)
+    console.log(`        TESTING        `)
+    console.log(`=======================`)
+    console.log(`=======================`)
+
+    console.log(`Initial State`);
+    console.log(game.debugGetBoard());
+}
+function moveState(game: Game, move: MoveUnion | null) {
+    if (move === null || !game.trymove(move)) {
+        console.log(`Move ${state ++} failed: ${move === null ? "" : move.toString()}`);
+        return;
+    };
+    console.log(`Move ${state ++}: ${move.toString()}`);
+    game.trymove(move);
+    console.log(game.debugGetBoard());
+}

@@ -207,14 +207,15 @@ export class Board {
         // return null;
     }
 
-    private static containsMove(moves: Generator<MoveUnion>, search: MoveUnion) {
+    private static containsMove(moves: Iterable<MoveUnion>, search: MoveUnion): boolean {
         for(const move of moves) {
             if (move.kind === search.kind) {
                 if (move.kind === "exchange" || move.kind === "take") {
-                    return move.end.equals(search.end) && move.start.equals(search.start) 
+                    if (move.end.equals(search.end) && move.start.equals(search.start)) return true; 
                 }
             }
         }
+        return false;
     }
 }
 
