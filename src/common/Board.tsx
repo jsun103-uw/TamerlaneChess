@@ -29,7 +29,7 @@ export class Board {
     public *getMoves(position: PositionUnion): Generator<MoveUnion> {
         const piece = this.getPiece(position);
         if (piece === null) return;
-        return piece.piece.getMoves(this, position, piece.side);
+        yield* piece.piece.getMoves(this, position, piece.side);
     }
     private setPiece(position: PositionUnion, piece: BoardPiece) {
         //If citadel, set the piece in the correct citadel position
@@ -168,9 +168,12 @@ export class Board {
     }
 
     public trymove(move: MoveUnion): boolean {
-        if (this.getMoves(move.start))
-        this.move(move);
-        return true;
+        if (Board.containsMove(this.getMoves(move.start), move))
+        {
+            this.move(move);
+            return true;
+        }
+        return false;
     }
     /**
      * Executes the move. If a piece has been taken, return it.
@@ -195,7 +198,7 @@ export class Board {
         // return null;
     }
 
-    private containsMove(moves: Generator<MoveUnion>, search: MoveUnion) {
+    private static containsMove(moves: Generator<MoveUnion>, search: MoveUnion) {
         for(const move of moves) {
             if (move.kind === search.kind) {
                 if (move.kind === "exchange" || move.kind === "take") {
@@ -230,8 +233,8 @@ export class TamerlanePiece {
         this.#piece = piece;
     }
 
-    oneCharRep(): string {
-        return "P";
+    toString(): string {
+        return `${this.charRep}:${this.side}`;
     }
 }
 
