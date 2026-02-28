@@ -107,20 +107,27 @@ function testBoardPromotion() {
 
     printStart(game);
 
-    // advance K and J file pawn of rooks
+    // advance K and I file pawn of rooks
     moveState(game, TakeMove.tryMake(10, 2, 10, 3));
-    moveState(game, TakeMove.tryMake(9, 7, 9, 6));
+    moveState(game, TakeMove.tryMake(8, 7, 8, 6));
     moveState(game, TakeMove.tryMake(10, 3, 10, 4));
-    moveState(game, TakeMove.tryMake(9, 6, 9, 5));
+    moveState(game, TakeMove.tryMake(8, 6, 8, 5));
     moveState(game, TakeMove.tryMake(10, 4, 10, 5));
-    printMoves(game.getMovesFor(new BoardPosition(10, 4)));
-    // moveState(game, TakeMove.tryMake(9, 5, 9, 4));
-    // moveState(game, TakeMove.tryMake(10, 5, 10, 6));
-    // moveState(game, TakeMove.tryMake(9, 4, 9, 3));
-    // moveState(game, TakeMove.tryMake(10, 6, 10, 7));
-    // moveState(game, TakeMove.tryMake(9, 6, 9, 7));
-    // moveState(game, TakeMove.tryMake(10, 7, 10, 8));
-    // moveState(game, TakeMove.tryMake(9, 7, 9, 8));
+    moveState(game, TakeMove.tryMake(8, 5, 8, 4));
+    moveState(game, TakeMove.tryMake(10, 5, 10, 6));
+    moveState(game, TakeMove.tryMake(8, 4, 8, 3));
+    // take pawn at pawn rank
+    moveState(game, TakeMove.tryMake(10, 6, 9, 7));
+    moveState(game, TakeMove.tryMake(8, 3, 9, 2));
+    //move camel out of way
+    moveState(game, TakeMove.tryMake(8, 0, 9, 3));
+    moveState(game, TakeMove.tryMake(8, 9, 9, 6));
+    // continue pawn advance
+    moveState(game, TakeMove.tryMake(9, 7, 8, 8));
+    moveState(game, TakeMove.tryMake(9, 2, 8, 1));
+    // promote
+    moveState(game, TakeMove.tryMake(8, 8, 8, 9));
+    moveState(game, TakeMove.tryMake(8, 1, 8, 0));
 }
 function printStart(game: Game) {
     console.log(`=======================`)
