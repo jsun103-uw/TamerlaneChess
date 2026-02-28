@@ -26,9 +26,14 @@ export class Board {
         }
         throw new TypeError(`${typeof position} is not a valid position kind`);
     }
-    public *getMoves(position: PositionUnion): Generator<MoveUnion> {
+    /**
+     * Gets all legal moves at the position for side
+     * @param position 
+     * @returns 
+     */
+    public *getMoves(position: PositionUnion, side: Player): Generator<MoveUnion> {
         const piece = this.getPiece(position);
-        if (piece === null) return;
+        if (piece === null || piece.side !== side) return;
         yield* piece.piece.getMoves(this, position, piece.side);
     }
     private setPiece(position: PositionUnion, piece: BoardPiece) {
@@ -167,13 +172,17 @@ export class Board {
         if (this.#citadelRight.piece != null) yield new PositionedTamerlanePiece(this.#citadelLeft.position, this.#citadelRight.piece);
     }
 
-    public trymove(move: MoveUnion): boolean {
-        if (Board.containsMove(this.getMoves(move.start), move))
+    /**
+     * Attempts to execute move for side
+     * @returns the result of the move
+     */
+    public trymove(move: MoveUnion, side: Player): MoveResult {
+        if (Board.containsMove(this.getMoves(move.start, side), move))
         {
             this.move(move);
-            return true;
+            return new MoveResult(true, null);
         }
-        return false;
+        return new MoveResult(false, null);
     }
     /**
      * Executes the move. If a piece has been taken, return it.
@@ -206,6 +215,24 @@ export class Board {
                 }
             }
         }
+    }
+}
+
+export class MoveResult {
+    #successful : boolean;
+    #taken : BoardPiece;
+    /**
+     * If this move was succesful.
+     */
+    get successful() { return this.#successful; }
+    /**
+     * The piece that was taken in this move, if any
+     */
+    get taken() { return this.#taken; }
+    constructor(succesful: boolean, taken: BoardPiece) {
+        this.#successful = succesful;
+        this.#taken = taken;
+
     }
 }
 
@@ -243,9 +270,13 @@ export class PositionedTamerlanePiece {
     public readonly piece: TamerlanePieceType;
     public readonly side: Player;
 
-    constructor(position: PositionUnion, piece: TamerlanePiece) {
+    public constructor(position: PositionUnion, piece: TamerlanePiece) {
         this.position = position;
         this.side = piece.side;
         this.piece = piece.piece;
+    }
+
+    public toString(): string {
+        return `${this.piece.charRep}:${this.side}:${this.position}`;
     }
 }

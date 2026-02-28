@@ -1,40 +1,33 @@
 //npx tsx src/common/testboard.tsx 
 import { Board } from "./Board";
+import { Game } from "./Game";
 import { ExchangeMove, Move, MoveUnion, TakeMove } from "./Move";
 import { PlayerENUM } from "./Player";
 import { BoardPosition } from "./Position";
 import { TamerlanePieces } from "./TamerlanePieces";
 
-let board: Board = Board.buildStartingBoard();
+let game: Game = new Game();
 
 
 console.log("State 1");
-console.log(board.debugGet());
-board.trymove(new TakeMove(new BoardPosition(1, 1), new BoardPosition(1, 4)));
-console.log("State 2");
-console.log(board.debugGet());
+console.log(game.debugGetBoard());
 
-
-// console.log(`imaginary Picket @ 2, 2`);
-// for (const move of TamerlanePieces.Picket.getMoves(board, new BoardPosition(2, 2), PlayerENUM.White)) {
-//     console.log(move.toString());
+//!! example of getting all the pieces
+// for (const tamerlanepiece of game.getPieces()) {
+//     console.log(tamerlanepiece.toString());
 // }
+//!!
+
+
 
 //* showing moves
 
-// const testpawnpos = new BoardPosition(1, 2);
-// printMoves(TamerlanePieces.PawnOfCamel.getMoves(board, testpawnpos, PlayerENUM.White));
+// console.log("Pawn A3 moves");
+// printMoves(game.getMovesFor(new BoardPosition(0, 2)));
+// console.log("Knight B2 moves");
+// printMoves(game.getMovesFor(new BoardPosition(1, 1)));
 
 
-// console.log(`Knight @ ${testpawnpos}`);
-// printMoves(board.getMoves(testpawnpos));
-
-//* showing pieces
-
-// Examples for using getPieces();
-// for (const piece of board.getPieces()) {
-//     console.log(`${piece.side}'s ${piece.piece.name} at ${piece.position}`);
-// }
 
 function printMoves(moves: Iterable<MoveUnion>) 
 {
@@ -71,9 +64,9 @@ rl.on("line", (input: string) => {
         if (moveidx >= 0 && moveidx < moves.length ) {
 
             console.log(`selecting move ${moveidx}: ${moves[moveidx]}`);
-            if (board.trymove(moves[moveidx]))
+            if (game.trymove(moves[moveidx]))
             {
-                console.log(board.debugGet());
+                console.log(game.debugGetBoard());
             }
             return;
         }
@@ -83,17 +76,12 @@ rl.on("line", (input: string) => {
     if (matches !== null) {
         if (matches !== null) {
             let pos: BoardPosition | null = BoardPosition.trymake(matches[1].toUpperCase().charCodeAt(0) - 65, parseInt(matches[2]) - 1);
-            if (pos !== null && board.getPiece(pos)?.side === side) {
-                moves = [...board.getMoves(pos)];
-                printMoves(moves);
-                if (moves.length === 0) console.log(`No moves at ${pos?.toString()}`);
-            }
-            else 
+            if (pos !== null) 
             {
-                if (pos === null) console.log(`Position does not exist`);
-                else console.log(`No piece at ${pos}`);
-                moves = [];
+                moves = [...game.getMovesFor(pos)];
+                printMoves(moves);
             }
+            else console.log(`Position does not exist`);
         }
     }
 });
