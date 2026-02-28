@@ -5,7 +5,7 @@
 import { MoveUnion, TakeMove } from "./Move";
 import { Player, PlayerENUM } from "./Player";
 import { BoardPosition, Citadel, CitadelPosition, Position, PositionUnion } from "./Position";
-import { TamerlanePieces, TamerlanePieceType } from "./TamerlanePieces";
+import { PawnType, TamerlanePieces, TamerlanePieceType } from "./TamerlanePieces";
 
 export const BOARD_FILES = 11;
 export const BOARD_RANKS = 10;
@@ -189,22 +189,38 @@ export class Board {
      * @param move 
      */
     private move(move: MoveUnion): BoardPiece {
+        let taken: BoardPiece = null;
         if (move.kind === "take") {
             // replaces piece at end with start, returning it
-            let atEnd = this.getPiece(move.end);
+            taken = this.getPiece(move.end);
             this.setPiece(move.end, this.getPiece(move.start));
             this.setPiece(move.start, null);
-            return atEnd;
         }
         else if (move.kind === "exchange") {
             // swaps end and start
             let atEnd = this.getPiece(move.end);
             this.setPiece(move.end, this.getPiece(move.start));
             this.setPiece(move.start, atEnd);
-            return null;
         }
-        throw new TypeError(`${typeof move} does not have a valid move kind`);
+        else throw new TypeError(`${typeof move} does not have a valid move kind`);
+        this.applyPostMoveRules(move);
+        return taken;
         // return null;
+    }
+    private applyPostMoveRules(move: MoveUnion) {
+        this.checkPromote(move.end);
+        this.checkPromote(move.start);
+    }
+    private checkPromote(position: BoardPosition) {
+        const piece = this.getPiece(position);
+        if (piece === null || !(piece.piece instanceof PawnType)) return;
+
+        if (position.rank === 0 && piece.side === PlayerENUM.Black) { 
+            this.setPiece(position, piece.piece.promotion.makeActive(PlayerENUM.Black))
+        }
+        else if (position.rank === 9 && piece.side === PlayerENUM.White) { 
+            this.setPiece(position, piece.piece.promotion.makeActive(PlayerENUM.White))
+        }
     }
 
     private static containsMove(moves: Iterable<MoveUnion>, search: MoveUnion): boolean {
