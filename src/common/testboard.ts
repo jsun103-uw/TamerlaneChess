@@ -1,7 +1,7 @@
 //npx tsx src/common/testboard.ts
 import { Board } from "./Board";
 import { Game } from "./Game";
-import { ExchangeMove, Move, MoveUnion, TakeMove } from "./Move";
+import { ExchangeMove, MoveUnion, TakeMove } from "./Move";
 import { PlayerENUM } from "./Player";
 import { BoardPosition } from "./Position";
 import { TamerlanePieces } from "./TamerlanePieces";

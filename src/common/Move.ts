@@ -1,7 +1,12 @@
 import { BoardPosition } from "./Position";
 export abstract class Move {
-    abstract readonly kind: "take" | "exchange";
+    abstract readonly kind: typeof MoveENUM.take | typeof MoveENUM.exchange;
 }
+export const MoveENUM = {
+    take: "take",
+    exchange: "exchange",
+} as const;
+
 export type MoveUnion = TakeMove | ExchangeMove;
 abstract class BoardMove extends Move {
     

@@ -2,7 +2,7 @@
 
 // [File][Rank]
 
-import { MoveUnion, TakeMove } from "./Move";
+import { MoveENUM, MoveUnion, TakeMove } from "./Move";
 import { opposingPlayerTo, Player, PlayerENUM } from "./Player";
 import { BoardPosition, Citadel, CitadelPosition, Position, PositionUnion } from "./Position";
 import { PawnType, TamerlanePieces, TamerlanePieceType } from "./TamerlanePieces";
@@ -219,13 +219,13 @@ export class Board {
      */
     private move(move: MoveUnion): BoardPiece {
         let taken: BoardPiece = null;
-        if (move.kind === "take") {
+        if (move.kind === MoveENUM.take) {
             // replaces piece at end with start, returning it
             taken = this.getPiece(move.end);
             this.setPiece(move.end, this.getPiece(move.start));
             this.setPiece(move.start, null);
         }
-        else if (move.kind === "exchange") {
+        else if (move.kind === MoveENUM.exchange) {
             // swaps end and start
             let atEnd = this.getPiece(move.end);
             this.setPiece(move.end, this.getPiece(move.start));
@@ -255,7 +255,7 @@ export class Board {
     private static containsMove(moves: Iterable<MoveUnion>, search: MoveUnion): boolean {
         for(const move of moves) {
             if (move.kind === search.kind) {
-                if (move.kind === "exchange" || move.kind === "take") {
+                if (move.kind === MoveENUM.exchange || move.kind === MoveENUM.take) {
                     if (move.end.equals(search.end) && move.start.equals(search.start)) return true; 
                 }
             }
@@ -268,7 +268,7 @@ export class Board {
     private static containsMoveTo(moves: Iterable<MoveUnion>, target: PositionUnion): boolean {
         for(const move of moves) {
             if (target.kind === "board") {
-                if (move.kind === "exchange" || move.kind === "take") {
+                if (move.kind === MoveENUM.exchange || move.kind === MoveENUM.take) {
                     if (move.end.equals(target)) return true; 
                 }
             }
