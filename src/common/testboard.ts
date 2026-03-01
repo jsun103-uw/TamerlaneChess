@@ -133,6 +133,9 @@ function testBoardPromotion() {
     moveState(game, TakeMove.tryMake(8, 8, 8, 9));
     moveState(game, TakeMove.tryMake(8, 1, 8, 0));
 }
+/**
+ * Tests putting the kings in check
+ */
 function testCheck() {
     let game: Game = new Game();
     state = 0;
@@ -157,7 +160,7 @@ function testCheck() {
     assertFalse(game.debugBoardReference().checkCheck(PlayerENUM.Black), "should not yet be checking king");
     moveState(game, TakeMove.tryMake(3, 6, 4, 7));
     assertTrue(game.debugBoardReference().checkCheck(PlayerENUM.Black), "should be checking king");
-    moveState(game, TakeMove.tryMake(1, 8, 0, 6));
+    assertEmpty<MoveUnion>([...game.getMovesFor(new BoardPosition(1, 8))], "knight should not be able to stop check");
 
 }
 function printStart(game: Game) {
@@ -188,5 +191,11 @@ function assertTrue(actual: boolean, message: string) {
 function assertFalse(actual: boolean, message: string) {
     if (actual) {
         throw new Error(`Value was false when expected true: ${message}`);
+    }
+}
+function assertEmpty<T>(arr: Array<T>, message: string) {
+    if (arr.length !== 0) {
+        for(const item of arr) console.error(item);
+        throw new Error(`array was not empty: ${message}`);
     }
 }

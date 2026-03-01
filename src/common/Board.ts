@@ -35,7 +35,17 @@ export class Board {
         const piece = this.getPiece(position);
         if (piece === null || piece.side !== side) return;
         const moves = piece.piece.getMoves(this, position, piece.side);
-        yield* moves;
+
+        // check each pseudo-legal move to ensure it doesn't end up checking the side
+        const testboard = this.clone();
+
+        // yield move if it doesn't end up resulting in the side being checked
+        for(const move of moves) {
+            testboard.move(move);
+            if (!testboard.checkCheck(side)) yield move;
+            testboard.restore(this);
+        }
+        return;
     }
     private setPiece(position: PositionUnion, piece: BoardPiece) {
         //If citadel, set the piece in the correct citadel position
@@ -58,6 +68,22 @@ export class Board {
         }
         this.#citadelLeft = new Citadel(CitadelPosition.getLeft())
         this.#citadelRight = new Citadel(CitadelPosition.getRight())
+    }
+    public clone(): Board {
+        let board = new Board();
+        for (const piece of this.getPieces()) {
+            board.setPiece(piece.position, new TamerlanePiece(piece.piece, piece.side));
+        }
+        return board;
+    }
+    private restore(board: Board) {
+        for (let file = 0; file < BOARD_FILES; file ++) {
+            for (let rank = 0; rank < BOARD_RANKS; rank ++) { 
+                this.#field[file][rank] = board.#field[file][rank]
+                this.#citadelLeft.piece = board.#citadelLeft.piece;
+                this.#citadelRight.piece = board.#citadelRight.piece;
+            }
+        }
     }
 
     public static buildStartingBoard(): Board {
@@ -278,6 +304,21 @@ export class Board {
     }
 }
 
+class MoveTransaction {
+    #move: PositionUnion;
+    get position() { return this.#move; }
+    #start: BoardPiece;
+    get original() { return this.#start; }
+    #end: BoardPiece;
+    get newpiece() { return this.#end; }
+
+
+    constructor(position: PositionUnion, original: BoardPiece, newpiece: BoardPiece) {
+        this.#move = position;
+        this.#start = original;
+        this.#end = newpiece;
+    }
+}
 export class MoveResult {
     #successful : boolean;
     #taken : BoardPiece;
