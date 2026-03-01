@@ -11,11 +11,14 @@ export class ClientInstance
 
     public readonly side: Player;
     public readonly token: number;
+
+    public readonly instanceNum: number;
     
 
-    constructor(side: Player, token: number) {
+    constructor(side: Player, token: number, instanceNum: number) {
         this.side = side;
         this.token = token;
+        this.instanceNum = instanceNum;
     }
 
     public receive(move: MoveUnion) {
@@ -27,6 +30,9 @@ export class ClientInstance
         const request: MoveRequest = {
             request: TamerlaneRequestENUM.move,
             move: move,
+            instance: this.instanceNum,
+            token: this.token,
+            turnNum: this.game.turnNumber,
         }
         sendRequest(request, json => {
             console.log(json);

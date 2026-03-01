@@ -30,6 +30,9 @@ export interface RematchRequest {
 export interface MoveRequest {
     readonly request: typeof TamerlaneRequestENUM.move;
     readonly move: MoveUnion;
+    readonly instance: number;
+    readonly token: number;
+    readonly turnNum: number;
 }
 
 export type TamerlaneResponse = typeof TamerlaneRequestENUM.move;

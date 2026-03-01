@@ -1,4 +1,4 @@
-import { MakeRequest, GetServersRequest as ServerlistRequest, TamerlaneRequestENUM } from "../common/Request";
+import { BadResponse, JoinResponse, MakeRequest, GetServersRequest as ServerlistRequest, TamerlaneRequestENUM } from "../common/Request";
 
 export function sendRequest(json: Object, handle: (resp: any) => any) {
     fetch('http://localhost:3000/server', {
@@ -22,9 +22,9 @@ export function requestServers() {
 }
 
 
-export function requestMake() {
+export function requestMake(handle: (response: JoinResponse | BadResponse) => void) {
     const request: MakeRequest = {
         request: TamerlaneRequestENUM.make,
     }
-    sendRequest(request, json => console.log(json));
+    sendRequest(request, handle);
 }

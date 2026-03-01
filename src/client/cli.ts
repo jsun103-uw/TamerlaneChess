@@ -5,6 +5,7 @@ import { MoveUnion } from "../common/Move";
 import { PlayerENUM } from "../common/Player";
 import { BoardPosition } from "../common/Position";
 import { printMoves } from "../common/Utility";
+import { TamerlaneResponseENUM } from "../common/Request";
 
 
 
@@ -19,17 +20,11 @@ const moveReg = /^s*(\d+)s*$/;
 const pieceReg = /^s*([a-zA-Z])(\d+)s*$/;
 
 let client: ClientInstance | null = null;
-client = new ClientInstance(PlayerENUM.Black, 10);
 // function makeMove(move: MoveUnion) {
 
 // }
 let moves: MoveUnion[] = [];
 
-enum ConnectState {
-    unconnected = 0,
-    joined = 1
-}
-let status: ConnectState = ConnectState.unconnected;
 
 rl.on("line", (input: string) => {
     if (/^\s*list\s*$/.test(input)) {
@@ -37,9 +32,21 @@ rl.on("line", (input: string) => {
         return;
     }
     if (/^\s*new\s*$/.test(input)) {
-        requestMake();
+        requestMake(resp => {
+            if (resp.response === TamerlaneResponseENUM.bad) {
+                console.log(`Failed: ${resp.message}`);
+            }
+            else {
+                console.log(`Joined game instance ${resp.instance} as ${resp.player}`);
+                client = new ClientInstance(resp.player, resp.token, resp.instance);
+            }
+        });
         return;
     }
+
+    if (client === null) return;
+    //* playing active game
+
     let matches: RegExpExecArray | null;
     matches = moveReg.exec(input);
     if (matches !== null) {
