@@ -95,6 +95,7 @@ function handleMakeRequest(): JoinResponse | BadResponse  {
         return handleBadRequest("Servers full");
     }
     const [key, instance] = newInstance();
+    instance.join(instance.whiteToken);
 
     const joinResp: JoinResponse = {
         response: TamerlaneResponseENUM.join,

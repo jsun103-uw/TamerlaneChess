@@ -30,3 +30,4 @@ function requestMake() {
 }
 
 requestMake();
+requestServers();

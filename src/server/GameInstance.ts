@@ -32,12 +32,7 @@ export class GameInstance {
     public do(token: number, move: MoveUnion) {
         // update metadata
         this.#lastAccessed = Date.now();
-        if (this.whiteToken === token) {
-            this.#joinedWhite = true;
-        }
-        else if (this.blackToken === token) {
-            this.#joinedBlack = true;
-        }
+        this.join(token);
 
         // 
         if (this.game.turn === PlayerENUM.White && this.whiteToken === token) {
@@ -45,6 +40,14 @@ export class GameInstance {
         }
         else if (this.game.turn === PlayerENUM.Black && this.blackToken === token) {
             if (this.game.trymove(move)) return move;
+        }
+    }
+    public join(token: number) {
+        if (this.whiteToken === token) {
+            this.#joinedWhite = true;
+        }
+        else if (this.blackToken === token) {
+            this.#joinedBlack = true;
         }
     }
 }
