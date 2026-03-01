@@ -3,7 +3,7 @@
 // [File][Rank]
 
 import { MoveUnion, TakeMove } from "./Move";
-import { Player, PlayerENUM } from "./Player";
+import { opposingPlayerTo, Player, PlayerENUM } from "./Player";
 import { BoardPosition, Citadel, CitadelPosition, Position, PositionUnion } from "./Position";
 import { PawnType, TamerlanePieces, TamerlanePieceType } from "./TamerlanePieces";
 
@@ -34,7 +34,8 @@ export class Board {
     public *getMoves(position: PositionUnion, side: Player): Generator<MoveUnion> {
         const piece = this.getPiece(position);
         if (piece === null || piece.side !== side) return;
-        yield* piece.piece.getMoves(this, position, piece.side);
+        const moves = piece.piece.getMoves(this, position, piece.side);
+        yield* moves;
     }
     private setPiece(position: PositionUnion, piece: BoardPiece) {
         //If citadel, set the piece in the correct citadel position
@@ -172,6 +173,8 @@ export class Board {
         if (this.#citadelRight.piece != null) yield new PositionedTamerlanePiece(this.#citadelLeft.position, this.#citadelRight.piece);
     }
 
+    //#region //* Movement
+
     /**
      * Attempts to execute move for side
      * @returns the result of the move
@@ -229,6 +232,47 @@ export class Board {
                 if (move.kind === "exchange" || move.kind === "take") {
                     if (move.end.equals(search.end) && move.start.equals(search.start)) return true; 
                 }
+            }
+        }
+        return false;
+    }
+    /**
+     * returns true if moves has a move that ends at target
+     */
+    private static containsMoveTo(moves: Iterable<MoveUnion>, target: PositionUnion): boolean {
+        for(const move of moves) {
+            if (target.kind === "board") {
+                if (move.kind === "exchange" || move.kind === "take") {
+                    if (move.end.equals(target)) return true; 
+                }
+            }
+        }
+        return false;
+    }
+
+    //#endregion
+
+    /**
+     * Checks if side's sole royal is being attacked
+     */
+    public checkCheck(side: Player): boolean {
+        // get sole king
+        let king: PositionedTamerlanePiece | null = null;
+        for(const active of this.getPieces()) {
+            if (active.piece.royal && active.side === side) {
+                if (king === null) king = active;
+                else return false; // Cannot be in check if there are multiple royals
+            }
+        }
+        if (king === null) {
+            console.error(`royal is missing from board`);
+            return false; // no king 
+        }
+        console.log(`King is at ${king.position}`);
+        const enemy = opposingPlayerTo(side);
+        for(const active of this.getPieces()) {
+            if (active.side === enemy && Board.containsMoveTo(active.piece.getMoves(this, active.position, enemy), king.position)) {
+                return true;
             }
         }
         return false;

@@ -37,4 +37,8 @@ export class Game {
     public *getPieces(): Generator<PositionedTamerlanePiece> { 
         yield* this.#board.getPieces(); 
     }
+
+    public debugBoardReference(): Board {
+        return this.#board;
+    }
 }

@@ -61,6 +61,10 @@ rl.on("line", (input: string) => {
         testBoardPromotion();
         return;
     }
+    if (/^\s*check\s*$/.test(input)) {
+        testCheck();
+        return;
+    }
     let matches: RegExpExecArray | null;
     matches = moveReg.exec(input);
     if (matches !== null) {
@@ -129,6 +133,33 @@ function testBoardPromotion() {
     moveState(game, TakeMove.tryMake(8, 8, 8, 9));
     moveState(game, TakeMove.tryMake(8, 1, 8, 0));
 }
+function testCheck() {
+    let game: Game = new Game();
+    state = 0;
+
+    printStart(game);
+    assertFalse(game.debugBoardReference().checkCheck(PlayerENUM.Black), "should not yet be checking king");
+    moveState(game, TakeMove.tryMake(3, 2, 3, 3));
+    moveState(game, TakeMove.tryMake(1, 8, 0, 6));
+
+    assertFalse(game.debugBoardReference().checkCheck(PlayerENUM.Black), "should not yet be checking king");
+    moveState(game, TakeMove.tryMake(3, 3, 3, 4));
+    moveState(game, TakeMove.tryMake(0, 6, 1, 8));
+
+    assertFalse(game.debugBoardReference().checkCheck(PlayerENUM.Black), "should not yet be checking king");
+    moveState(game, TakeMove.tryMake(3, 4, 3, 5));
+    moveState(game, TakeMove.tryMake(1, 8, 0, 6));
+
+    assertFalse(game.debugBoardReference().checkCheck(PlayerENUM.Black), "should not yet be checking king");
+    moveState(game, TakeMove.tryMake(3, 5, 3, 6));
+    moveState(game, TakeMove.tryMake(0, 6, 1, 8));
+
+    assertFalse(game.debugBoardReference().checkCheck(PlayerENUM.Black), "should not yet be checking king");
+    moveState(game, TakeMove.tryMake(3, 6, 4, 7));
+    assertTrue(game.debugBoardReference().checkCheck(PlayerENUM.Black), "should be checking king");
+    moveState(game, TakeMove.tryMake(1, 8, 0, 6));
+
+}
 function printStart(game: Game) {
     console.log(`=======================`)
     console.log(`=======================`)
@@ -147,4 +178,15 @@ function moveState(game: Game, move: MoveUnion | null) {
     console.log(`Move ${state ++}: ${move.toString()}`);
     game.trymove(move);
     console.log(game.debugGetBoard());
+}
+
+function assertTrue(actual: boolean, message: string) {
+    if (!actual) {
+        throw new Error(`Value was false when expected true: ${message}`);
+    }
+}
+function assertFalse(actual: boolean, message: string) {
+    if (actual) {
+        throw new Error(`Value was false when expected true: ${message}`);
+    }
 }
