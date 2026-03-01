@@ -268,7 +268,6 @@ export class Board {
             console.error(`royal is missing from board`);
             return false; // no king 
         }
-        console.log(`King is at ${king.position}`);
         const enemy = opposingPlayerTo(side);
         for(const active of this.getPieces()) {
             if (active.side === enemy && Board.containsMoveTo(active.piece.getMoves(this, active.position, enemy), king.position)) {
