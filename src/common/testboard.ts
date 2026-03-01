@@ -29,17 +29,11 @@ console.log(game.debugGetBoard());
 
 
 
-function printMoves(moves: Iterable<MoveUnion>) 
-{
-    let idx = 0;
-    for (const move of moves) {
-        console.log(`${idx}: ${move.toString()}`);
-        idx ++;
-    }
-}
+
 
 //* Command line board
 import * as readline from "readline";
+import { printMoves } from "./Utility";
 
 const rl = readline.createInterface({
   input: process.stdin,

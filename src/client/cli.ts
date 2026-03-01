@@ -4,15 +4,8 @@ import { ClientInstance } from "./ClientInstance";
 import { MoveUnion } from "../common/Move";
 import { PlayerENUM } from "../common/Player";
 import { BoardPosition } from "../common/Position";
+import { printMoves } from "../common/Utility";
 
-function printMoves(moves: Iterable<MoveUnion>) 
-{
-    let idx = 0;
-    for (const move of moves) {
-        console.log(`${idx}: ${move.toString()}`);
-        idx ++;
-    }
-}
 
 
 
