@@ -1,6 +1,6 @@
 import { MakeRequest, GetServersRequest as ServerlistRequest, TamerlaneRequestENUM } from "../common/Request";
 
-function sendRequests(json: Object) {
+export function sendRequest(json: Object, handle: (resp: any) => any) {
     fetch('http://localhost:3000/server', {
             method: 'POST',
             headers: {
@@ -10,24 +10,21 @@ function sendRequests(json: Object) {
         }
     ).then(resp => resp.json())
     .then(json => {
-        console.log(json);
+        handle(json);
     })
 }
 
-function requestServers() {
+export function requestServers() {
     const GetServer: ServerlistRequest = {
         request: TamerlaneRequestENUM.serverlist
     }
-    sendRequests(GetServer);
+    sendRequest(GetServer, json => console.log(json));
 }
 
 
-function requestMake() {
+export function requestMake() {
     const request: MakeRequest = {
         request: TamerlaneRequestENUM.make,
     }
-    sendRequests(request);
+    sendRequest(request, json => console.log(json));
 }
-
-requestMake();
-requestServers();

@@ -8,6 +8,9 @@ export class Game {
     #turn: Player;
     public get turn(): Player { return this.#turn; }
 
+    #turnNumber: number = 1;
+    public get turnNumber() { return this.#turnNumber; }
+
     #whiteTaken: TamerlanePiece[];
     #blackTaken: TamerlanePiece[];
 
@@ -26,6 +29,7 @@ export class Game {
         const result = this.#board.trymove(move, this.#turn);
         if (result.successful) {
             this.#turn = opposingPlayerTo(this.turn);
+            if (this.#turn === PlayerENUM.White) this.#turnNumber ++;
             return true;
         }
         return false;
