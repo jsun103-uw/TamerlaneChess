@@ -6,29 +6,26 @@ export abstract class Position {
 export type PositionUnion = CitadelPosition | BoardPosition;
 export class CitadelPosition extends Position {
     readonly kind = "citadel" as const;
-    #rank: number;
-    get rank(): number { return this.#rank; }
+    public readonly rank: number;
 
-    private constructor() {
+    private constructor(rank: number) {
         super();
-        this.#rank = 0;
+        this.rank = rank;
     }
 
     static getLeft(): CitadelPosition {
-        var pos = new CitadelPosition();
-        pos.#rank = 8; // rank 9, index 8.
+        var pos = new CitadelPosition(8); // rank 9, index 8.
         Object.freeze(pos);
         return pos;
     }
     static getRight(): CitadelPosition {
-        var pos = new CitadelPosition();
-        pos.#rank = 1; // rank 2, index 1.
+        var pos = new CitadelPosition(1); // rank 2, index 1.
         Object.freeze(pos);
         return pos;
     }
 
     equals(other: CitadelPosition): boolean {
-        return this.#rank == other.#rank;
+        return this.rank == other.rank;
     }
 }
 
@@ -44,20 +41,14 @@ export class BoardPosition extends Position {
         return null;
     }
     readonly kind = "board" as const;
-    #rank: number;
-    #file: number;
+    public readonly rank: number;
+    public readonly file: number;
 
-    get rank(): number {
-        return this.#rank;
-    }
-    get file(): number {
-        return this.#file;
-    }
 
     constructor(file: number, rank: number) {
         super();
-        this.#file = file;
-        this.#rank = rank;
+        this.file = file;
+        this.rank = rank;
 
 
         if (rank >= BOARD_RANKS || rank < 0) throw new RangeError(`Rank must be between 0 and ${BOARD_RANKS - 1}, but was ${rank}`)

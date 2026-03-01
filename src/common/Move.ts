@@ -10,22 +10,16 @@ export const MoveENUM = {
 export type MoveUnion = TakeMove | ExchangeMove;
 abstract class BoardMove extends Move {
     
-    #start: BoardPosition;
-    #end: BoardPosition;
+    public readonly start: BoardPosition;
+    public readonly end: BoardPosition;
 
 
-    get start(): BoardPosition {
-        return this.#start;
-    }
-    get end(): BoardPosition {
-        return this.#end;
-    }
 
 
     constructor(start: BoardPosition, end: BoardPosition) {
         super();
-        this.#start = start;
-        this.#end = end;
+        this.start = start;
+        this.end = end;
     }
 
     toString(): string {
