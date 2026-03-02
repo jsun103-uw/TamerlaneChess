@@ -1,6 +1,6 @@
 import * as readline from "readline";
 import { requestMake, requestServers } from "./client";
-import { ClientInstance } from "./ClientInstance";
+import { ClientInstance, ClientInstanceEvent, ClientInstanceEventENUM } from "./ClientInstance";
 import { MoveUnion } from "../common/Move";
 import { PlayerENUM } from "../common/Player";
 import { BoardPosition } from "../common/Position";
@@ -39,6 +39,9 @@ rl.on("line", (input: string) => {
             else {
                 console.log(`Joined game instance ${resp.instance} as ${resp.player}`);
                 client = new ClientInstance(resp.player, resp.token, resp.instance);
+                client.addEventListener(ClientInstanceEventENUM.update, ((e: ClientInstanceEvent) => {
+                    console.log(e.instance.debugGetBoard());
+                }) as EventListener);
             }
         });
         return;

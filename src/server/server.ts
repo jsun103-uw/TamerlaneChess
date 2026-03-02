@@ -1,5 +1,8 @@
+import { convertMoveJson, convertPositionJson } from "../common/Convert";
+import { MoveENUM, MoveUnion, TakeMove } from "../common/Move";
 import { PlayerENUM } from "../common/Player";
-import { BadResponse, JoinResponse, ServerInfo, ServerlistResponse, TamerlaneRequest, TamerlaneRequestENUM, TamerlaneResponseENUM } from "../common/Request";
+import { BoardPosition } from "../common/Position";
+import { BadResponse, JoinResponse, MoveRequest, MoveResponse, ServerInfo, ServerlistResponse, TamerlaneRequest, TamerlaneRequestENUM, TamerlaneResponseENUM } from "../common/Request";
 import { GameInstance } from "./GameInstance";
 import { createServer, ServerResponse } from "node:http";
 
@@ -34,7 +37,7 @@ const server = createServer(async (req, res) => {
 
         switch(data.request as TamerlaneRequest) {
             case TamerlaneRequestENUM.move:
-
+                res.end(JSON.stringify(handleMoveRequest(data)));
                 break;
             case TamerlaneRequestENUM.serverlist:
                 res.end(JSON.stringify(handleServerlistRequest()))
@@ -104,4 +107,56 @@ function handleMakeRequest(): JoinResponse | BadResponse  {
         instance: key
     }
     return joinResp;
+}
+/**
+ * returns the move that was executed to the server if the client successfully moved a piece, or a bad response if not.
+ */
+function handleMoveRequest(request: any): MoveResponse | BadResponse {
+    //* Ensure that required parameters exist and are the right types
+    if (request.move === undefined || 
+        request.instance === undefined || 
+        request.token === undefined || 
+        request.turnNum === undefined) return {
+        response: TamerlaneResponseENUM.bad,
+        message: `request missing properties: ${JSON.stringify(request)}`,
+    };
+
+    const instanceNum = parseInt(request.instance);
+    const token = parseInt(request.token);
+    const turnNum = parseInt(request.turnNum);
+    if (instanceNum === undefined  ||
+        token === undefined ||
+        turnNum === undefined) return {
+        response: TamerlaneResponseENUM.bad,
+        message: `Failed to parse number: ${request}`,
+    };
+
+    //* check that instance exists
+    const instance = instances.get(request.instance);
+    if (instance === undefined) return {
+        response: TamerlaneResponseENUM.bad,
+        message: `instance ${instanceNum} not found`,
+    }
+
+    //* parse move
+    const move: MoveUnion | null = convertMoveJson(request.move);
+    if (move === null) return {
+        response: TamerlaneResponseENUM.bad,
+        message: `move not understood: ${request.move}`,
+    }; 
+
+    //* attempt to execute move
+    const result = instance.do(token, move);
+    if (result !== undefined) {
+        return {
+            response: TamerlaneResponseENUM.move,
+            move: result,
+        }
+    }
+    else {
+        return {
+            response: TamerlaneResponseENUM.bad,
+            message: `Attempted to execute illegal move: ${JSON.stringify(move)}`,
+        }
+    }
 }
