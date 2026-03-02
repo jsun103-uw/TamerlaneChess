@@ -29,6 +29,9 @@ export class GameInstance {
     #lastAccessed: number = Date.now();
     get lastAccessed(): number { return this.lastAccessed; }
 
+    #lastMove: MoveUnion | null = null;
+
+
     constructor() {
         this.whiteToken = randomInt(tokenRange);
         let black: number;
@@ -37,6 +40,12 @@ export class GameInstance {
         } while(black === this.whiteToken)
         this.blackToken = black;
     }
+    public sideOf(token: number): Player | null {
+        if (this.whiteToken === token) return PlayerENUM.White;
+        else if (this.blackToken === token) return PlayerENUM.Black;
+        return null;
+
+    }
 
     public do(token: number, move: MoveUnion) {
         // update metadata
@@ -44,12 +53,15 @@ export class GameInstance {
         this.join(PlayerENUM.White);
 
         // 
-        if (this.game.turn === PlayerENUM.White && this.whiteToken === token) {
-            if (this.game.trymove(move)) return move;
+        if ((this.game.turn === PlayerENUM.White && this.whiteToken === token)
+            || (this.game.turn === PlayerENUM.Black && this.blackToken === token)
+        ) {
+            if (this.game.trymove(move)) {
+                this.#lastMove = move;
+                return move;
+            }
         }
-        else if (this.game.turn === PlayerENUM.Black && this.blackToken === token) {
-            if (this.game.trymove(move)) return move;
-        }
+        return null;
     }
     public join(side: Player): boolean {
         if (side === PlayerENUM.White && !this.#joinedWhite) {
@@ -61,6 +73,34 @@ export class GameInstance {
             return true;
         }
         return false;
+    }
+
+
+    /**
+     * Returns the last move if the request is recent
+     */
+    public getUpdateFor(token: number, turnNum: number): MoveUnion | null {
+        const side = this.sideOf(token);
+        if (side === null) return null;
+
+        // game hasn't started
+        if (this.#lastMove === null) return null;
+
+        //* If the requester is white, the turn is white (black finished), and their turn is one less than the current.
+        //* or if the reques is black, the turn is black (white finished), and their turn is the same as the current.
+        if ((
+                side === PlayerENUM.White 
+                && this.game.turn === PlayerENUM.White 
+                && this.game.turnNumber === turnNum + 1
+            ) || (
+                side === PlayerENUM.White 
+                && this.game.turn === PlayerENUM.White 
+                && this.game.turnNumber === turnNum
+            )
+        ) return this.#lastMove;
+
+
+        return null;
     }
 }
 

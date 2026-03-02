@@ -3,7 +3,7 @@ import { Game } from "../common/Game";
 import { MoveUnion } from "../common/Move";
 import { Player } from "../common/Player";
 import { BoardPosition } from "../common/Position";
-import { BadResponse, MoveRequest, MoveResponse, TamerlaneRequestENUM, TamerlaneResponseENUM } from "../common/Request";
+import { BadResponse, MoveRequest, MoveResponse, TamerlaneRequestENUM, TamerlaneResponseENUM, UpdateRequest } from "../common/Request";
 import { sendRequest } from "./client";
 
 export class ClientInstance extends EventTarget
@@ -37,6 +37,20 @@ export class ClientInstance extends EventTarget
         const request: MoveRequest = {
             request: TamerlaneRequestENUM.move,
             move: move,
+            instance: this.instanceNum,
+            token: this.token,
+            turnNum: this.game.turnNumber,
+        }
+        sendRequest(request, (resp) => this.handleMoveResponse(resp));
+    }
+
+    /**
+     * Asks server for updates, if isn't turn
+     */
+    public pollUpdate() {
+        if (this.game.turn === this.side) return;
+        const request: UpdateRequest = {
+            request: TamerlaneRequestENUM.update,
             instance: this.instanceNum,
             token: this.token,
             turnNum: this.game.turnNumber,

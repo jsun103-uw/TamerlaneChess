@@ -2,12 +2,14 @@ import { MoveUnion } from "./Move";
 import { Player } from "./Player";
 
 export type TamerlaneRequest = typeof TamerlaneRequestENUM.move |
+                                typeof TamerlaneRequestENUM.update |
                                 typeof TamerlaneRequestENUM.serverlist |
                                 typeof TamerlaneRequestENUM.join |
                                 typeof TamerlaneRequestENUM.make |
                                 typeof TamerlaneRequestENUM.rematch;
 export const TamerlaneRequestENUM = {
     move: "move",
+    update: "update",
     
     serverlist: "getserver",
     join: "join",
@@ -36,6 +38,15 @@ export interface MoveRequest {
     readonly token: number;
     readonly turnNum: number;
 }
+/**
+ * A reques to check if the other player has made a move yet
+ */
+export interface UpdateRequest {
+    readonly request: typeof TamerlaneRequestENUM.update;
+    readonly instance: number;
+    readonly token: number;
+    readonly turnNum: number;
+}
 
 export type TamerlaneResponse = typeof TamerlaneRequestENUM.move;
 export const TamerlaneResponseENUM = {
@@ -43,7 +54,8 @@ export const TamerlaneResponseENUM = {
     serverlist: "serverlist",
     join: "join",
 
-    bad: "badResponse"
+    bad: "badResponse",
+    none: "none",
 } as const;
 
 export interface BadResponse {
@@ -78,4 +90,7 @@ export interface ServerInfo {
 export interface MoveResponse {
     readonly response: typeof TamerlaneResponseENUM.move;
     readonly move: MoveUnion;
+}
+export interface NoResponse {
+    readonly response: typeof TamerlaneResponseENUM.none;
 }

@@ -25,6 +25,8 @@ let client: ClientInstance | null = null;
 // }
 let moves: MoveUnion[] = [];
 
+let polling;
+
 
 const joinReg = /^\s*join\s*(\d+)\s*$/;
 rl.on("line", (input: string) => {
@@ -33,9 +35,7 @@ rl.on("line", (input: string) => {
 
     matches = joinReg.exec(input);
     if (matches !== null) {
-        requestJoin(parseInt(matches[1]), resp => {
-            console.log(resp);
-        });
+        requestJoin(parseInt(matches[1]), resp => { handleJoinReponse(resp); } );
         return;
     }
     if (/^\s*list\s*$/.test(input)) {
@@ -43,18 +43,7 @@ rl.on("line", (input: string) => {
         return;
     }
     if (/^\s*new\s*$/.test(input)) {
-        requestMake(resp => {
-            if (resp.response === TamerlaneResponseENUM.bad) {
-                console.log(`Failed: ${resp.message}`);
-            }
-            else {
-                console.log(`Joined game instance ${resp.instance} as ${resp.player}`);
-                client = new ClientInstance(resp.player, resp.token, resp.instance);
-                client.addEventListener(ClientInstanceEventENUM.update, ((e: ClientInstanceEvent) => {
-                    console.log(e.instance.debugGetBoard());
-                }) as EventListener);
-            }
-        });
+        requestMake(resp => { handleJoinReponse(resp); });
         return;
     }
 
@@ -89,3 +78,19 @@ rl.on("line", (input: string) => {
 rl.on("close", () => {
   process.exit(0);
 });
+
+
+
+function handleJoinReponse(resp: any) {
+    if (resp.response === TamerlaneResponseENUM.bad) {
+        console.log(`Failed: ${resp.message}`);
+    }
+    else {
+        console.log(`Joined game instance ${resp.instance} as ${resp.player}`);
+        client = new ClientInstance(resp.player, resp.token, resp.instance);
+        client.addEventListener(ClientInstanceEventENUM.update, ((e: ClientInstanceEvent) => {
+            console.log(e.instance.debugGetBoard());
+        }) as EventListener);
+        polling = setInterval(() => { client?.pollUpdate(); }, 100)
+    }
+}

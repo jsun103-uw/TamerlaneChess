@@ -2,7 +2,7 @@ import { convertMoveJson, convertPositionJson } from "../common/Convert";
 import { MoveENUM, MoveUnion, TakeMove } from "../common/Move";
 import { Player, PlayerENUM } from "../common/Player";
 import { BoardPosition } from "../common/Position";
-import { BadResponse, ConnectRequest, JoinResponse, MoveRequest, MoveResponse, ServerInfo, ServerlistResponse, TamerlaneRequest, TamerlaneRequestENUM, TamerlaneResponseENUM } from "../common/Request";
+import { BadResponse, ConnectRequest, JoinResponse, MoveRequest, MoveResponse, NoResponse, ServerInfo, ServerlistResponse, TamerlaneRequest, TamerlaneRequestENUM, TamerlaneResponseENUM, UpdateRequest } from "../common/Request";
 import { GameInstance } from "./GameInstance";
 import { createServer, ServerResponse } from "node:http";
 
@@ -38,6 +38,9 @@ const server = createServer(async (req, res) => {
         switch(data.request as TamerlaneRequest) {
             case TamerlaneRequestENUM.move:
                 res.end(JSON.stringify(handleMoveRequest(data)));
+                break;
+            case TamerlaneRequestENUM.update:
+                res.end(JSON.stringify(handleUpdateRequest(data)))
                 break;
             case TamerlaneRequestENUM.serverlist:
                 res.end(JSON.stringify(handleServerlistRequest()))
@@ -150,7 +153,7 @@ function handleMoveRequest(request: any): MoveResponse | BadResponse {
 
     //* attempt to execute move
     const result = instance.do(token, move);
-    if (result !== undefined) {
+    if (result !== null) {
         return {
             response: TamerlaneResponseENUM.move,
             move: result,
@@ -196,3 +199,24 @@ function handleJoinRequest(request: any): JoinResponse | BadResponse {
     }
 }
 
+function handleUpdateRequest(request: any): MoveResponse | BadResponse | NoResponse {
+    const token = parseInt(request.token);
+    const turnNum = parseInt(request.turnNum);
+    const instanceNum = parseInt(request.instance);
+    if (token === undefined || turnNum === undefined || instanceNum === undefined) {
+        return handleBadRequest(`failed to parse values in  ${request}`);
+    }
+
+    //* check that instance exists
+    const instance = instances.get(instanceNum);
+    if (instance === undefined) return handleBadRequest(`instance ${instanceNum} not found`);
+
+    const move = instance.getUpdateFor(token, turnNum);
+    if (move === null) return {
+        response: TamerlaneResponseENUM.none,
+    };
+    else return {
+        response: TamerlaneRequestENUM.move,
+        move: move,
+    }
+}
