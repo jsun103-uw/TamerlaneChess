@@ -91,6 +91,6 @@ function handleJoinReponse(resp: any) {
         client.addEventListener(ClientInstanceEventENUM.update, ((e: ClientInstanceEvent) => {
             console.log(e.instance.debugGetBoard());
         }) as EventListener);
-        polling = setInterval(() => { client?.pollUpdate(); }, 100)
+        polling = setInterval(() => { client?.pollUpdate(); }, 600)
     }
 }

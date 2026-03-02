@@ -93,8 +93,8 @@ export class GameInstance {
                 && this.game.turn === PlayerENUM.White 
                 && this.game.turnNumber === turnNum + 1
             ) || (
-                side === PlayerENUM.White 
-                && this.game.turn === PlayerENUM.White 
+                side === PlayerENUM.Black 
+                && this.game.turn === PlayerENUM.Black 
                 && this.game.turnNumber === turnNum
             )
         ) return this.#lastMove;
