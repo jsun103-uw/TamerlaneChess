@@ -1,8 +1,8 @@
 import { convertMoveJson, convertPositionJson } from "../common/Convert";
 import { MoveENUM, MoveUnion, TakeMove } from "../common/Move";
-import { PlayerENUM } from "../common/Player";
+import { Player, PlayerENUM } from "../common/Player";
 import { BoardPosition } from "../common/Position";
-import { BadResponse, JoinResponse, MoveRequest, MoveResponse, ServerInfo, ServerlistResponse, TamerlaneRequest, TamerlaneRequestENUM, TamerlaneResponseENUM } from "../common/Request";
+import { BadResponse, ConnectRequest, JoinResponse, MoveRequest, MoveResponse, ServerInfo, ServerlistResponse, TamerlaneRequest, TamerlaneRequestENUM, TamerlaneResponseENUM } from "../common/Request";
 import { GameInstance } from "./GameInstance";
 import { createServer, ServerResponse } from "node:http";
 
@@ -43,7 +43,7 @@ const server = createServer(async (req, res) => {
                 res.end(JSON.stringify(handleServerlistRequest()))
                 break;
             case TamerlaneRequestENUM.join:
-
+                res.end(JSON.stringify(handleJoinRequest(data)))
                 break;
             case TamerlaneRequestENUM.make:
                 res.end(JSON.stringify(handleMakeRequest()))
@@ -98,7 +98,10 @@ function handleMakeRequest(): JoinResponse | BadResponse  {
         return handleBadRequest("Servers full");
     }
     const [key, instance] = newInstance();
-    instance.join(instance.whiteToken);
+    if (!instance.join(PlayerENUM.White)) {
+        console.log("Failed to join own game");
+        return handleBadRequest("transaction failed");
+    }
 
     const joinResp: JoinResponse = {
         response: TamerlaneResponseENUM.join,
@@ -160,3 +163,36 @@ function handleMoveRequest(request: any): MoveResponse | BadResponse {
         }
     }
 }
+
+function handleJoinRequest(request: any): JoinResponse | BadResponse {
+    if (request.request !== TamerlaneRequestENUM.join) {
+        return handleBadRequest(`invalid valid join request`);
+    }
+    const instanceNum = parseInt(request.instance);
+    if (instanceNum === undefined) {
+        return handleBadRequest(`failed to parse instance ${request.instance}`);
+    }
+
+
+    //* check that instance exists
+    const instance = instances.get(instanceNum);
+    if (instance === undefined) return handleBadRequest(`instance ${instanceNum} not found`);
+
+
+    //* get side that's free
+    let side: Player | null = instance.getFreeSide();
+    if (side === null ) {
+        return handleBadRequest(`No free sides`);
+    }
+
+    //* try to join
+    const joined = instance.join(side);
+    if (joined === null) return handleBadRequest(`Failed to join game`);
+    return {
+        response: TamerlaneResponseENUM.join,
+        instance: instanceNum,
+        player: side,
+        token: instance.tokenOf(side),
+    }
+}
+

@@ -1,4 +1,5 @@
 import { ExchangeMove, MoveENUM, MoveUnion, TakeMove } from "./Move";
+import { PlayerENUM } from "./Player";
 import { BoardPosition, Citadel, CitadelPosition, PositionUnion } from "./Position";
 
 export function convertMoveJson(json: any): MoveUnion | null {
@@ -32,4 +33,8 @@ export function convertPositionJson(json: any): PositionUnion | null {
         if (result !== null) return result;
     }
     return null;
+}
+
+export function isPlayer(string: string): boolean {
+    return string === PlayerENUM.White || string === PlayerENUM.Black;
 }

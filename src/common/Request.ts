@@ -18,8 +18,10 @@ export const TamerlaneRequestENUM = {
 export interface GetServersRequest {
     readonly request: typeof TamerlaneRequestENUM.serverlist;
 }
+
 export interface ConnectRequest {
     readonly request: typeof TamerlaneRequestENUM.join;
+    readonly instance: number;
 }
 export interface MakeRequest {
     readonly request: typeof TamerlaneRequestENUM.make;

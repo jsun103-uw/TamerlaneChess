@@ -1,7 +1,7 @@
 import { randomInt } from "node:crypto";
 import { Game } from "../common/Game";
 import { MoveUnion } from "../common/Move";
-import { PlayerENUM } from "../common/Player";
+import { Player, PlayerENUM } from "../common/Player";
 
 const tokenRange: number = 2**48 - 1;
 export class GameInstance {
@@ -9,6 +9,15 @@ export class GameInstance {
 
     public readonly whiteToken: number;
     public readonly blackToken: number;
+    public tokenOf(player: Player): number {
+        if (player === PlayerENUM.White) return this.whiteToken;
+        else return this.blackToken;
+    }
+    getFreeSide(): Player | null {
+        if (this.joinedWhite && this.joinedBlack) return null;
+        if (this.joinedWhite) return PlayerENUM.Black;
+        return PlayerENUM.White;
+    }
 
     #joinedWhite: boolean = false;
     get joinedWhite() { return this.#joinedWhite; }
@@ -32,7 +41,7 @@ export class GameInstance {
     public do(token: number, move: MoveUnion) {
         // update metadata
         this.#lastAccessed = Date.now();
-        this.join(token);
+        this.join(PlayerENUM.White);
 
         // 
         if (this.game.turn === PlayerENUM.White && this.whiteToken === token) {
@@ -42,13 +51,16 @@ export class GameInstance {
             if (this.game.trymove(move)) return move;
         }
     }
-    public join(token: number) {
-        if (this.whiteToken === token) {
+    public join(side: Player): boolean {
+        if (side === PlayerENUM.White && !this.#joinedWhite) {
             this.#joinedWhite = true;
+            return true;
         }
-        else if (this.blackToken === token) {
+        else if (side === PlayerENUM.Black && !this.#joinedBlack) {
             this.#joinedBlack = true;
+            return true;
         }
+        return false;
     }
 }
 

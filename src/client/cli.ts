@@ -1,5 +1,5 @@
 import * as readline from "readline";
-import { requestMake, requestServers } from "./client";
+import { requestJoin, requestMake, requestServers } from "./client";
 import { ClientInstance, ClientInstanceEvent, ClientInstanceEventENUM } from "./ClientInstance";
 import { MoveUnion } from "../common/Move";
 import { PlayerENUM } from "../common/Player";
@@ -26,7 +26,18 @@ let client: ClientInstance | null = null;
 let moves: MoveUnion[] = [];
 
 
+const joinReg = /^\s*join\s*(\d+)\s*$/;
 rl.on("line", (input: string) => {
+    let matches: RegExpExecArray | null;
+
+
+    matches = joinReg.exec(input);
+    if (matches !== null) {
+        requestJoin(parseInt(matches[1]), resp => {
+            console.log(resp);
+        });
+        return;
+    }
     if (/^\s*list\s*$/.test(input)) {
         requestServers();
         return;
@@ -50,7 +61,6 @@ rl.on("line", (input: string) => {
     if (client === null) return;
     //* playing active game
 
-    let matches: RegExpExecArray | null;
     matches = moveReg.exec(input);
     if (matches !== null) {
         let moveidx: number = parseInt(matches[1]);
