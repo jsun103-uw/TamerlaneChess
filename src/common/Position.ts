@@ -5,6 +5,16 @@ export abstract class Position {
 }
 export type PositionUnion = CitadelPosition | BoardPosition;
 export class CitadelPosition extends Position {
+    /**
+     * Tries to get the citadel position associated with the rank
+     * @param rank 
+     */
+    static tryGet(rank: number): CitadelPosition | null {
+        if (rank === 8) return this.getLeft();
+        else if (rank === 1) return this.getRight();
+        return null;
+    }
+
     readonly kind = "citadel" as const;
     public readonly rank: number;
 
