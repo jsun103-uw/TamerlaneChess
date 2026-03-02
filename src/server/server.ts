@@ -29,7 +29,6 @@ const server = createServer(async (req, res) => {
 
         res.writeHead(200, { 'Content-Type': 'application/json' });
         const data = JSON.parse(body);
-        console.log(data);
         if (!data.request) {
             res.end(JSON.stringify(handleBadRequest("Does not have request")));
             return;
@@ -41,6 +40,7 @@ const server = createServer(async (req, res) => {
                 break;
             case TamerlaneRequestENUM.update:
                 res.end(JSON.stringify(handleUpdateRequest(data)))
+                return;
                 break;
             case TamerlaneRequestENUM.serverlist:
                 res.end(JSON.stringify(handleServerlistRequest()))
@@ -59,6 +59,7 @@ const server = createServer(async (req, res) => {
                 break;
 
         }
+        console.log(data);
 
         // res.end(JSON.stringify({ received: data }));
         return;

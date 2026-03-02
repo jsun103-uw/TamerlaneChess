@@ -3,7 +3,7 @@ import { Game } from "../common/Game";
 import { MoveUnion } from "../common/Move";
 import { Player } from "../common/Player";
 import { BoardPosition } from "../common/Position";
-import { BadResponse, MoveRequest, MoveResponse, TamerlaneRequestENUM, TamerlaneResponseENUM, UpdateRequest } from "../common/Request";
+import { BadResponse, MoveRequest, MoveResponse, NoResponse, TamerlaneRequestENUM, TamerlaneResponseENUM, UpdateRequest } from "../common/Request";
 import { sendRequest } from "./client";
 
 export class ClientInstance extends EventTarget
@@ -45,7 +45,7 @@ export class ClientInstance extends EventTarget
     }
 
     /**
-     * Asks server for updates, if isn't turn
+     * Asks server for updates, if waiting for opponent's move
      */
     public pollUpdate() {
         if (this.game.turn === this.side) return;
@@ -63,7 +63,7 @@ export class ClientInstance extends EventTarget
     }
 
 
-    private handleMoveResponse(data: MoveResponse | BadResponse) {
+    private handleMoveResponse(data: MoveResponse | BadResponse | NoResponse) {
         if (data.response === TamerlaneResponseENUM.bad) {
             console.error(data.message);
         }
@@ -85,6 +85,9 @@ export class ClientInstance extends EventTarget
             else {
                 console.error(`Failed to execute move ${move}`);
             }
+        }
+        else if (data.response === TamerlaneResponseENUM.none) {
+            return; 
         }
         else {
             console.error(`Unknown response ${JSON.stringify(data)}`);
