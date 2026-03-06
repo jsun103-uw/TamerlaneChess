@@ -1,7 +1,7 @@
 import { BOARD_FILES, BOARD_RANKS, BoardPiece } from "./Board";
 
 export abstract class Position {
-    abstract readonly kind: "board" | "citadel";
+    public abstract readonly kind: "board" | "citadel";
 }
 export type PositionUnion = CitadelPosition | BoardPosition;
 export class CitadelPosition extends Position {
@@ -9,13 +9,13 @@ export class CitadelPosition extends Position {
      * Tries to get the citadel position associated with the rank
      * @param rank 
      */
-    static tryGet(rank: number): CitadelPosition | null {
+    public static tryGet(rank: number): CitadelPosition | null {
         if (rank === 8) return this.getLeft();
         else if (rank === 1) return this.getRight();
         return null;
     }
 
-    readonly kind = "citadel" as const;
+    public readonly kind = "citadel" as const;
     public readonly rank: number;
     /**
      * The file index supposing the board files stretched to its location.
@@ -28,39 +28,40 @@ export class CitadelPosition extends Position {
         this.file = file;
     }
 
-    static getLeft(): CitadelPosition {
+    public static getLeft(): CitadelPosition {
         var pos = new CitadelPosition(8, -1); // rank 9, index 8.
         Object.freeze(pos);
         return pos;
     }
-    static getRight(): CitadelPosition {
+    public static getRight(): CitadelPosition {
         var pos = new CitadelPosition(1, BOARD_FILES); // rank 2, index 1.
         Object.freeze(pos);
         return pos;
     }
 
-    equals(other: CitadelPosition): boolean {
+    public equals(other: CitadelPosition): boolean {
         return this.rank == other.rank;
     }
 }
 
 export class BoardPosition extends Position {
-    static valid(file: number, rank: number): boolean {
+    public static valid(file: number, rank: number): boolean {
         return (rank < BOARD_RANKS && rank >= 0) 
             && (file < BOARD_FILES && file >= 0);
     }
-    static trymake(file: number, rank: number): BoardPosition | null {
+    public static trymake(file: number, rank: number): BoardPosition | null {
         if (this.valid(file, rank)) {
             return new BoardPosition(file, rank);
         }
         return null;
     }
-    readonly kind = "board" as const;
+    
+    public readonly kind = "board" as const;
     public readonly rank: number;
     public readonly file: number;
 
 
-    constructor(file: number, rank: number) {
+    public constructor(file: number, rank: number) {
         super();
         this.file = file;
         this.rank = rank;
@@ -70,39 +71,39 @@ export class BoardPosition extends Position {
         if (file >= BOARD_FILES || file < 0) throw new RangeError(`File must be between 0 and ${BOARD_FILES - 1}, but was ${file}`)
     }
 
-    equals(other: BoardPosition): boolean {
+    public equals(other: BoardPosition): boolean {
         return this.rank === other.rank 
             && this.file === other.file;
     }
 
-    static get fileNames(): string[] {
+    public static get fileNames(): string[] {
         return [ "A","B","C","D","E","F","G","H","I","J","K" ]
     }
-    rankName(): string {
+    public rankName(): string {
         return (this.rank + 1).toString();
     }
-    fileName(): string {
+    public fileName(): string {
         return BoardPosition.fileNames[this.file];
     }
-    squareName(): string {
+    public squareName(): string {
         return this.fileName() + this.rankName();
     }
 
-    toString(): string {
+    public toString(): string {
         return this.squareName();
     }
 }
 
 export class Citadel {
-    piece: BoardPiece;
+    public piece: BoardPiece;
     #position: CitadelPosition;
-    get position() { return this.#position; }
+    public get position() { return this.#position; }
 
-    constructor(position: CitadelPosition) {
+    public constructor(position: CitadelPosition) {
         this.#position = position;
         this.piece = null;
     }
-    toString(): string {
+    public toString(): string {
         return `X${this.#position.rank}`;
     }
 }
