@@ -57,20 +57,17 @@ export class BoardPosition extends Position {
     }
     
 
-    private static readonly allPositions: BoardPosition[] = [];
-    /**
-     * 
-     */
-    public static getAll(): Iterable<BoardPosition> {
-        if (this.allPositions.length === 0) {
+    public static readonly allPositions: ReadonlyArray<BoardPosition> = (
+        () => {
+            const arr = [];
             for (let file = 0; file < BOARD_FILES; file ++) {
                 for (let rank = 0; rank < BOARD_RANKS; rank ++) {
-                    this.allPositions.push(new BoardPosition(file, rank));
+                    arr.push(new BoardPosition(file, rank));
                 }
             }
+            return arr;
         }
-        return this.allPositions;
-    }
+    )();
 
     public readonly kind = "board" as const;
     public readonly rank: number;
