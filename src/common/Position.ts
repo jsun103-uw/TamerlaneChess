@@ -1,4 +1,5 @@
-import { BOARD_FILES, BOARD_RANKS, BoardPiece } from "./Board";
+import { BoardPiece } from "./Board";
+import { BOARD_FILES, BOARD_RANKS } from "./Consts";
 
 export abstract class Position {
     public abstract readonly kind: "board" | "citadel";

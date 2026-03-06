@@ -1,4 +1,5 @@
-import { Board, BOARD_FILES, TamerlanePiece } from "./Board";
+import { Board, TamerlanePiece } from "./Board";
+import { BOARD_FILES } from "./Consts";
 import { MoveUnion, TakeMove } from "./Move";
 import { opposingPlayerTo, Player, PlayerENUM } from "./Player";
 import { BoardPosition, PositionUnion } from "./Position";
