@@ -17,19 +17,24 @@ export class CitadelPosition extends Position {
 
     readonly kind = "citadel" as const;
     public readonly rank: number;
+    /**
+     * The file index supposing the board files stretched to its location.
+     */
+    public readonly file: number;
 
-    private constructor(rank: number) {
+    private constructor(rank: number, file: number) {
         super();
         this.rank = rank;
+        this.file = file;
     }
 
     static getLeft(): CitadelPosition {
-        var pos = new CitadelPosition(8); // rank 9, index 8.
+        var pos = new CitadelPosition(8, -1); // rank 9, index 8.
         Object.freeze(pos);
         return pos;
     }
     static getRight(): CitadelPosition {
-        var pos = new CitadelPosition(1); // rank 2, index 1.
+        var pos = new CitadelPosition(1, BOARD_FILES); // rank 2, index 1.
         Object.freeze(pos);
         return pos;
     }
