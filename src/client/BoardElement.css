@@ -1,0 +1,36 @@
+.viewport {
+    width: 1000px;
+    height: 1000px;
+}
+.canvas {
+    width: 100%;
+    height: 100%;
+}
+
+.board {
+    width: 1000px;
+    height: 1000px;
+    background-color: aliceblue;
+}
+.board-piece {
+    width: 64px;
+    height: 64px;
+    position: absolute;
+    top: var(--y);
+    left:var(--x);
+}
+
+.piece-icon {
+    position: absolute;
+    top: 0%;
+    left: 0%;
+    width: 100%;
+    height: 100%;
+}
+.piece-icon-pawn {
+    position: absolute;
+    top: 0%;
+    left: 0%;
+    width: 50%;
+    height: 50%;
+}
