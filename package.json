@@ -4,7 +4,7 @@
   "description": "",
   "scripts": {
     "devser": "nodemon --watch src --ext ts --exec ts-node src/server/server.ts",
-    "devweb": "vite src/client/",
+    "devweb": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
