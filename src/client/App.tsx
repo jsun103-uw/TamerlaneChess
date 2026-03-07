@@ -5,11 +5,14 @@ import TamerlanePieces from './TamerlanePieces'
 import GamePage from './GamePage'
 import { ClientInstance } from './ClientInstance'
 import { PlayerENUM } from '../common/Player'
-import { Route, Routes } from 'react-router-dom'
+import { Route, Routes, useNavigate } from 'react-router-dom'
 import ServerPage from './ServerPage'
+import { ServerInfo } from '../common/Request'
+import { requestJoin } from './client'
 
 function App() {
-	const client = useRef<ClientInstance | null>(new ClientInstance(PlayerENUM.Black, 0, 0))
+  	const navigate = useNavigate();
+	const [client, setClient] = useState<ClientInstance | null>(new ClientInstance(PlayerENUM.Black, 0, 0))
 	const [, rerender] = useReducer(x => x + 1, 0);
 
 
@@ -18,13 +21,27 @@ function App() {
 			<Route 
 				path="/"
 				element={
-					<ServerPage />
+					<ServerPage onSelect={
+						(server: ServerInfo) => {
+							requestJoin(
+								server.instanceNumber, resp => {
+									if (resp.response === "join") {
+										setClient(new ClientInstance(resp.player, resp.instance, resp.instance));
+										navigate("/instance/");
+									}
+									else {
+										console.log(`failed to join: ${resp.message}`);
+									}
+								}
+							)
+						}
+					}/>
 				}
 			/>
 			<Route 
 				path="/instance"
 				element={
-					<GamePage instance={client.current} />
+					<GamePage instance={client} />
 				}
 			/>
 		</Routes>

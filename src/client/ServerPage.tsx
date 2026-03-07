@@ -2,8 +2,10 @@ import React, { RefObject, useEffect, useRef, useState } from "react";
 import { requestServers } from "./client";
 import { ServerInfo, ServerlistResponse } from "../common/Request";
 
-
-export default function ServerPage() {
+interface ServerPage {
+    readonly onSelect?: (server: ServerInfo) => (void);
+}
+export default function ServerPage(props: ServerPage) {
     const [servers, setServers] = useState<ServerInfo[]>([])
     const serverTimeout: RefObject<NodeJS.Timeout | null> = useRef(null);
     console.log(servers);
@@ -25,7 +27,13 @@ export default function ServerPage() {
                 {
                     servers.map(
                         server => (
-                            <button key={server.instanceNumber}>
+                            <button 
+                                key={server.instanceNumber}
+                                onClick={
+                                    () => {
+                                        if (props.onSelect) props.onSelect(server);
+                                    }
+                                }>
                                 <p>{`Instace: ${server.instanceNumber}, Player: ${server.playerSide}`}</p>
                             </button>
                         )
