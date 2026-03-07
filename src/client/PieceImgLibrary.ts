@@ -3,7 +3,7 @@ import { Player, PlayerENUM } from "../common/Player";
 import { PawnType, TamerlanePieceType } from "../common/TamerlanePieces";
 
 export default function getImgSrc(pieceType: TamerlanePieceType, side: Player): string {
-    let path: string = "res/";
+    let path: string = "/res/";
 
     if (pieceType instanceof PawnType) {
         path += "Pawn";
