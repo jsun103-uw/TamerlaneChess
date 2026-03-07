@@ -7,7 +7,6 @@ export default function getImgSrc(pieceType: TamerlanePieceType, side: Player): 
 
     if (pieceType instanceof PawnType) {
         path += "Pawn";
-        console.log("hi");
     }
     switch(pieceType.charRep) {
         case "E":
