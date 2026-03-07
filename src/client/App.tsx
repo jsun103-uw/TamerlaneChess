@@ -1,7 +1,7 @@
 import { useEffect, useReducer, useRef, useState } from 'react'
 import './App.css'
 import React from 'react'
-import BoardElement from './BoardElement'
+import TamerlanePieces from './TamerlanePieces'
 import GamePage from './GamePage'
 import { ClientInstance } from './ClientInstance'
 import { PlayerENUM } from '../common/Player'
