@@ -7,6 +7,7 @@ import PositionedCSSProperties from "./PositionedCSSProperties";
 
 import './BoardElement.css'
 import { BoardPosition, CitadelPosition, PositionUnion } from "../common/Position";
+import { BOARD_FILES, BOARD_RANKS } from "../common/Consts";
 
 export interface BoardElementProperties {
     readonly pieces: PositionedTamerlanePiece[];
@@ -16,10 +17,10 @@ const tileSize: number = 64;
 function makePos(pos: PositionUnion): PositionedCSSProperties {
     return {
         "--x": `${(pos.file + 1) * tileSize}px`,
-        "--y": `${pos.rank * tileSize}px`,
+        "--y": `${(BOARD_RANKS - 1 - pos.rank) * tileSize}px`,
     }
 }
-function maketile(pos: PositionUnion) {
+function makeTile(pos: PositionUnion) {
     return (
         <div className={`tile-${((pos.file + pos.rank) % 2) === 0 ? "black" : "white"}`}
             style={makePos(pos)}>
@@ -36,11 +37,11 @@ export default function BoardElement(props: BoardElementProperties) {
                     {
                         // Create the tiles as divs by mapping a list of all possible positions to tiles
                         BoardPosition.allPositions.map(
-                            pos => maketile(pos)
+                            pos => makeTile(pos)
                         )
                     }
-                    {maketile(CitadelPosition.getLeft())}
-                    {maketile(CitadelPosition.getRight())}
+                    {makeTile(CitadelPosition.getLeft())}
+                    {makeTile(CitadelPosition.getRight())}
                     {props.pieces.map(piece => {
                         return (
                             <button className="board-piece" style={makePos(piece.position)}>
