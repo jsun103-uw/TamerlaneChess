@@ -6,7 +6,7 @@ import React from "react";
 import PositionedCSSProperties from "./PositionedCSSProperties";
 
 import './BoardElement.css'
-import { BoardPosition, PositionUnion } from "../common/Position";
+import { BoardPosition, CitadelPosition, PositionUnion } from "../common/Position";
 
 export interface BoardElementProperties {
     readonly pieces: PositionedTamerlanePiece[];
@@ -39,6 +39,8 @@ export default function BoardElement(props: BoardElementProperties) {
                             pos => maketile(pos)
                         )
                     }
+                    {maketile(CitadelPosition.getLeft())}
+                    {maketile(CitadelPosition.getRight())}
                     {props.pieces.map(piece => {
                         return (
                             <button className="board-piece" style={makePos(piece.position)}>
