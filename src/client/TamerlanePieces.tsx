@@ -3,7 +3,6 @@ import getImgSrc from "./PieceImgLibrary";
 import React, { useState } from "react";
 import PositionedCSSProperties from "./PositionedCSSProperties";
 
-import './BoardElement.css'
 import { getKey, makePos } from "./Utilities";
 
 export interface BoardElementProperties {

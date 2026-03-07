@@ -5,6 +5,7 @@ import { TransformComponent, TransformWrapper } from "react-zoom-pan-pinch";
 import TamerlaneGrid from "./TamerlaneGrid";
 import PossibleMoves from "./PossibleMoves";
 import { BoardPosition } from "../common/Position";
+import './GamePage.css'
 
 interface GamePageProperties {
     readonly instance: ClientInstance | null;
