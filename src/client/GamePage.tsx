@@ -4,15 +4,16 @@ import { ClientInstance } from "./ClientInstance";
 import { TransformComponent, TransformWrapper } from "react-zoom-pan-pinch";
 import TamerlaneGrid from "./TamerlaneGrid";
 import PossibleMoves from "./PossibleMoves";
-import { BoardPosition } from "../common/Position";
+import { BoardPosition, PositionUnion } from "../common/Position";
 import './GamePage.css'
+import { MoveUnion } from "../common/Move";
 
 interface GamePageProperties {
     readonly instance: ClientInstance | null;
 }
 
 export default function GamePage(props: GamePageProperties) {
-    useState();
+    const [moves, setMoves] = useState<MoveUnion[]>([]);
     return (
         <>
             <TransformWrapper>
@@ -23,11 +24,16 @@ export default function GamePage(props: GamePageProperties) {
                     <div className="board">
                         <TamerlaneGrid />
                         <TamerlanePieces 
+                            onSelect={(pos: PositionUnion) => {
+                                if (props.instance) {
+                                    setMoves([...props.instance.getMovesFor(pos)]);
+                                }
+                            }}
                             pieces={props.instance !== null ? [...props.instance.getPieces()] : []} 
                         />
                         <PossibleMoves 
                             client={props.instance} 
-                            possibleMoves={props.instance !== null ? [...props.instance.getMovesFor(new BoardPosition(2, 2))] : []}
+                            possibleMoves={props.instance !== null ? [...moves] : []}
                         />
                     </div>
                 </TransformComponent>

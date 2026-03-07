@@ -3,7 +3,7 @@ import { convertMoveJson } from "../common/Convert";
 import { Game } from "../common/Game";
 import { MoveUnion } from "../common/Move";
 import { Player } from "../common/Player";
-import { BoardPosition } from "../common/Position";
+import { BoardPosition, PositionUnion } from "../common/Position";
 import { BadResponse, MoveRequest, MoveResponse, NoResponse, TamerlaneRequestENUM, TamerlaneResponseENUM, UpdateRequest } from "../common/Request";
 import { sendRequest } from "./client";
 
@@ -62,7 +62,7 @@ export class ClientInstance extends EventTarget
         sendRequest(request, (resp) => this.handleMoveResponse(resp));
     }
 
-    public getMovesFor(pos: BoardPosition) {
+    public getMovesFor(pos: PositionUnion): Generator<MoveUnion> {
         return this.game.getMovesFor(pos);
     }
 

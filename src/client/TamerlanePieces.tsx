@@ -4,9 +4,11 @@ import React, { useState } from "react";
 import PositionedCSSProperties from "./PositionedCSSProperties";
 
 import { getKey, makePos } from "./Utilities";
+import { BoardPosition, PositionUnion } from "../common/Position";
 
 export interface BoardElementProperties {
     readonly pieces: PositionedTamerlanePiece[];
+    readonly onSelect?: (pos: PositionUnion) => (void);
 }
 
 const tileSize: number = 64;
@@ -18,6 +20,11 @@ export default function TamerlanePieces(props: BoardElementProperties) {
                     piece => {
                         return (
                             <button 
+                                onClick={() => { 
+                                    if (props.onSelect) {
+                                        props.onSelect(piece.position); 
+                                    }
+                                }}
                                 className="board-piece" 
                                 style={makePos(piece.position)} 
                                 key={getKey(piece.position)}>
