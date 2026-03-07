@@ -1,4 +1,3 @@
-import { Component, useReducer } from "react";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import { Board, BoardPiece, PositionedTamerlanePiece } from "../common/Board";
 import getImgSrc from "./PieceImgLibrary";

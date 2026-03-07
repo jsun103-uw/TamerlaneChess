@@ -1,3 +1,4 @@
+import { PositionedTamerlanePiece } from "../common/Board";
 import { convertMoveJson } from "../common/Convert";
 import { Game } from "../common/Game";
 import { MoveUnion } from "../common/Move";
@@ -26,6 +27,9 @@ export class ClientInstance extends EventTarget
 
     public debugGetBoard(): string {
         return this.game.debugGetBoard();
+    }
+    public getPieces(): Generator<PositionedTamerlanePiece> {
+        return this.game.getPieces();
     }
 
     public receive(move: MoveUnion) {
