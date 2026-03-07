@@ -1,3 +1,6 @@
+#root {
+    --tile-size: 64px;
+}
 .viewport {
     width: 1000px;
     height: 1000px;
@@ -13,6 +16,7 @@
     background-color: aliceblue;
 }
 .board-piece {
+    background-color: transparent;
     width: 64px;
     height: 64px;
     position: absolute;
@@ -33,4 +37,19 @@
     left: 0%;
     width: 50%;
     height: 50%;
+}
+
+.tile-black, .tile-white {
+    position: absolute;
+    top: var(--y);
+    left: var(--x);
+    width: 64px;
+    height: 64px;
+
+}
+.tile-black {
+    background-color: brown;
+}
+.tile-white {
+    background-color: tan;
 }
