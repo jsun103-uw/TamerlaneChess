@@ -4,7 +4,9 @@ import { Player, PlayerENUM } from "../common/Player";
 import { BoardPosition } from "../common/Position";
 import { BadResponse, ConnectRequest, JoinResponse, MoveRequest, MoveResponse, NoResponse, ServerInfo, ServerlistResponse, TamerlaneRequest, TamerlaneRequestENUM, TamerlaneResponseENUM, UpdateRequest } from "../common/Request";
 import { GameInstance } from "./GameInstance";
-import { createServer, ServerResponse } from "node:http";
+import express from "express"
+import cors from "cors"
+
 
 const maxInstances: number = 10;
 
@@ -18,44 +20,45 @@ function newInstance(): [number, GameInstance] {
     return [num, instance];
 }
 
+const app = express();
+app.use(cors());
+app.post('/server', async (req, res) => {
+    console.log(req.url)
 
-const server = createServer(async (req, res) => {
-    if (req.method === 'POST' && req.url === '/server') {
+    if (req.method === 'POST') {
         let body = '';
 
         for await (const chunk of req) {
             body += chunk;
         }
-
-        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.status(200);
         const data = JSON.parse(body);
         if (!data.request) {
-            res.end(JSON.stringify(handleBadRequest("Does not have request")));
+            res.json((handleBadRequest("Does not have request")));
             return;
         }
 
         switch(data.request as TamerlaneRequest) {
             case TamerlaneRequestENUM.move:
-                res.end(JSON.stringify(handleMoveRequest(data)));
+                res.json(handleMoveRequest(data));
                 break;
             case TamerlaneRequestENUM.update:
-                res.end(JSON.stringify(handleUpdateRequest(data)))
+                res.json(handleUpdateRequest(data));
                 return;
-                break;
             case TamerlaneRequestENUM.serverlist:
-                res.end(JSON.stringify(handleServerlistRequest()))
+                res.json(handleServerlistRequest());
                 break;
             case TamerlaneRequestENUM.join:
-                res.end(JSON.stringify(handleJoinRequest(data)))
+                res.json(handleJoinRequest(data));
                 break;
             case TamerlaneRequestENUM.make:
-                res.end(JSON.stringify(handleMakeRequest()))
+                res.json(handleMakeRequest());
                 break;
             case TamerlaneRequestENUM.rematch:
 
                 break;
             default:
-                res.end(JSON.stringify(handleBadRequest("Request not understood")));
+                res.json(handleBadRequest("Request not understood"));
                 break;
 
         }
@@ -65,9 +68,9 @@ const server = createServer(async (req, res) => {
         return;
     }
 
-    res.writeHead(404);
-    res.end();
+    res.status(404).json({"error":"not found"});
 });
+
 function handleBadRequest(message: string): BadResponse {
     return {
         response: TamerlaneResponseENUM.bad,
@@ -76,7 +79,7 @@ function handleBadRequest(message: string): BadResponse {
 }
 
 // Server listening to port 3000
-server.listen((3000), () => {
+app.listen((3000), () => {
     console.log("Server is Running");
 })
 

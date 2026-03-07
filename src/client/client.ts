@@ -14,10 +14,10 @@ export function sendRequest(json: Object, handle: (resp: any) => any) {
     })
 }
 
-export function requestServers() {
+export function requestServers(): void {
     const GetServer: ServerlistRequest = {
         request: TamerlaneRequestENUM.serverlist
-    }
+    };
     sendRequest(GetServer, json => console.log(json));
 }
 
