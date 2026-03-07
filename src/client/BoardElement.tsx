@@ -1,7 +1,7 @@
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import { Board, BoardPiece, PositionedTamerlanePiece } from "../common/Board";
 import getImgSrc from "./PieceImgLibrary";
-import React from "react";
+import React, { useState } from "react";
 import PositionedCSSProperties from "./PositionedCSSProperties";
 
 import './BoardElement.css'
@@ -36,6 +36,7 @@ export default function BoardElement(props: BoardElementProperties) {
             <TransformComponent wrapperClass="viewport"
                     contentClass="canvas">
                 <div className="board">
+                    { /* Tiles */ }
                     {
                         // Create the tiles as divs by mapping a list of all possible positions to tiles
                         BoardPosition.allPositions.map(
@@ -44,14 +45,24 @@ export default function BoardElement(props: BoardElementProperties) {
                     }
                     {makeTile(CitadelPosition.getLeft())}
                     {makeTile(CitadelPosition.getRight())}
-                    {props.pieces.map(piece => {
-                        return (
-                            <button className="board-piece" style={makePos(piece.position)} key={getKey(piece.position)}>
-                                <img className="piece-icon" src={getImgSrc(piece.piece, piece.side)}></img>
-                            </button>
+
+                    { /* Pieces */ }
+                    {
+                        props.pieces.map(
+                            piece => {
+                                return (
+                                    <button className="board-piece" 
+                                        style={makePos(piece.position)} 
+                                        key={getKey(piece.position)}>
+                                        <img className="piece-icon" src={getImgSrc(piece.piece, piece.side)}></img>
+                                    </button>
+                                )
+                            }
                         )
-                    })
                     }
+
+                    { /* Possible moves */ }
+
                 </div>
             </TransformComponent>
         </TransformWrapper>
