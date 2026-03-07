@@ -39,7 +39,7 @@ rl.on("line", (input: string) => {
         return;
     }
     if (/^\s*list\s*$/.test(input)) {
-        requestServers();
+        requestServers((resp) => console.log(resp.servers));
         return;
     }
     if (/^\s*new\s*$/.test(input)) {

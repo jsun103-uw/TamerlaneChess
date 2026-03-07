@@ -1,4 +1,4 @@
-import { BadResponse, ConnectRequest, JoinResponse, MakeRequest, GetServersRequest as ServerlistRequest, TamerlaneRequestENUM } from "../common/Request";
+import { BadResponse, ConnectRequest, JoinResponse, MakeRequest, GetServersRequest as ServerlistRequest, ServerlistResponse, TamerlaneRequestENUM, TamerlaneResponseENUM } from "../common/Request";
 
 export function sendRequest(json: Object, handle: (resp: any) => any) {
     fetch('http://localhost:3000/server', {
@@ -14,11 +14,19 @@ export function sendRequest(json: Object, handle: (resp: any) => any) {
     })
 }
 
-export function requestServers(): void {
+export function requestServers(handle: (resp: ServerlistResponse) => void): void {
     const GetServer: ServerlistRequest = {
         request: TamerlaneRequestENUM.serverlist
     };
-    sendRequest(GetServer, json => console.log(json));
+    sendRequest(GetServer, json => {
+        if (json.response 
+            && json.response === TamerlaneResponseENUM.serverlist
+            && json.servers
+        ) {
+            handle(json);
+        }
+        handle(json);
+    });
 }
 
 
