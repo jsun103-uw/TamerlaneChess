@@ -1,4 +1,4 @@
-import { Component } from "react";
+import { Component, useReducer } from "react";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import { Board, BoardPiece, PositionedTamerlanePiece } from "../common/Board";
 import getImgSrc from "./PieceImgLibrary";
@@ -20,9 +20,12 @@ function makePos(pos: PositionUnion): PositionedCSSProperties {
         "--y": `${(BOARD_RANKS - 1 - pos.rank) * tileSize}px`,
     }
 }
+function getKey(pos: PositionUnion): string {
+    return `${pos.file}-${pos.rank}`
+}
 function makeTile(pos: PositionUnion) {
     return (
-        <div className={`tile-${((pos.file + pos.rank) % 2) === 0 ? "black" : "white"}`}
+        <div key={getKey(pos)} className={`tile-${((pos.file + pos.rank) % 2) === 0 ? "black" : "white"}`}
             style={makePos(pos)}>
 
         </div>
@@ -44,7 +47,7 @@ export default function BoardElement(props: BoardElementProperties) {
                     {makeTile(CitadelPosition.getRight())}
                     {props.pieces.map(piece => {
                         return (
-                            <button className="board-piece" style={makePos(piece.position)}>
+                            <button className="board-piece" style={makePos(piece.position)} key={getKey(piece.position)}>
                                 <img className="piece-icon" src={getImgSrc(piece.piece, piece.side)}></img>
                             </button>
                         )
