@@ -301,7 +301,7 @@ export class TamerlanePieces {
         max = max - jump;
 
         for (const template of this.#knightTemplates) {
-            yield* this.getLine(board, position, side, 0, max, (i: number) => this.getLeap(position, template.diagonal, template.straight, i, jump));
+            yield* this.getLine(board, position, side, min, max, (i: number) => this.getLeap(position, template.diagonal, template.straight, i, jump));
         }
     }
     private static getLeap(position: BoardPosition, initial: Vector2I, later: Vector2I, i: number, skip: number): BoardPosition | null {
