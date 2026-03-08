@@ -1,4 +1,4 @@
-import { useEffect, useReducer, useRef, useState } from 'react'
+import { RefObject, useEffect, useReducer, useRef, useState } from 'react'
 import './App.css'
 import React from 'react'
 import TamerlanePieces from './TamerlanePieces'
@@ -15,6 +15,7 @@ import FooterBar from './FooterBar'
 function App() {
   	const navigate = useNavigate();
 	const [client, setClient] = useState<ClientInstance | null>(new ClientInstance(PlayerENUM.Black, 0, 0))
+	const nameRef: RefObject<string> = useRef<string>("");
 	const [, rerender] = useReducer(x => x + 1, 0);
 
 
@@ -39,7 +40,9 @@ function App() {
 					}
 				/>
 			</Routes>
-			<FooterBar />
+			<FooterBar onChanged={(text: string) => {
+				nameRef.current = text;
+			}} />
 		</>
 	)
 }
