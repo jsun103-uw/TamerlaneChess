@@ -39,17 +39,17 @@ export class TamerlanePieces {
     static Elephant: TamerlanePieceType = TamerlanePieces.createPiece(
         "E",
         "Elephant",
-        (board: Board, position: PositionUnion, side: Player) => (TamerlanePieces.getMovesDiagonal(board, position, side, 1, 2)),
+        (board: Board, position: PositionUnion, side: Player) => (TamerlanePieces.getMovesDiagonal(board, position, side, 1, 2, true)),
     );
     static Camel: TamerlanePieceType = TamerlanePieces.createPiece(
         "C",
         "Camel",
-        (board: Board, position: PositionUnion, side: Player) => (TamerlanePieces.getMovesKnightlike(board, position, side, 2, 3, 2)),
+        (board: Board, position: PositionUnion, side: Player) => (TamerlanePieces.getMovesKnightlike(board, position, side, 2, 3, true)),
     );
     static Dabbaba: TamerlanePieceType = TamerlanePieces.createPiece(
         "D",
         "Dabbaba",
-        (board: Board, position: PositionUnion, side: Player) => (TamerlanePieces.getMovesOrthogonal(board, position, side, 1, 2)),
+        (board: Board, position: PositionUnion, side: Player) => (TamerlanePieces.getMovesOrthogonal(board, position, side, 1, 2, true)),
     );
     static Rook: TamerlanePieceType = TamerlanePieces.createPiece(
         "R",
@@ -64,12 +64,12 @@ export class TamerlanePieces {
     static Knight: TamerlanePieceType = TamerlanePieces.createPiece(
         "N",
         "Knight",
-        (board: Board, position: PositionUnion, side: Player) => (TamerlanePieces.getMovesKnightlike(board, position, side, 1, 2, 1)),
+        (board: Board, position: PositionUnion, side: Player) => (TamerlanePieces.getMovesKnightlike(board, position, side, 1, 2, true)),
     );
     static Giraffe: TamerlanePieceType = TamerlanePieces.createPiece(
         "F",
         "Giraffe",
-        (board: Board, position: PositionUnion, side: Player) => (TamerlanePieces.getMovesKnightlike(board, position, side, 3, BOARD_FILES, 0)),
+        (board: Board, position: PositionUnion, side: Player) => (TamerlanePieces.getMovesKnightlike(board, position, side, 3, BOARD_FILES, false)),
     );
     static General: TamerlanePieceType = TamerlanePieces.createPiece(
         "G",
@@ -211,13 +211,13 @@ export class TamerlanePieces {
      * @param min minimum spaces that must be clear
      * @returns list of pseudo legal moves
      */
-    private static *getMovesOrthogonal(board: Board, position: PositionUnion, side: Player, min: number, max: number): Generator<MoveUnion> {
+    private static *getMovesOrthogonal(board: Board, position: PositionUnion, side: Player, min: number, max: number, jumpmin: boolean = false): Generator<MoveUnion> {
         if (position.kind !== "board") return;
 
-        yield* this.getLine(board, position, side, min, max, (i: number) => BoardPosition.trymake(position.file, position.rank + i));
-        yield* this.getLine(board, position, side, min, max, (i: number) => BoardPosition.trymake(position.file + i, position.rank));
-        yield* this.getLine(board, position, side, min, max, (i: number) => BoardPosition.trymake(position.file, position.rank - i));
-        yield* this.getLine(board, position, side, min, max, (i: number) => BoardPosition.trymake(position.file - i, position.rank));
+        yield* this.getLine(board, position, side, min, max, jumpmin, (i: number) => BoardPosition.trymake(position.file, position.rank + i));
+        yield* this.getLine(board, position, side, min, max, jumpmin, (i: number) => BoardPosition.trymake(position.file + i, position.rank));
+        yield* this.getLine(board, position, side, min, max, jumpmin, (i: number) => BoardPosition.trymake(position.file, position.rank - i));
+        yield* this.getLine(board, position, side, min, max, jumpmin, (i: number) => BoardPosition.trymake(position.file - i, position.rank));
     }
 
     /**
@@ -227,13 +227,13 @@ export class TamerlanePieces {
      * @param min minimum spaces that must be clear
      * @returns list of pseudo legal moves
      */
-    private static *getMovesDiagonal(board: Board, position: PositionUnion, side: Player, min: number, max: number): Generator<MoveUnion> {
+    private static *getMovesDiagonal(board: Board, position: PositionUnion, side: Player, min: number, max: number, jumpmin: boolean = false): Generator<MoveUnion> {
         if (position.kind !== "board") return;
 
-        yield* this.getLine(board, position, side, min, max, (i: number) => BoardPosition.trymake(position.file + i, position.rank + i));
-        yield* this.getLine(board, position, side, min, max, (i: number) => BoardPosition.trymake(position.file - i, position.rank + i));
-        yield* this.getLine(board, position, side, min, max, (i: number) => BoardPosition.trymake(position.file - i, position.rank - i));
-        yield* this.getLine(board, position, side, min, max, (i: number) => BoardPosition.trymake(position.file + i, position.rank - i));
+        yield* this.getLine(board, position, side, min, max, jumpmin, (i: number) => BoardPosition.trymake(position.file + i, position.rank + i));
+        yield* this.getLine(board, position, side, min, max, jumpmin, (i: number) => BoardPosition.trymake(position.file - i, position.rank + i));
+        yield* this.getLine(board, position, side, min, max, jumpmin, (i: number) => BoardPosition.trymake(position.file - i, position.rank - i));
+        yield* this.getLine(board, position, side, min, max, jumpmin, (i: number) => BoardPosition.trymake(position.file + i, position.rank - i));
     }
     /**
      * Starts at position. May move up to max steps until it hits a border, enemy, or its own piece. min steps must be clear.
@@ -242,15 +242,17 @@ export class TamerlanePieces {
      * @param side side of the piece being moved
      * @param min steps that must be empty
      * @param max maximum steps to travel
+     * @param jumpmin if true, the piece will phase through (jump over) min steps. If false, min steps must be unoccupied
+     *              For example, for the elephant this is true because it jumps diagonally, but for the picket this is false because one diagonal space must be unoccupied
      * @param posFunc position iterator. Determines what each step is
      * @returns 
      */
-    private static *getLine(board: Board, position: BoardPosition, side: Player, min: number, max: number, posFunc: (i: number) => (BoardPosition | null)): Generator<MoveUnion> {
+    private static *getLine(board: Board, position: BoardPosition, side: Player, min: number, max: number, jumpmin: boolean, posFunc: (i: number) => (BoardPosition | null)): Generator<MoveUnion> {
         for (let i = 1; i <= min; i ++) {
             const pos = posFunc(i);
             // if (pos !== null) console.log(board.getPiece(pos));
-            // if position doesn't exist or the position is occupied in min, do not move.
-            if (pos === null || board.getPiece(pos) !== null) return;
+            // if position doesn't exist, or if the position is occupied and jumping is false, do not move.
+            if (pos === null || (!jumpmin && board.getPiece(pos) !== null)) return;
         }
         for (let i = min + 1; i <= max; i ++) {
             const pos = posFunc(i);
@@ -295,17 +297,14 @@ export class TamerlanePieces {
      * @param jump How many steps this piece should be able to leap over.
      * @returns 
      */
-    private static *getMovesKnightlike(board: Board, position: PositionUnion, side: Player, min: number, max: number, jump: number): Generator<MoveUnion> {
+    private static *getMovesKnightlike(board: Board, position: PositionUnion, side: Player, min: number, max: number, jumpmin: boolean): Generator<MoveUnion> {
         if (position.kind !== "board") return;
-        min = min - jump;
-        max = max - jump;
 
         for (const template of this.#knightTemplates) {
-            yield* this.getLine(board, position, side, min, max, (i: number) => this.getLeap(position, template.diagonal, template.straight, i, jump));
+            yield* this.getLine(board, position, side, min, max, jumpmin, (i: number) => this.getLeap(position, template.diagonal, template.straight, i));
         }
     }
-    private static getLeap(position: BoardPosition, initial: Vector2I, later: Vector2I, i: number, skip: number): BoardPosition | null {
-        let step = i + skip;
+    private static getLeap(position: BoardPosition, initial: Vector2I, later: Vector2I, step: number): BoardPosition | null {
         if (step <= 0) return position;
         else if (step === 1) 
             return BoardPosition.trymake(
