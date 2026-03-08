@@ -26,7 +26,7 @@ export default function PossibleMoves(props: PossibleMovesProperties) {
                                 key={getKey(move.end)}>
                                 <img
                                     className="indicator-icon" 
-                                    src="res/IndicatorEmpty.png"/>
+                                    src="/res/IndicatorEmpty.png"/>
                             </button>
                         )
                     }

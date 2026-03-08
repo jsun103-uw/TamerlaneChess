@@ -4,7 +4,7 @@ import React from 'react'
 import TamerlanePieces from './TamerlanePieces'
 import GamePage from './GamePage'
 import { ClientInstance } from './ClientInstance'
-import { PlayerENUM } from '../common/Player'
+import { Player, PlayerENUM } from '../common/Player'
 import { Route, Routes, useNavigate } from 'react-router-dom'
 import ServerPage from './ServerPage'
 import { ServerInfo } from '../common/Request'
@@ -21,19 +21,10 @@ function App() {
 			<Route 
 				path="/"
 				element={
-					<ServerPage onSelect={
-						(server: ServerInfo) => {
-							requestJoin(
-								server.instanceNumber, resp => {
-									if (resp.response === "join") {
-										setClient(new ClientInstance(resp.player, resp.instance, resp.instance));
-										navigate("/instance/");
-									}
-									else {
-										console.log(`failed to join: ${resp.message}`);
-									}
-								}
-							)
+					<ServerPage onJoin={
+						(side: Player, token: number, instance: number) => {
+							setClient(new ClientInstance(side, token, instance));
+							navigate("/instance/");
 						}
 					}/>
 				}
