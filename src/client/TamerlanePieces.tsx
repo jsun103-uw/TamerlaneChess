@@ -5,8 +5,10 @@ import PositionedCSSProperties from "./PositionedCSSProperties";
 
 import { getKey, makePos } from "./Utilities";
 import { BoardPosition, PositionUnion } from "../common/Position";
+import { Player } from "../common/Player";
 
 export interface BoardElementProperties {
+    readonly side: Player;
     readonly pieces: PositionedTamerlanePiece[];
     readonly onSelect?: (pos: PositionUnion) => (void);
 }
@@ -26,7 +28,7 @@ export default function TamerlanePieces(props: BoardElementProperties) {
                                     }
                                 }}
                                 className="board-piece" 
-                                style={makePos(piece.position)} 
+                                style={makePos(piece.position, props.side)} 
                                 key={getKey(piece.position)}
                             >
                                 <img className="piece-icon" src={getImgSrc(piece.piece, piece.side)} />

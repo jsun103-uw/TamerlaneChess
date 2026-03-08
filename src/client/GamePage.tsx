@@ -7,6 +7,7 @@ import PossibleMoves from "./PossibleMoves";
 import { BoardPosition, PositionUnion } from "../common/Position";
 import './GamePage.css'
 import { MoveUnion } from "../common/Move";
+import { PlayerENUM } from "../common/Player";
 
 interface GamePageProperties {
     readonly instance: ClientInstance | null;
@@ -45,7 +46,7 @@ export default function GamePage(props: GamePageProperties) {
                     contentClass="canvas"
                 >
                     <div className="board">
-                        <TamerlaneGrid />
+                        <TamerlaneGrid side={props.instance?.side ?? PlayerENUM.White} />
                         <TamerlanePieces 
                             onSelect={(pos: PositionUnion) => {
                                 if (props.instance) {
@@ -53,6 +54,7 @@ export default function GamePage(props: GamePageProperties) {
                                 }
                             }}
                             pieces={props.instance ? [...props.instance.getPieces()] : []} 
+                            side={props.instance?.side ?? PlayerENUM.White}
                         />
                         <PossibleMoves 
                             client={props.instance} 
@@ -60,6 +62,7 @@ export default function GamePage(props: GamePageProperties) {
                             onSelect={(move: MoveUnion) => {
                                 trymove(move);
                             }}
+                            side={props.instance?.side ?? PlayerENUM.White}
                         />
                     </div>
                 </TransformComponent>
