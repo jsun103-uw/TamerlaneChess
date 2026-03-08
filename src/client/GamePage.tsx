@@ -1,4 +1,4 @@
-import React, { useState, memo } from "react";
+import React, { useState, memo, useReducer, useRef, RefObject, useEffect } from "react";
 import TamerlanePieces from "./TamerlanePieces";
 import { ClientInstance } from "./ClientInstance";
 import { TransformComponent, TransformWrapper } from "react-zoom-pan-pinch";
@@ -12,12 +12,31 @@ interface GamePageProperties {
     readonly instance: ClientInstance | null;
 }
 
+let interval: NodeJS.Timeout | null = null;
 export default function GamePage(props: GamePageProperties) {
     const [moves, setMoves] = useState<MoveUnion[]>([]);
-
-    function trymove(move: MoveUnion) {
-        props.instance?.postMove(move);
+    const movePolling: RefObject<NodeJS.Timeout | null> = useRef<NodeJS.Timeout | null>(null);
+    // interval = setInterval(() => {
+    //     if (location)
+    // }, 500)
+    function clearMoves() {
+        // clears possible moves after success.
+        // doubles as re-render
+        setMoves([]);
     }
+    function trymove(move: MoveUnion) {
+        props.instance?.postMove(move, clearMoves);
+    }
+    useEffect(
+        () => {
+            movePolling.current = setInterval(() => {
+                props.instance?.pollUpdate(clearMoves);
+            }, 100);
+            return () => {
+                if (movePolling.current) clearInterval(movePolling.current);
+            }
+        }, []
+    )
     return (
         <>
             <TransformWrapper>

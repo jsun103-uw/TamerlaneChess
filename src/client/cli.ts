@@ -56,7 +56,9 @@ rl.on("line", (input: string) => {
         if (moveidx >= 0 && moveidx < moves.length ) {
 
             console.log(`selecting move ${moveidx}: ${moves[moveidx]}`);
-            client?.postMove(moves[moveidx]);
+            client?.postMove(moves[moveidx], () => {
+                console.log(client?.debugGetBoard());
+            });
             return;
         }
         else console.log(`Failed to find move index ${moveidx}`);
@@ -88,9 +90,8 @@ function handleJoinReponse(resp: any) {
     else {
         console.log(`Joined game instance ${resp.instance} as ${resp.player}`);
         client = new ClientInstance(resp.player, resp.token, resp.instance);
-        client.addEventListener(ClientInstanceEventENUM.update, ((e: ClientInstanceEvent) => {
-            console.log(e.instance.debugGetBoard());
-        }) as EventListener);
-        polling = setInterval(() => { client?.pollUpdate(); }, 600)
+        polling = setInterval(() => { client?.pollUpdate(() => {
+            console.log(client?.debugGetBoard());
+        })}, 600)
     }
 }

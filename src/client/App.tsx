@@ -9,6 +9,7 @@ import { Route, Routes, useNavigate } from 'react-router-dom'
 import ServerPage from './ServerPage'
 import { ServerInfo } from '../common/Request'
 import { requestJoin } from './client'
+import { PATH_INSTANCE, PATH_SERVERS } from './Consts'
 
 function App() {
   	const navigate = useNavigate();
@@ -19,18 +20,18 @@ function App() {
 	return (
 		<Routes>
 			<Route 
-				path="/"
+				path={PATH_SERVERS}
 				element={
 					<ServerPage onJoin={
 						(side: Player, token: number, instance: number) => {
 							setClient(new ClientInstance(side, token, instance));
-							navigate("/instance/");
+							navigate(PATH_INSTANCE);
 						}
-					}/>
+					} />
 				}
 			/>
 			<Route 
-				path="/instance"
+				path={PATH_INSTANCE}
 				element={
 					<GamePage instance={client} />
 				}

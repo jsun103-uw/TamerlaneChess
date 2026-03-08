@@ -3,6 +3,7 @@ import { requestJoin, requestMake, requestServers } from "./client";
 import { BadResponse, JoinResponse, ServerInfo, ServerlistResponse } from "../common/Request";
 import { Server } from "http";
 import { Player } from "../common/Player";
+import { PATH_SERVERS } from "./Consts";
 
 interface ServerPage {
     readonly onJoin?: (side: Player, token: number, instance: number) => (void);
@@ -30,9 +31,12 @@ export default function ServerPage(props: ServerPage) {
 
             if (serverTimeout.current !== null) clearInterval(serverTimeout.current);
             serverTimeout.current = setInterval(() => {
-                if (window.location.pathname !== "/" && serverTimeout.current) clearInterval(serverTimeout.current);
                 requestServers(handleServerlist);
             }, 500);
+
+            return () => {
+                if (serverTimeout.current) clearInterval(serverTimeout.current);
+            }
         }, []
     )
     return (

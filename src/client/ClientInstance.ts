@@ -7,7 +7,7 @@ import { BoardPosition, PositionUnion } from "../common/Position";
 import { BadResponse, MoveRequest, MoveResponse, NoResponse, TamerlaneRequestENUM, TamerlaneResponseENUM, UpdateRequest } from "../common/Request";
 import { sendRequest } from "./client";
 
-export class ClientInstance extends EventTarget
+export class ClientInstance
 {
     public readonly game: Game;
 
@@ -18,7 +18,6 @@ export class ClientInstance extends EventTarget
     
 
     constructor(side: Player, token: number, instanceNum: number) {
-        super();
         this.game = new Game();
         this.side = side;
         this.token = token;
@@ -37,7 +36,7 @@ export class ClientInstance extends EventTarget
             console.error(`Client out of sync: Server made illegal move: \n${this.game.debugGetBoard()}\n${move.toString()} `);
     }
 
-    public postMove(move: MoveUnion) {
+    public postMove(move: MoveUnion, onSucceed: () => (void)) {
         const request: MoveRequest = {
             request: TamerlaneRequestENUM.move,
             move: move,
@@ -45,13 +44,13 @@ export class ClientInstance extends EventTarget
             token: this.token,
             turnNum: this.game.turnNumber,
         }
-        sendRequest(request, (resp) => this.handleMoveResponse(resp));
+        sendRequest(request, (resp) => this.handleMoveResponse(resp, onSucceed));
     }
 
     /**
      * Asks server for updates, if waiting for opponent's move
      */
-    public pollUpdate() {
+    public pollUpdate(onSucceed: () => (void)) {
         if (this.game.turn === this.side) return;
         const request: UpdateRequest = {
             request: TamerlaneRequestENUM.update,
@@ -59,7 +58,7 @@ export class ClientInstance extends EventTarget
             token: this.token,
             turnNum: this.game.turnNumber,
         }
-        sendRequest(request, (resp) => this.handleMoveResponse(resp));
+        sendRequest(request, (resp) => this.handleMoveResponse(resp, onSucceed));
     }
 
     public getMovesFor(pos: PositionUnion): Generator<MoveUnion> {
@@ -67,7 +66,7 @@ export class ClientInstance extends EventTarget
     }
 
 
-    private handleMoveResponse(data: MoveResponse | BadResponse | NoResponse) {
+    private handleMoveResponse(data: MoveResponse | BadResponse | NoResponse, onSucceed: () => (void)) {
         if (data.response === TamerlaneResponseENUM.bad) {
             console.error(data.message);
         }
@@ -79,23 +78,23 @@ export class ClientInstance extends EventTarget
 
             const move = convertMoveJson(data.move);
             if (move === null) {
-                
                 console.error(`Failed to parse move: `, data.move);
-                return;
             }
-            if (this.game.trymove(move)) {
-                this.dispatchEvent(new ClientInstanceEvent(ClientInstanceEventENUM.update, this));
+            else if (this.game.trymove(move)) {
+                // this.dispatchEvent(new ClientInstanceEvent(ClientInstanceEventENUM.update, this));
+                onSucceed();
+                return;
             }
             else {
                 console.error(`Failed to execute move ${move}`);
             }
         }
         else if (data.response === TamerlaneResponseENUM.none) {
-            return; 
         }
         else {
             console.error(`Unknown response ${JSON.stringify(data)}`);
         }
+        return; 
     }
 }
 
