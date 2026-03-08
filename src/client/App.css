@@ -1,6 +1,21 @@
 #root {
+
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
+}
+
+footer {
+  display: flex;
+  flex-direction: row-reverse;
+  position: fixed;
+  bottom: 0px;
+  left: 0px;
+  width: 100%;
+  background-color: black;
+}
+footer * {
+  padding: 5px;
+  margin: 0;
 }
