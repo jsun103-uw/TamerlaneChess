@@ -22,8 +22,8 @@ export class Game {
         this.#blackTaken = [];
     }
 
-    public *getMovesFor(position: PositionUnion): Generator<MoveUnion> {
-        yield* this.#board.getMoves(position, this.#turn);
+    public *getMovesFor(position: PositionUnion, side: Player): Generator<MoveUnion> {
+        yield* this.#board.getMoves(position, side);
     }
     public trymove(move: MoveUnion): boolean {
         const result = this.#board.trymove(move, this.#turn);

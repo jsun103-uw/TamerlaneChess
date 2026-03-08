@@ -62,7 +62,7 @@ export class ClientInstance
     }
 
     public getMovesFor(pos: PositionUnion): Generator<MoveUnion> {
-        return this.game.getMovesFor(pos);
+        return this.game.getMovesFor(pos, this.side);
     }
 
 
