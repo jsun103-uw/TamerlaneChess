@@ -2,6 +2,7 @@ import { Board, PositionedTamerlanePiece, TamerlanePiece } from "./Board";
 import { MoveUnion } from "./Move";
 import { opposingPlayerTo, Player, PlayerENUM } from "./Player";
 import { PositionUnion } from "./Position";
+import { TamerlanePieceType } from "./TamerlanePieces";
 
 export class Game {
     #board: Board;
@@ -11,8 +12,17 @@ export class Game {
     #turnNumber: number = 1;
     public get turnNumber() { return this.#turnNumber; }
 
-    #whiteTaken: TamerlanePiece[];
-    #blackTaken: TamerlanePiece[];
+    #whiteTaken: TamerlanePieceType[];
+    /**
+     * @returns white pieces taken; taken by black
+     */
+    public getWhiteTaken(): Iterable<TamerlanePieceType> { return this.#whiteTaken; }
+
+    #blackTaken: TamerlanePieceType[];
+    /**
+     * @returns black pieces taken; taken by white
+     */
+    public getBlackTaken(): Iterable<TamerlanePieceType> { return this.#blackTaken; }
 
     public constructor() {
         this.#board = Board.buildStartingBoard();
@@ -29,6 +39,12 @@ export class Game {
         const result = this.#board.trymove(move, this.#turn);
         if (result.successful) {
             this.#turn = opposingPlayerTo(this.turn);
+
+            if (result.taken) {
+                if (result.taken.side === PlayerENUM.Black) this.#blackTaken.push(result.taken.piece)
+                else this.#whiteTaken.push(result.taken.piece)
+            }
+
             if (this.#turn === PlayerENUM.White) this.#turnNumber ++;
             return true;
         }
