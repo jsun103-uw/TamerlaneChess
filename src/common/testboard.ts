@@ -80,7 +80,7 @@ rl.on("line", (input: string) => {
             let pos: BoardPosition | null = BoardPosition.trymake(matches[1].toUpperCase().charCodeAt(0) - 65, parseInt(matches[2]) - 1);
             if (pos !== null) 
             {
-                moves = [...game.getMovesFor(pos)];
+                moves = [...game.getMovesFor(pos, game.turn)];
                 printMoves(moves);
             }
             else console.log(`Position does not exist`);
@@ -154,7 +154,7 @@ function testCheck() {
     assertFalse(game.debugBoardReference().checkCheck(PlayerENUM.Black), "should not yet be checking king");
     moveState(game, TakeMove.tryMake(3, 6, 4, 7));
     assertTrue(game.debugBoardReference().checkCheck(PlayerENUM.Black), "should be checking king");
-    assertEmpty<MoveUnion>([...game.getMovesFor(new BoardPosition(1, 8))], "knight should not be able to stop check");
+    assertEmpty<MoveUnion>([...game.getMovesFor(new BoardPosition(1, 8), game.turn)], "knight should not be able to stop check");
 
 }
 function printStart(game: Game) {
