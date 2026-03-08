@@ -77,6 +77,21 @@ export default function GamePage(props: GamePageProperties) {
                     </TransformComponent>
                 </TransformWrapper>
             </div>
+            <Endscreen 
+                visible={false}
+                victory={false} 
+                opponentName="temp" 
+                onExitSelected={
+                    () => {
+                        console.log("Exit selected");
+                    }
+                } 
+                onRematchSelected={
+                    () => {
+                        console.log("Rematch selected");
+                    }
+                }
+            />
         </>
     )
 }
