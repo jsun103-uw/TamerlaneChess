@@ -4,6 +4,8 @@
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
+
+  --footer-size: 40px
 }
 
 footer {
@@ -13,6 +15,7 @@ footer {
   bottom: 0px;
   left: 0px;
   width: 100%;
+  height: var(--footer-size);
   background-color: black;
 }
 footer * {

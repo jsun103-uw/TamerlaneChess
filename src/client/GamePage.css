@@ -1,19 +1,30 @@
 #root {
     --tile-size: 64px;
 }
-.viewport {
-    width: 1000px;
-    height: 1000px;
-}
-.canvas {
-    width: 100%;
-    height: 100%;
-}
 
+.transformStage {
+    /* width: 100vw;
+    height: 100vh; */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0px;
+    left: 0px; 
+    right: 0px;
+    bottom: 0px;
+    /* bottom: var(--footer-size); */
+}
+.table {
+    width: 100vw;
+    height: 100vh;
+    min-width: calc(var(--tile-size) * 13);
+    min-height: calc(var(--tile-size) * 10);
+}
 .board {
-    width: 1000px;
-    height: 1000px;
-    background-color: aliceblue;
+    margin: auto;
+    min-width: calc(var(--tile-size) * 13);
+    min-height: calc(var(--tile-size) * 10);
 }
 .board-piece, .indicator-button {
     background-color: transparent;

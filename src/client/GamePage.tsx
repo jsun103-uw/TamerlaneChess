@@ -8,6 +8,7 @@ import { BoardPosition, PositionUnion } from "../common/Position";
 import './GamePage.css'
 import { MoveUnion } from "../common/Move";
 import { PlayerENUM } from "../common/Player";
+import Endscreen from "./Endscreen";
 
 interface GamePageProperties {
     readonly instance: ClientInstance | null;
@@ -40,33 +41,42 @@ export default function GamePage(props: GamePageProperties) {
     )
     return (
         <>
-            <TransformWrapper>
-                <TransformComponent 
-                    wrapperClass="viewport"
-                    contentClass="canvas"
+            <div className="transformStage">
+                <TransformWrapper
+                    minScale={0.5}
+                    maxScale={1.2}
+                    limitToBounds={true}
+                    disablePadding={true}
+                    centerZoomedOut={true}
+                    maxPositionX={1000}
+                    maxPositionY={1000}
                 >
-                    <div className="board">
-                        <TamerlaneGrid side={props.instance?.side ?? PlayerENUM.White} />
-                        <TamerlanePieces 
-                            onSelect={(pos: PositionUnion) => {
-                                if (props.instance) {
-                                    setMoves([...props.instance.getMovesFor(pos)]);
-                                }
-                            }}
-                            pieces={props.instance ? [...props.instance.getPieces()] : []} 
-                            side={props.instance?.side ?? PlayerENUM.White}
-                        />
-                        <PossibleMoves 
-                            client={props.instance} 
-                            possibleMoves={props.instance !== null ? [...moves] : []}
-                            onSelect={(move: MoveUnion) => {
-                                trymove(move);
-                            }}
-                            side={props.instance?.side ?? PlayerENUM.White}
-                        />
-                    </div>
-                </TransformComponent>
-            </TransformWrapper>
+                    <TransformComponent>
+                        <div className="table">
+                            <div className="board">
+                                <TamerlaneGrid side={props.instance?.side ?? PlayerENUM.White} />
+                                <TamerlanePieces 
+                                    onSelect={(pos: PositionUnion) => {
+                                        if (props.instance) {
+                                            setMoves([...props.instance.getMovesFor(pos)]);
+                                        }
+                                    }}
+                                    pieces={props.instance ? [...props.instance.getPieces()] : []} 
+                                    side={props.instance?.side ?? PlayerENUM.White}
+                                />
+                                <PossibleMoves 
+                                    client={props.instance} 
+                                    possibleMoves={props.instance !== null ? [...moves] : []}
+                                    onSelect={(move: MoveUnion) => {
+                                        trymove(move);
+                                    }}
+                                    side={props.instance?.side ?? PlayerENUM.White}
+                                />
+                            </div>
+                        </div>
+                    </TransformComponent>
+                </TransformWrapper>
+            </div>
         </>
     )
 }
