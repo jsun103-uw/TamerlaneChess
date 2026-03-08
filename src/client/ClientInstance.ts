@@ -2,9 +2,10 @@ import { PositionedTamerlanePiece } from "../common/Board";
 import { convertMoveJson } from "../common/Convert";
 import { Game } from "../common/Game";
 import { MoveUnion } from "../common/Move";
-import { Player } from "../common/Player";
+import { Player, PlayerENUM } from "../common/Player";
 import { BoardPosition, PositionUnion } from "../common/Position";
 import { BadResponse, MoveRequest, MoveResponse, NoResponse, TamerlaneRequestENUM, TamerlaneResponseENUM, UpdateRequest } from "../common/Request";
+import { TamerlanePieceType } from "../common/TamerlanePieces";
 import { sendRequest } from "./client";
 
 export class ClientInstance
@@ -22,6 +23,22 @@ export class ClientInstance
         this.side = side;
         this.token = token;
         this.instanceNum = instanceNum;
+    }
+
+
+    /**
+     * @returns pieces this client captured
+     */
+    public getCaptured(): Iterable<TamerlanePieceType> {
+        if (this.side === PlayerENUM.White) return this.game.getWhiteTaken();
+        else return this.game.getBlackTaken();
+    }
+    /**
+     * @returns pieces the opponent of this client captured
+     */
+    public getLosses(): Iterable<TamerlanePieceType> {
+        if (this.side === PlayerENUM.White) return this.game.getBlackTaken();
+        else return this.game.getWhiteTaken();
     }
 
     public debugGetBoard(): string {
