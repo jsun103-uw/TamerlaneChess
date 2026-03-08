@@ -51,15 +51,18 @@ export class GameInstance {
         // update metadata
         this.#lastAccessed = Date.now();
         this.join(PlayerENUM.White);
+        console.log(`entering ${move} for ${token}`)
 
         // 
         if ((this.game.turn === PlayerENUM.White && this.whiteToken === token)
             || (this.game.turn === PlayerENUM.Black && this.blackToken === token)
         ) {
+            console.log(`doing ${move} for ${token}`)
             if (this.game.trymove(move)) {
                 this.#lastMove = move;
                 return move;
             }
+            console.log(`what ${move}`)
         }
         return null;
     }

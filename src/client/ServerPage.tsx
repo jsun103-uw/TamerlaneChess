@@ -21,7 +21,7 @@ export default function ServerPage(props: ServerPage) {
             console.log(`Failed to join: ${resp.message}`);
         }
     }
-    console.log(servers);
+    // console.log(servers);
 
     function handleServerlist(resp: ServerlistResponse) { setServers(resp.servers) }
     useEffect(
@@ -30,14 +30,14 @@ export default function ServerPage(props: ServerPage) {
 
             if (serverTimeout.current !== null) clearInterval(serverTimeout.current);
             serverTimeout.current = setInterval(() => {
+                if (window.location.pathname !== "/" && serverTimeout.current) clearInterval(serverTimeout.current);
                 requestServers(handleServerlist);
             }, 500);
         }, []
     )
     return (
         <>
-            <button onClick={() => requestMake(handleResponse)}
-            >
+            <button onClick={() => requestMake(handleResponse)}>
                 New Server
             </button>
             <div className=".server-list">

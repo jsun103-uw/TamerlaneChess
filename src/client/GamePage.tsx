@@ -14,6 +14,10 @@ interface GamePageProperties {
 
 export default function GamePage(props: GamePageProperties) {
     const [moves, setMoves] = useState<MoveUnion[]>([]);
+
+    function trymove(move: MoveUnion) {
+        props.instance?.postMove(move);
+    }
     return (
         <>
             <TransformWrapper>
@@ -29,11 +33,14 @@ export default function GamePage(props: GamePageProperties) {
                                     setMoves([...props.instance.getMovesFor(pos)]);
                                 }
                             }}
-                            pieces={props.instance !== null ? [...props.instance.getPieces()] : []} 
+                            pieces={props.instance ? [...props.instance.getPieces()] : []} 
                         />
                         <PossibleMoves 
                             client={props.instance} 
                             possibleMoves={props.instance !== null ? [...moves] : []}
+                            onSelect={(move: MoveUnion) => {
+                                trymove(move);
+                            }}
                         />
                     </div>
                 </TransformComponent>

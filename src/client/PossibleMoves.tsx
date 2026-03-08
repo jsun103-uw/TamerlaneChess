@@ -10,6 +10,7 @@ import { ClientInstance } from "./ClientInstance";
 export interface PossibleMovesProperties {
     readonly client: ClientInstance | null;
     readonly possibleMoves: MoveUnion[];
+    readonly onSelect?: (move: MoveUnion) => (void);
 }
 
 export default function PossibleMoves(props: PossibleMovesProperties) {
@@ -22,6 +23,9 @@ export default function PossibleMoves(props: PossibleMovesProperties) {
                         return (
                             <button 
                                 className="indicator-button" 
+                                onClick={() => {
+                                    if (props.onSelect) props.onSelect(move);
+                                }}
                                 style={makePos(move.end)} 
                                 key={getKey(move.end)}>
                                 <img
