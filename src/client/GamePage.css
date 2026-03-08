@@ -22,9 +22,12 @@
     min-height: calc(var(--tile-size) * 10);
 }
 .board {
-    margin: auto;
-    min-width: calc(var(--tile-size) * 13);
-    min-height: calc(var(--tile-size) * 10);
+    position: relative;
+    top: 50%;
+    left: 50%;
+    width: calc(var(--tile-size) * 13);
+    height: calc(var(--tile-size) * 10);
+    transform: translate(-50%, -50%);
 }
 .board-piece, .indicator-button {
     background-color: transparent;
