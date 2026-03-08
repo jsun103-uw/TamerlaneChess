@@ -27,7 +27,8 @@ export default function PossibleMoves(props: PossibleMovesProperties) {
                                     if (props.onSelect) props.onSelect(move);
                                 }}
                                 style={makePos(move.end)} 
-                                key={getKey(move.end)}>
+                                key={getKey(move.end)}
+                            >
                                 <img
                                     className="indicator-icon" 
                                     src="/res/IndicatorEmpty.png"/>

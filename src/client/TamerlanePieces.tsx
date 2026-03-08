@@ -27,7 +27,8 @@ export default function TamerlanePieces(props: BoardElementProperties) {
                                 }}
                                 className="board-piece" 
                                 style={makePos(piece.position)} 
-                                key={getKey(piece.position)}>
+                                key={getKey(piece.position)}
+                            >
                                 <img className="piece-icon" src={getImgSrc(piece.piece, piece.side)} />
                             </button>
                         )
