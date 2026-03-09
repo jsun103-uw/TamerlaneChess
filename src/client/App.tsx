@@ -14,7 +14,7 @@ import FooterBar from './FooterBar'
 
 function App() {
   	const navigate = useNavigate();
-	const [client, setClient] = useState<ClientInstance | null>(new ClientInstance(PlayerENUM.Black, 0, 0))
+	const [client, setClient] = useState<ClientInstance | null>(null)
 	const nameRef: RefObject<string> = useRef<string>("");
 	const [, rerender] = useReducer(x => x + 1, 0);
 
@@ -27,7 +27,7 @@ function App() {
 					element={
 						<ServerPage onJoin={
 							(side: Player, token: number, instance: number) => {
-								setClient(new ClientInstance(side, token, instance));
+								setClient(new ClientInstance(side, token, instance, nameRef.current, "temp"));
 								navigate(PATH_INSTANCE);
 							}
 						} />
@@ -40,9 +40,6 @@ function App() {
 					}
 				/>
 			</Routes>
-			<FooterBar onChanged={(text: string) => {
-				nameRef.current = text;
-			}} />
 		</>
 	)
 }

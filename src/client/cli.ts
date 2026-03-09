@@ -89,7 +89,7 @@ function handleJoinReponse(resp: any) {
     }
     else {
         console.log(`Joined game instance ${resp.instance} as ${resp.player}`);
-        client = new ClientInstance(resp.player, resp.token, resp.instance);
+        client = new ClientInstance(resp.player, resp.token, resp.instance, "debug", "debug");
         polling = setInterval(() => { client?.pollUpdate(() => {
             console.log(client?.debugGetBoard());
         })}, 600)

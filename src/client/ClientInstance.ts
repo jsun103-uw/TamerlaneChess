@@ -10,6 +10,9 @@ import { sendRequest } from "./client";
 
 export class ClientInstance
 {
+    public readonly opponentName: string;
+    public readonly displayName: string;
+
     public readonly game: Game;
 
     public readonly side: Player;
@@ -18,11 +21,16 @@ export class ClientInstance
     public readonly instanceNum: number;
     
 
-    constructor(side: Player, token: number, instanceNum: number) {
+    constructor(side: Player, token: number, instanceNum: number, 
+        displayName: string, opponentName: string, 
+    ) {
         this.game = new Game();
         this.side = side;
         this.token = token;
         this.instanceNum = instanceNum;
+
+        this.displayName = displayName;
+        this.opponentName = opponentName;
     }
 
 

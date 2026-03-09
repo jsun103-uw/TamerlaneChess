@@ -8,16 +8,15 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    position: fixed;
-    top: 0px;
+    /* position: relative;
+    top: var(--footer-size);
     left: 0px; 
     right: 0px;
-    bottom: 0px;
-    /* bottom: var(--footer-size); */
+    bottom: var(--footer-size); */
 }
 .table {
     width: 100vw;
-    height: 100vh;
+    height: calc(100vh - calc(var(--footer-size) * 2));
     min-width: calc(var(--tile-size) * 13);
     min-height: calc(var(--tile-size) * 10);
 }
@@ -66,4 +65,32 @@
 }
 .tile-white {
     background-color: tan;
+}
+
+
+
+
+
+
+.game-page {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    gap: 0px;
+    padding: 0px;
+    background-color: aliceblue;
+}
+
+.player-info {
+    width: 100%;
+    height: var(--footer-size);
+    background-color: black;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+
+    margin: 0px;
 }
