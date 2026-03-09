@@ -1,5 +1,5 @@
 import * as readline from "readline";
-import { requestJoin, requestMake, requestServers } from "./client";
+import { requestJoin, requestMake, requestServers } from "./Client";
 import { ClientInstance, ClientInstanceEvent, ClientInstanceEventENUM } from "./ClientInstance";
 import { MoveUnion } from "../common/Move";
 import { PlayerENUM } from "../common/Player";

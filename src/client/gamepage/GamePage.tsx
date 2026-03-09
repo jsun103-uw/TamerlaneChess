@@ -1,16 +1,16 @@
 import React, { useState, memo, useReducer, useRef, RefObject, useEffect } from "react";
 import TamerlanePieces from "./TamerlanePieces";
-import { ClientInstance } from "./ClientInstance";
+import { ClientInstance } from "../ClientInstance";
 import { TransformComponent, TransformWrapper } from "react-zoom-pan-pinch";
 import TamerlaneGrid from "./TamerlaneGrid";
 import PossibleMoves from "./PossibleMoves";
-import { BoardPosition, PositionUnion } from "../common/Position";
+import { BoardPosition, PositionUnion } from "../../common/Position";
 import './GamePage.css'
-import { MoveUnion } from "../common/Move";
-import { opposingPlayerTo, PlayerENUM } from "../common/Player";
+import { MoveUnion } from "../../common/Move";
+import { opposingPlayerTo, PlayerENUM } from "../../common/Player";
 import Endscreen from "./Endscreen";
 import PlayerInfo from "./PlayerInfo";
-import { TamerlanePieceType } from "../common/TamerlanePieces";
+import { TamerlanePieceType } from "../../common/TamerlanePieces";
 
 interface GamePageProperties {
     readonly instance: ClientInstance | null;

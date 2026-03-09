@@ -1,8 +1,8 @@
 import React from "react";
-import { BOARD_FILES, BOARD_RANKS } from "../common/Consts"
-import { PositionUnion } from "../common/Position"
+import { BOARD_FILES, BOARD_RANKS } from "../../common/Consts"
+import { PositionUnion } from "../../common/Position"
 import PositionedCSSProperties from "./PositionedCSSProperties"
-import { Player, PlayerENUM } from "../common/Player";
+import { Player, PlayerENUM } from "../../common/Player";
 
 const tileSize: number = 64;
 

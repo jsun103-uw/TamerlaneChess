@@ -1,7 +1,7 @@
 import React from "react";
-import { BoardPosition, CitadelPosition, PositionUnion } from "../common/Position";
+import { BoardPosition, CitadelPosition, PositionUnion } from "../../common/Position";
 import { getKey, makePos } from "./Utilities";
-import { Player } from "../common/Player";
+import { Player } from "../../common/Player";
 
 
 function makeTile(pos: PositionUnion, side: Player) {

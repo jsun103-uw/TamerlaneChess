@@ -1,12 +1,12 @@
-import { Board, BoardPiece, PositionedTamerlanePiece } from "../common/Board";
-import getImgSrc from "./PieceImgLibrary";
+import { Board, BoardPiece, PositionedTamerlanePiece } from "../../common/Board";
+import getImgSrc from "../PieceImgLibrary";
 import React, { useState } from "react";
 import PositionedCSSProperties from "./PositionedCSSProperties";
 
 import { getKey, makePos } from "./Utilities";
-import { MoveUnion } from "../common/Move";
-import { ClientInstance } from "./ClientInstance";
-import { Player } from "../common/Player";
+import { MoveUnion } from "../../common/Move";
+import { ClientInstance } from "../ClientInstance";
+import { Player } from "../../common/Player";
 
 export interface PossibleMovesProperties {
     readonly client: ClientInstance | null;

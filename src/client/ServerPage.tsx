@@ -1,5 +1,5 @@
 import React, { RefObject, useEffect, useRef, useState } from "react";
-import { requestJoin, requestMake, requestServers } from "./client";
+import { requestJoin, requestMake, requestServers } from "./Client";
 import { BadResponse, JoinResponse, ServerInfo, ServerlistResponse } from "../common/Request";
 import { Server } from "http";
 import { Player } from "../common/Player";

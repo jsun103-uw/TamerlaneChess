@@ -1,11 +1,11 @@
-import { Board, BoardPiece, PositionedTamerlanePiece } from "../common/Board";
-import getImgSrc from "./PieceImgLibrary";
+import { Board, BoardPiece, PositionedTamerlanePiece } from "../../common/Board";
+import getImgSrc from "../PieceImgLibrary";
 import React, { useState } from "react";
 import PositionedCSSProperties from "./PositionedCSSProperties";
 
 import { getKey, makePos } from "./Utilities";
-import { BoardPosition, PositionUnion } from "../common/Position";
-import { Player } from "../common/Player";
+import { BoardPosition, PositionUnion } from "../../common/Position";
+import { Player } from "../../common/Player";
 
 export interface BoardElementProperties {
     readonly side: Player;

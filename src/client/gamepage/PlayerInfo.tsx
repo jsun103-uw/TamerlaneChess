@@ -1,7 +1,7 @@
 import React from "react";
-import { TamerlanePieceType } from "../common/TamerlanePieces";
-import getImgSrc from "./PieceImgLibrary";
-import { Player } from "../common/Player";
+import { TamerlanePieceType } from "../../common/TamerlanePieces";
+import getImgSrc from "../PieceImgLibrary";
+import { Player } from "../../common/Player";
 import './PlayerInfo.css';
 
 export interface PlayerInfoProperties {

@@ -6,7 +6,7 @@ import { Player, PlayerENUM } from "../common/Player";
 import { BoardPosition, PositionUnion } from "../common/Position";
 import { BadResponse, MoveRequest, MoveResponse, NoResponse, TamerlaneRequestENUM, TamerlaneResponseENUM, UpdateRequest } from "../common/Request";
 import { TamerlanePieceType } from "../common/TamerlanePieces";
-import { sendRequest } from "./client";
+import { sendRequest } from "./Client";
 
 export class ClientInstance
 {
