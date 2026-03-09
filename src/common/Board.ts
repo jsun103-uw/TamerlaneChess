@@ -301,6 +301,23 @@ export class Board {
         }
         return false;
     }
+
+
+    /**
+     * Checks if side's sole royal is mated; assumes it's side's turn, and looks for a valid move by side. If side has no valid move, they lose (stalemate is loss)
+     */
+    public checkMate(side: Player): boolean {
+        for(const active of this.getPieces()) {
+            if (active.side === side) {
+                // TODO cache possible moves
+                const moves = [...this.getMoves(active.position, side)];
+                if (moves.length > 0) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 }
 
 class MoveTransaction {
