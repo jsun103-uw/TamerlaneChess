@@ -9,8 +9,10 @@ import { Route, Routes, useNavigate } from 'react-router-dom'
 import ServerPage from './ServerPage'
 import { ServerInfo } from '../common/Request'
 import { requestJoin } from './Client'
-import { PATH_INSTANCE, PATH_SERVERS } from './Consts'
+import { PATH_INSTANCE, PATH_ROOT, PATH_RULES, PATH_SERVERS } from './Consts'
 import FooterBar from './FooterBar'
+import { RulePage } from './rulepage/RulePage'
+import HomePage from './homepage/HomePage'
 
 function App() {
   	const navigate = useNavigate();
@@ -22,6 +24,14 @@ function App() {
 	return (
 		<>
 			<Routes>
+				<Route
+					path={PATH_ROOT}
+					element={
+						<HomePage 
+
+						/>
+					}
+				/>
 				<Route 
 					path={PATH_SERVERS}
 					element={
@@ -38,6 +48,15 @@ function App() {
 					element={
 						<GamePage instance={client} />
 					}
+				/>
+				<Route
+					path={PATH_RULES}
+					element={
+						<RulePage
+							//TODO if need properties, add them here. They shouldn't be needed, though
+						/>
+					}
+
 				/>
 			</Routes>
 		</>
