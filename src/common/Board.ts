@@ -208,8 +208,7 @@ export class Board {
     public trymove(move: MoveUnion, side: Player): MoveResult {
         if (Board.containsMove(this.getMoves(move.start, side), move))
         {
-            this.move(move);
-            return new MoveResult(true, null);
+            return new MoveResult(true, this.move(move));
         }
         return new MoveResult(false, null);
     }
