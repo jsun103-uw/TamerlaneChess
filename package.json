@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "devser": "nodemon --watch src --ext ts --exec ts-node src/server/server.ts",
+    "devser": "nodemon --watch src/common --watch src/server --ext ts --exec ts-node src/server/server.ts",
     "devweb": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
