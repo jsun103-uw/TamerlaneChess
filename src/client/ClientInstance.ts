@@ -38,15 +38,15 @@ export class ClientInstance
      * @returns pieces this client captured
      */
     public getCaptured(): Iterable<TamerlanePieceType> {
-        if (this.side === PlayerENUM.White) return this.game.getWhiteTaken();
-        else return this.game.getBlackTaken();
+        if (this.side === PlayerENUM.White) return this.game.getBlackTaken();
+        else return this.game.getWhiteTaken();
     }
     /**
      * @returns pieces the opponent of this client captured
      */
     public getLosses(): Iterable<TamerlanePieceType> {
-        if (this.side === PlayerENUM.White) return this.game.getBlackTaken();
-        else return this.game.getWhiteTaken();
+        if (this.side === PlayerENUM.White) return this.game.getWhiteTaken();
+        else return this.game.getBlackTaken();
     }
 
     public debugGetBoard(): string {

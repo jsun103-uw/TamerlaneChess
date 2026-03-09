@@ -45,8 +45,8 @@ export default function GamePage(props: GamePageProperties) {
             <div className="game-page d-flex flex-column">
                 <div></div>
                 <PlayerInfo 
-                    losses={[]}
-                    name="temp"
+                    score={props.instance !== null ? [...props.instance.getLosses()] : []}
+                    name={props.instance?.opponentName ?? "opponent"}
                     side={props.instance !== null ? opposingPlayerTo(props.instance.side) : PlayerENUM.Black}
                 />
                 <div className="transformStage">
@@ -86,8 +86,8 @@ export default function GamePage(props: GamePageProperties) {
                     </TransformWrapper>
                 </div>
                 <PlayerInfo 
-                    losses={[]}
-                    name="temp"
+                    score={props.instance !== null ? [...props.instance.getCaptured()] : []}
+                    name={props.instance?.displayName ?? "player"}
                     side={props.instance?.side ?? PlayerENUM.White}
                 />
             </div>
