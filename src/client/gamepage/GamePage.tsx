@@ -49,7 +49,7 @@ export default function GamePage(props: GamePageProperties) {
                     name={props.instance?.opponentName ?? "opponent"}
                     side={props.instance !== null ? opposingPlayerTo(props.instance.side) : PlayerENUM.Black}
                 />
-                <div className="transformStage">
+                <div className="transform-stage">
                     <TransformWrapper
                         minScale={0.5}
                         maxScale={1.2}
