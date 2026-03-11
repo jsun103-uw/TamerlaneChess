@@ -1,0 +1,4 @@
+.server-page {
+    display: flex;
+    flex-direction: column;
+}

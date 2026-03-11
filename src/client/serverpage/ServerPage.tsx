@@ -4,6 +4,7 @@ import { BadResponse, JoinResponse, ServerInfo, ServerlistResponse } from "../..
 import { Server } from "http";
 import { Player } from "../../common/Player";
 import { PATH_SERVERS } from "../Consts";
+import './ServerPage.css'
 
 interface ServerPage {
     readonly onJoin?: (side: Player, token: number, instance: number) => (void);
@@ -48,7 +49,7 @@ export default function ServerPage(props: ServerPage) {
         }, []
     )
     return (
-        <>
+        <div className="server-page">
             <div className="server-create">
                 <div>
                     <label 
@@ -85,6 +86,6 @@ export default function ServerPage(props: ServerPage) {
                     )
                 }
             </div>
-        </>
+        </div>
     )
 }
