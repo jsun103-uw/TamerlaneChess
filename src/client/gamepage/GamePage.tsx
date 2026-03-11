@@ -11,6 +11,8 @@ import { opposingPlayerTo, PlayerENUM } from "../../common/Player";
 import Endscreen from "./Endscreen";
 import PlayerInfo from "./PlayerInfo";
 import { TamerlanePieceType } from "../../common/TamerlanePieces";
+import { PATH_ROOT } from "../Consts";
+import { useNavigate } from "react-router-dom";
 
 interface GamePageProperties {
     readonly instance: ClientInstance | null;
@@ -19,6 +21,7 @@ interface GamePageProperties {
 export default function GamePage(props: GamePageProperties) {
     const [moves, setMoves] = useState<MoveUnion[]>([]);
     const movePolling: RefObject<NodeJS.Timeout | null> = useRef<NodeJS.Timeout | null>(null);
+  	const navigate = useNavigate();
     // interval = setInterval(() => {
     //     if (location)
     // }, 500)
@@ -29,6 +32,12 @@ export default function GamePage(props: GamePageProperties) {
     }
     function trymove(move: MoveUnion) {
         props.instance?.postMove(move, clearMoves);
+    }
+    function postend(move: MoveUnion) {
+        //TODO implement
+    }
+    function postrematch(move: MoveUnion) {
+        //TODO implement
     }
 
     function pingUpdate() {
@@ -121,21 +130,20 @@ export default function GamePage(props: GamePageProperties) {
             {
                 (props.instance) ?
                 <Endscreen 
-                    visible={props.instance.isGameEnded()}
                     victory={props.instance.isWon()} 
                     opponentName="temp" 
                     onExitSelected={
                         () => {
-                            console.log("Exit selected");
+                            navigate(PATH_ROOT);
                         }
                     } 
                     onRematchSelected={
                         () => {
-                            console.log("Rematch selected");
+                            navigate(PATH_ROOT);
                         }
                     }
-                />
-                : <></>
+                /> :
+                <></>
             }
         </>
     )

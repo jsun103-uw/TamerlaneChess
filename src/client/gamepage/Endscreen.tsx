@@ -1,14 +1,12 @@
 import React from "react";
 import './Endscreen.css'
 export interface EndscreenProperties {
-    readonly visible: boolean;
     readonly victory: boolean;
     readonly opponentName: string;
     readonly onRematchSelected?: () => (void);
     readonly onExitSelected?: () => (void);
 }
 export default function Endscreen(props: EndscreenProperties) {
-    if (!props.visible) return;
     return (
         <div className="endscreen">
             <p>
