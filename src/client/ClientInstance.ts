@@ -1,6 +1,7 @@
 import { PositionedTamerlanePiece } from "../common/Board";
 import { convertMoveJson } from "../common/Convert";
 import { Game } from "../common/Game";
+import { GameResult } from "../common/GameResult";
 import { MoveUnion } from "../common/Move";
 import { Player, PlayerENUM } from "../common/Player";
 import { BoardPosition, PositionUnion } from "../common/Position";
@@ -20,13 +21,15 @@ export class ClientInstance
 
     public readonly instanceNum: number;
 
-    #victory: boolean | null = null;
-    public isGameEnded(): boolean { return this.#victory !== null; }
-    public isWon(): boolean {
-        return this.#victory !== null && this.#victory;
+    public isGameEnded(): boolean { return this.game.getResult(this.side) !== null; }
+    public getResult(): GameResult | null {
+        return this.game.getResult(this.side);
     }
     public isLost(): boolean {
-        return this.#victory !== null && !this.#victory;
+        return this.getResult() === GameResult.Lost;
+    }
+    public isWon(): boolean {
+        return this.getResult() === GameResult.Won;
     }
     
 
@@ -125,12 +128,6 @@ export class ClientInstance
             }
             else if (this.game.trymove(move)) {
                 // this.dispatchEvent(new ClientInstanceEvent(ClientInstanceEventENUM.update, this));
-                if (this.game.checkmated) {
-                    if (this.isTurn()) {
-                        this.#victory = false;
-                    }
-                    else this.#victory = true;
-                }
                 onSucceed();
                 return;
             }

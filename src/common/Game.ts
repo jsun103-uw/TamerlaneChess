@@ -1,4 +1,5 @@
 import { Board, PositionedTamerlanePiece, TamerlanePiece } from "./Board.js";
+import { GameResult } from "./GameResult.js";
 import { MoveUnion } from "./Move.js";
 import { opposingPlayerTo, Player, PlayerENUM } from "./Player.js";
 import { PositionUnion } from "./Position.js";
@@ -32,6 +33,27 @@ export class Game {
 
     #checkmated: boolean = false;
     public get checkmated(): boolean { return this.#checkmated; }
+
+    #citadelDraw: boolean = false;
+    public get drawed(): boolean { return this.#citadelDraw; }
+
+    public get gameend(): boolean { return this.checkmated || this.drawed; }
+
+    /**
+     * Conclusion of this game, does not account for resignations.
+     * @param side conclusion for the side
+     */
+    public getResult(side: Player): GameResult | null {
+        if (this.gameend) {
+            if (this.drawed) return GameResult.Draw;
+            else if (this.checkmated) {
+                // If checkmated is true, the person whose turn it currently is, is the loser
+                if (side === this.turn) return GameResult.Lost;
+                return GameResult.Won; 
+            }
+        }
+        return null;
+    }
 
     public constructor() {
         this.#board = Board.buildStartingBoard();
