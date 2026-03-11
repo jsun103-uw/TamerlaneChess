@@ -31,6 +31,8 @@ export interface MakeRequest {
 }
 export interface RematchRequest {
     readonly request: typeof TamerlaneRequestENUM.rematch;
+    readonly instance: number;
+    readonly token: number;
 }
 export interface MoveRequest {
     readonly request: typeof TamerlaneRequestENUM.move;

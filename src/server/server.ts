@@ -1,7 +1,7 @@
 import { convertMoveJson } from "../common/Convert.js";
 import { MoveUnion } from "../common/Move.js";
 import { Player, PlayerENUM } from "../common/Player.js";
-import { BadResponse, JoinResponse, MakeRequest, MoveResponse, NoResponse, ServerInfo, ServerlistResponse, TamerlaneRequest, TamerlaneRequestENUM, TamerlaneResponseENUM, UpdateRequest } from "../common/Request.js";
+import { BadResponse, JoinResponse, MakeRequest, MoveResponse, NoResponse, RematchRequest, ServerInfo, ServerlistResponse, TamerlaneRequest, TamerlaneRequestENUM, TamerlaneResponseENUM, UpdateRequest } from "../common/Request.js";
 import { GameInstance } from "./GameInstance.js";
 import express from "express"
 import cors from "cors"
@@ -51,7 +51,7 @@ app.post('/server', async (req, res) => {
                 res.json(handleMakeRequest(data));
                 break;
             case TamerlaneRequestENUM.rematch:
-
+                res.json(handleRematchRequest(data));
                 break;
             default:
                 res.json(handleBadRequest("Request not understood"));
@@ -234,4 +234,18 @@ function handleUpdateRequest(request: any): MoveResponse | BadResponse | NoRespo
         response: TamerlaneRequestENUM.move,
         move: move,
     }
+}
+
+function handleRematchRequest(request: any): JoinResponse | BadResponse {
+    const token = parseInt(request.token);
+    const instanceNum = parseInt(request.instance);
+    if (token === undefined || instanceNum === undefined) {
+        return handleBadRequest(`failed to parse values in  ${request}`);
+    }
+
+    //* check that instance exists
+    const instance = instances.get(instanceNum);
+    if (instance === undefined) return handleBadRequest(`instance ${instanceNum} not found`);
+
+    return handleBadRequest(`Function not yet implemented`);
 }

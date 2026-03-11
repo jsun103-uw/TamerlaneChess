@@ -1,4 +1,4 @@
-import { BadResponse, ConnectRequest, JoinResponse, MakeRequest, GetServersRequest as ServerlistRequest, ServerlistResponse, TamerlaneRequestENUM, TamerlaneResponseENUM } from "../common/Request";
+import { BadResponse, ConnectRequest, JoinResponse, MakeRequest, RematchRequest, GetServersRequest as ServerlistRequest, ServerlistResponse, TamerlaneRequestENUM, TamerlaneResponseENUM } from "../common/Request";
 
 const host = import.meta.env.VITE_WEBSERVER_HOST;
 console.log(`Looking for webserver at ${host}`);
@@ -54,4 +54,13 @@ export function requestJoin(instance: number, handle: (response: JoinResponse | 
         instance: instance,
     }
     sendRequest(request, handle);
+}
+
+export function requestRematch(instance: number, token: number, handle: (Response: JoinResponse | BadResponse) => void): Promise<void> {
+    const request: RematchRequest = {
+        request: TamerlaneRequestENUM.rematch,
+        instance: instance,
+        token: token,
+    }
+    return sendRequest(request, handle);
 }
