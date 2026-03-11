@@ -19,6 +19,15 @@ export class ClientInstance
     public readonly token: number;
 
     public readonly instanceNum: number;
+
+    #victory: boolean | null = null;
+    public isGameEnded(): boolean { return this.#victory !== null; }
+    public isWon(): boolean {
+        return this.#victory !== null && this.#victory;
+    }
+    public isLost(): boolean {
+        return this.#victory !== null && !this.#victory;
+    }
     
 
     constructor(side: Player, token: number, instanceNum: number, 
@@ -116,6 +125,12 @@ export class ClientInstance
             }
             else if (this.game.trymove(move)) {
                 // this.dispatchEvent(new ClientInstanceEvent(ClientInstanceEventENUM.update, this));
+                if (this.game.checkmated) {
+                    if (this.isTurn()) {
+                        this.#victory = false;
+                    }
+                    else this.#victory = true;
+                }
                 onSucceed();
                 return;
             }

@@ -118,21 +118,25 @@ export default function GamePage(props: GamePageProperties) {
                     side={props.instance?.side ?? PlayerENUM.White}
                 />
             </div>
-            <Endscreen 
-                visible={false}
-                victory={false} 
-                opponentName="temp" 
-                onExitSelected={
-                    () => {
-                        console.log("Exit selected");
+            {
+                (props.instance) ?
+                <Endscreen 
+                    visible={props.instance.isGameEnded()}
+                    victory={props.instance.isWon()} 
+                    opponentName="temp" 
+                    onExitSelected={
+                        () => {
+                            console.log("Exit selected");
+                        }
+                    } 
+                    onRematchSelected={
+                        () => {
+                            console.log("Rematch selected");
+                        }
                     }
-                } 
-                onRematchSelected={
-                    () => {
-                        console.log("Rematch selected");
-                    }
-                }
-            />
+                />
+                : <></>
+            }
         </>
     )
 }
