@@ -27,6 +27,7 @@ export interface ConnectRequest {
 }
 export interface MakeRequest {
     readonly request: typeof TamerlaneRequestENUM.make;
+    readonly name: string;
 }
 export interface RematchRequest {
     readonly request: typeof TamerlaneRequestENUM.rematch;
@@ -79,6 +80,11 @@ export interface JoinResponse {
     readonly instance: number;
 }
 export interface ServerInfo {
+    /**
+     * Cosmetic display name of the server
+     */
+    readonly name: string;
+
     readonly instanceNumber: number;
     /**
      * The side that the joining player will be taking. All games should have at least one player

@@ -7,6 +7,8 @@ const tokenRange: number = 2**48 - 1;
 export class GameInstance {
     public readonly game: Game = new Game();
 
+    public readonly name: string;
+
     public readonly whiteToken: number;
     public readonly blackToken: number;
     public tokenOf(player: Player): number {
@@ -32,7 +34,9 @@ export class GameInstance {
     #lastMove: MoveUnion | null = null;
 
 
-    constructor() {
+    constructor(name: string) {
+        this.name = name;
+
         this.whiteToken = randomInt(tokenRange);
         let black: number;
         do {

@@ -40,9 +40,10 @@ export function requestServers(handle: (resp: ServerlistResponse) => void): Prom
 }
 
 
-export function requestMake(handle: (response: JoinResponse | BadResponse) => void) {
+export function requestMake(name: string, handle: (response: JoinResponse | BadResponse) => void) {
     const request: MakeRequest = {
         request: TamerlaneRequestENUM.make,
+        name: name,
     }
     sendRequest(request, handle);
 }

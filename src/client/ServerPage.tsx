@@ -13,7 +13,12 @@ interface ServerPage {
 export default function ServerPage(props: ServerPage) {
     const [servers, setServers] = useState<ServerInfo[]>([])
     const serverPolling: RefObject<NodeJS.Timeout | null> = useRef(null);
+    const serverName: RefObject<string> = useRef("");
  
+    /**
+     * 
+     * @param resp Handles join/fail response from attempting to make/join a game
+     */
     function handleResponse(resp: JoinResponse | BadResponse) {
         if (resp.response === "join") {
             if (props.onJoin) props.onJoin(resp.player, resp.token, resp.instance);
@@ -44,10 +49,28 @@ export default function ServerPage(props: ServerPage) {
     )
     return (
         <>
-            <button onClick={() => requestMake(handleResponse)}>
-                New Server
-            </button>
-            <div className=".server-list">
+            <div className="server-create">
+                <div>
+                    <label 
+                        htmlFor="name" 
+                    >
+                        server name
+                    </label>
+                    <input 
+                        type="text" 
+                        name="name" 
+                        placeholder="hello"
+                        onChange={(e) => {
+                            serverName.current = e.target.value
+                        }
+                    }
+                    />
+                </div>
+                <button onClick={() => requestMake(serverName.current, handleResponse)}>
+                    New Server
+                </button>
+            </div>
+            <div className="server-list">
                 {
                     servers.map(
                         server => (
@@ -56,7 +79,7 @@ export default function ServerPage(props: ServerPage) {
                                 onClick={
                                     () => requestJoin(server.instanceNumber, handleResponse)
                                 }>
-                                <p>{`Instace: ${server.instanceNumber}, Player: ${server.playerSide}`}</p>
+                                <p>{`${server.name}: Instance ${server.instanceNumber}, Playing as ${server.playerSide}`}</p> 
                             </button>
                         )
                     )

@@ -1,7 +1,7 @@
 import { convertMoveJson } from "../common/Convert.js";
 import { MoveUnion } from "../common/Move.js";
 import { Player, PlayerENUM } from "../common/Player.js";
-import { BadResponse, JoinResponse, MoveResponse, NoResponse, ServerInfo, ServerlistResponse, TamerlaneRequest, TamerlaneRequestENUM, TamerlaneResponseENUM, UpdateRequest } from "../common/Request.js";
+import { BadResponse, JoinResponse, MakeRequest, MoveResponse, NoResponse, ServerInfo, ServerlistResponse, TamerlaneRequest, TamerlaneRequestENUM, TamerlaneResponseENUM, UpdateRequest } from "../common/Request.js";
 import { GameInstance } from "./GameInstance.js";
 import express from "express"
 import cors from "cors"
@@ -48,7 +48,7 @@ app.post('/server', async (req, res) => {
                 res.json(handleJoinRequest(data));
                 break;
             case TamerlaneRequestENUM.make:
-                res.json(handleMakeRequest());
+                res.json(handleMakeRequest(data));
                 break;
             case TamerlaneRequestENUM.rematch:
 
@@ -73,8 +73,8 @@ app.listen((port), () => {
 
 
 
-function newInstance(): [number, GameInstance] {
-    const instance = new GameInstance();
+function newInstance(name: string): [number, GameInstance] {
+    const instance = new GameInstance(name);
     const num = instanceNum ++;
     instances.set(num, instance);
     return [num, instance];
@@ -96,6 +96,7 @@ function handleServerlistRequest(): ServerlistResponse {
         if (v.full) continue;
 
         servers.push({
+            name: v.name,
             instanceNumber: k,
             playerSide: v.joinedWhite ? PlayerENUM.Black : PlayerENUM.White,
         })
@@ -106,11 +107,15 @@ function handleServerlistRequest(): ServerlistResponse {
     }
 }
 
-function handleMakeRequest(): JoinResponse | BadResponse  {
+function handleMakeRequest(request: MakeRequest): JoinResponse | BadResponse  {
+    let name = request.name.trim();
+    //if name is falsy (empty, undefined, null)
+    if (!name) { name = `Server ${instanceNum}` }
+
     if (instances.size > maxInstances) {
         return handleBadRequest("Servers full");
     }
-    const [key, instance] = newInstance();
+    const [key, instance] = newInstance(name);
     if (!instance.join(PlayerENUM.White)) {
         console.log("Failed to join own game");
         return handleBadRequest("transaction failed");
