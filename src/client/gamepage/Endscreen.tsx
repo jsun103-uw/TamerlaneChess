@@ -12,8 +12,11 @@ export default function Endscreen(props: EndscreenProperties) {
             <p>
                 {
                     props.victory ?
-                    `You defeated ${props.opponentName}`
-                    : `You were defeated by ${props.opponentName}`
+                    `You won!`
+                    : `You lost!`
+                    // props.victory ?
+                    // `You defeated ${props.opponentName}`
+                    // : `You were defeated by ${props.opponentName}`
                 }
             </p>
             <button
