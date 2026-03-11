@@ -6,6 +6,7 @@
     "devser": "nodemon --watch src/common --watch src/server --ext ts --exec ts-node src/server/server.ts",
     "devweb": "vite",
     "build": "tsc -b && vite build",
+    "startserver": "node build/server/server.js",
     "lint": "eslint .",
     "preview": "vite preview"
   },
