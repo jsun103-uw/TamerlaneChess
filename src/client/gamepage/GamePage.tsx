@@ -128,7 +128,7 @@ export default function GamePage(props: GamePageProperties) {
                 />
             </div>
             {
-                (props.instance) ?
+                (props.instance && props.instance.isGameEnded()) ?
                 <Endscreen 
                     victory={props.instance.isWon()} 
                     opponentName="temp" 
