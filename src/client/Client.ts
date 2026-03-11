@@ -1,7 +1,10 @@
 import { BadResponse, ConnectRequest, JoinResponse, MakeRequest, GetServersRequest as ServerlistRequest, ServerlistResponse, TamerlaneRequestENUM, TamerlaneResponseENUM } from "../common/Request";
 
+const host = import.meta.env.VITE_WEBSERVER_HOST;
+console.log(`Looking for webserver at ${host}`);
+
 export function sendRequest(json: Object, handle: (resp: any) => any) {
-    fetch('http://localhost:3000/server', {
+    fetch(`${host}/server`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

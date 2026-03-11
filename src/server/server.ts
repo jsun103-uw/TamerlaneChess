@@ -1,24 +1,20 @@
-import { convertMoveJson, convertPositionJson } from "../common/Convert";
-import { MoveENUM, MoveUnion, TakeMove } from "../common/Move";
+import { convertMoveJson } from "../common/Convert";
+import { MoveUnion } from "../common/Move";
 import { Player, PlayerENUM } from "../common/Player";
-import { BoardPosition } from "../common/Position";
-import { BadResponse, ConnectRequest, JoinResponse, MoveRequest, MoveResponse, NoResponse, ServerInfo, ServerlistResponse, TamerlaneRequest, TamerlaneRequestENUM, TamerlaneResponseENUM, UpdateRequest } from "../common/Request";
+import { BadResponse, JoinResponse, MoveResponse, NoResponse, ServerInfo, ServerlistResponse, TamerlaneRequest, TamerlaneRequestENUM, TamerlaneResponseENUM, UpdateRequest } from "../common/Request";
 import { GameInstance } from "./GameInstance";
 import express from "express"
 import cors from "cors"
-
 
 const maxInstances: number = 10;
 
 let instances = new Map<number, GameInstance>();
 let instanceNum: number = 0;
 
-function newInstance(): [number, GameInstance] {
-    const instance = new GameInstance();
-    const num = instanceNum ++;
-    instances.set(num, instance);
-    return [num, instance];
-}
+
+import dotenv from "dotenv";
+dotenv.config();
+const port = process.env.PORT;
 
 const app = express();
 app.use(cors());
@@ -70,6 +66,20 @@ app.post('/server', async (req, res) => {
 
     res.status(404).json({"error":"not found"});
 });
+// Server listening to port
+app.listen((port), () => {
+    console.log(`Server is running on ${port}`);
+})
+
+
+
+function newInstance(): [number, GameInstance] {
+    const instance = new GameInstance();
+    const num = instanceNum ++;
+    instances.set(num, instance);
+    return [num, instance];
+}
+
 
 function handleBadRequest(message: string): BadResponse {
     return {
@@ -78,10 +88,6 @@ function handleBadRequest(message: string): BadResponse {
     }
 }
 
-// Server listening to port 3000
-app.listen((3000), () => {
-    console.log("Server is Running");
-})
 
 function handleServerlistRequest(): ServerlistResponse {
     const servers: ServerInfo[] = [];
