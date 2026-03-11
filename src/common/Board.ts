@@ -2,7 +2,7 @@
 
 // [File][Rank]
 
-import { MoveENUM, MoveUnion, TakeMove } from "./Move.js";
+import { ExchangeMove, MoveENUM, MoveUnion, TakeMove } from "./Move.js";
 import { opposingPlayerTo, Player, PlayerENUM } from "./Player.js";
 import { BoardPosition, Citadel, CitadelPosition, Position, PositionUnion } from "./Position.js";
 import { BOARD_RANKS } from "./Consts.js";
@@ -13,6 +13,10 @@ export class Board {
     #field: BoardPiece[][];
     #citadelLeft: Citadel;
     #citadelRight: Citadel;
+
+    // Set to true once kind exchange has happened
+    #exchangeFlag: boolean = false;
+    public get exchanged() { return this.#exchangeFlag; }
 
     public getPiece(position: PositionUnion): BoardPiece {
         //If citadel, return the piece in the correct citadel position
@@ -26,15 +30,34 @@ export class Board {
         }
         throw new TypeError(`${typeof position} is not a valid position kind`);
     }
+
+    /**
+     * Returns pseudo-legal moves of base movement type + special movement moves such as king exchange
+     */
+    private *getPseudoLegalMoves(position: PositionUnion, side: Player): Generator<MoveUnion> {
+        const piece = this.getPiece(position);
+        if (piece === null || piece.side !== side) return;
+        yield* piece.piece.getMoves(this, position, piece.side);
+
+
+        // * Special board-level moves
+
+        // king exchange
+        if (piece.piece === TamerlanePieces.King && position.kind === "board" && this.checkCheck(side)) {
+            for(const ally of this.getPieces()) {
+                if (ally.side !== side || ally.position.kind !== "board") continue;
+                yield new ExchangeMove(position, ally.position); 
+            }
+        }
+
+    }
     /**
      * Gets all legal moves at the position for side
      * @param position 
      * @returns 
      */
     public *getMoves(position: PositionUnion, side: Player): Generator<MoveUnion> {
-        const piece = this.getPiece(position);
-        if (piece === null || piece.side !== side) return;
-        const moves = piece.piece.getMoves(this, position, piece.side);
+        const moves = this.getPseudoLegalMoves(position, side);
 
         // check each pseudo-legal move to ensure it doesn't end up checking the side
         const testboard = this.clone();
@@ -45,6 +68,7 @@ export class Board {
             if (!testboard.checkCheck(side)) yield move;
             testboard.restore(this);
         }
+
         return;
     }
     private setPiece(position: PositionUnion, piece: BoardPiece) {
