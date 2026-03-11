@@ -59,12 +59,10 @@ export default function GamePage(props: GamePageProperties) {
 
     let infoFloat = <></>;
     if (props.instance) {
-        console.log("is not turn? " + !props.instance.isTurn())
         if (!props.instance.isTurn()) {
-            console.log("wtf");
             infoFloat = 
                 <div className="info-float">
-                    <p>Waiting for black</p>
+                    <p>Waiting for {opposingPlayerTo(props.instance.side)}</p>
                 </div>
         }
         else if (props.instance.isChecked()) {
