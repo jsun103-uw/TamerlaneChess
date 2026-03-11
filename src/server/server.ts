@@ -6,7 +6,7 @@ import { GameInstance } from "./GameInstance.js";
 import express from "express"
 import cors from "cors"
 
-const maxInstances: number = 10;
+const maxInstances: number = 1000;
 
 let instances = new Map<number, GameInstance>();
 let instanceNum: number = 0;
