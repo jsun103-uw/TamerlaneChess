@@ -1,10 +1,10 @@
 //npx tsx src/common/testboard.ts
-import { Board } from "./Board";
-import { Game } from "./Game";
-import { ExchangeMove, MoveUnion, TakeMove } from "./Move";
-import { PlayerENUM } from "./Player";
-import { BoardPosition } from "./Position";
-import { TamerlanePieces } from "./TamerlanePieces";
+import { Board } from "./Board.js";
+import { Game } from "./Game.js";
+import { ExchangeMove, MoveUnion, TakeMove } from "./Move.js";
+import { PlayerENUM } from "./Player.js";
+import { BoardPosition } from "./Position.js";
+import { TamerlanePieces } from "./TamerlanePieces.js";
 
 let game: Game = new Game();
 
@@ -33,7 +33,7 @@ console.log(game.debugGetBoard());
 
 //* Command line board
 import * as readline from "readline";
-import { printMoves } from "./Utility";
+import { printMoves } from "./Utility.js";
 
 const rl = readline.createInterface({
   input: process.stdin,

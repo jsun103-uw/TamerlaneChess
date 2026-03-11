@@ -1,8 +1,8 @@
-import { convertMoveJson } from "../common/Convert";
-import { MoveUnion } from "../common/Move";
-import { Player, PlayerENUM } from "../common/Player";
-import { BadResponse, JoinResponse, MoveResponse, NoResponse, ServerInfo, ServerlistResponse, TamerlaneRequest, TamerlaneRequestENUM, TamerlaneResponseENUM, UpdateRequest } from "../common/Request";
-import { GameInstance } from "./GameInstance";
+import { convertMoveJson } from "../common/Convert.js";
+import { MoveUnion } from "../common/Move.js";
+import { Player, PlayerENUM } from "../common/Player.js";
+import { BadResponse, JoinResponse, MoveResponse, NoResponse, ServerInfo, ServerlistResponse, TamerlaneRequest, TamerlaneRequestENUM, TamerlaneResponseENUM, UpdateRequest } from "../common/Request.js";
+import { GameInstance } from "./GameInstance.js";
 import express from "express"
 import cors from "cors"
 

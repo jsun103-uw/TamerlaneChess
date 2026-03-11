@@ -1,5 +1,5 @@
-import { BoardPiece } from "./Board";
-import { BOARD_FILES, BOARD_RANKS } from "./Consts";
+import { BoardPiece } from "./Board.js";
+import { BOARD_FILES, BOARD_RANKS } from "./Consts.js";
 
 export abstract class Position {
     public abstract readonly kind: "board" | "citadel";

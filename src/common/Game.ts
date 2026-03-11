@@ -1,8 +1,8 @@
-import { Board, PositionedTamerlanePiece, TamerlanePiece } from "./Board";
-import { MoveUnion } from "./Move";
-import { opposingPlayerTo, Player, PlayerENUM } from "./Player";
-import { PositionUnion } from "./Position";
-import { TamerlanePieceType } from "./TamerlanePieces";
+import { Board, PositionedTamerlanePiece, TamerlanePiece } from "./Board.js";
+import { MoveUnion } from "./Move.js";
+import { opposingPlayerTo, Player, PlayerENUM } from "./Player.js";
+import { PositionUnion } from "./Position.js";
+import { TamerlanePieceType } from "./TamerlanePieces.js";
 
 export class Game {
     #board: Board;

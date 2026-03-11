@@ -1,4 +1,4 @@
-import { MoveUnion } from "./Move";
+import { MoveUnion } from "./Move.js";
 
 export function printMoves(moves: Iterable<MoveUnion>) 
 {

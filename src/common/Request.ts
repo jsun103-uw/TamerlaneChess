@@ -1,5 +1,5 @@
-import { MoveUnion } from "./Move";
-import { Player } from "./Player";
+import { MoveUnion } from "./Move.js";
+import { Player } from "./Player.js";
 
 export type TamerlaneRequest = typeof TamerlaneRequestENUM.move |
                                 typeof TamerlaneRequestENUM.update |

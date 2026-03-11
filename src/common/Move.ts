@@ -1,4 +1,4 @@
-import { BoardPosition } from "./Position";
+import { BoardPosition } from "./Position.js";
 export abstract class Move {
     abstract readonly kind: typeof MoveENUM.take | typeof MoveENUM.exchange;
 }

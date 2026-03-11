@@ -1,7 +1,7 @@
 import { randomInt } from "node:crypto";
-import { Game } from "../common/Game";
-import { MoveUnion } from "../common/Move";
-import { Player, PlayerENUM } from "../common/Player";
+import { Game } from "../common/Game.js";
+import { MoveUnion } from "../common/Move.js";
+import { Player, PlayerENUM } from "../common/Player.js";
 
 const tokenRange: number = 2**48 - 1;
 export class GameInstance {

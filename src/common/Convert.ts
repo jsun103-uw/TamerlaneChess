@@ -1,6 +1,6 @@
-import { ExchangeMove, MoveENUM, MoveUnion, TakeMove } from "./Move";
-import { PlayerENUM } from "./Player";
-import { BoardPosition, Citadel, CitadelPosition, PositionUnion } from "./Position";
+import { ExchangeMove, MoveENUM, MoveUnion, TakeMove } from "./Move.js";
+import { PlayerENUM } from "./Player.js";
+import { BoardPosition, Citadel, CitadelPosition, PositionUnion } from "./Position.js";
 
 export function convertMoveJson(json: any): MoveUnion | null {
     if (json.kind === MoveENUM.take || json.kind === MoveENUM.exchange) {

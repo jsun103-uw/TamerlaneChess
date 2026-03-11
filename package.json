@@ -3,17 +3,20 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "devser": "nodemon --watch src/common --watch src/server --ext ts --exec \"ts-node -P tsconfig.server.json src/server/server.ts\"",
+    "devser": "nodemon --watch src/common --watch src/server --ext ts --exec \"npm run buildserver && node build/server/server.js\"",
     "devweb": "vite",
-    "build": "tsc -b && vite build",
+    "buildclient": "tsc -p tsconfig.client.json",
+    "buildserver": "tsc -p tsconfig.server.json",
+    "build": "npm run buildclient && npm run buildserver",
+    "startclient": "vite preview --outDir build/client",
     "startserver": "node build/server/server.js",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "npm run startclient"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
+  "type": "module",
   "dependencies": {
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",

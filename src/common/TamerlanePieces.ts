@@ -1,8 +1,8 @@
-import { Board, TamerlanePiece } from "./Board";
-import { BOARD_FILES } from "./Consts";
-import { MoveUnion, TakeMove } from "./Move";
-import { opposingPlayerTo, Player, PlayerENUM } from "./Player";
-import { BoardPosition, PositionUnion } from "./Position";
+import { Board, TamerlanePiece } from "./Board.js";
+import { BOARD_FILES } from "./Consts.js";
+import { MoveUnion, TakeMove } from "./Move.js";
+import { opposingPlayerTo, Player, PlayerENUM } from "./Player.js";
+import { BoardPosition, PositionUnion } from "./Position.js";
 
 export class TamerlanePieceType {
     public readonly charRep: string;

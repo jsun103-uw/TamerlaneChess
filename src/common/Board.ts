@@ -2,12 +2,12 @@
 
 // [File][Rank]
 
-import { MoveENUM, MoveUnion, TakeMove } from "./Move";
-import { opposingPlayerTo, Player, PlayerENUM } from "./Player";
-import { BoardPosition, Citadel, CitadelPosition, Position, PositionUnion } from "./Position";
-import { BOARD_RANKS } from "./Consts";
-import { BOARD_FILES } from "./Consts";
-import { PawnType, TamerlanePieces, TamerlanePieceType } from "./TamerlanePieces";
+import { MoveENUM, MoveUnion, TakeMove } from "./Move.js";
+import { opposingPlayerTo, Player, PlayerENUM } from "./Player.js";
+import { BoardPosition, Citadel, CitadelPosition, Position, PositionUnion } from "./Position.js";
+import { BOARD_RANKS } from "./Consts.js";
+import { BOARD_FILES } from "./Consts.js";
+import { PawnType, TamerlanePieces, TamerlanePieceType } from "./TamerlanePieces.js";
 
 export class Board {
     #field: BoardPiece[][];
