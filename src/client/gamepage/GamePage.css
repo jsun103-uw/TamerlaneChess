@@ -8,11 +8,31 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    position: relative;
     /* position: relative;
     top: var(--footer-size);
     left: 0px; 
     right: 0px;
     bottom: var(--footer-size); */
+}
+.info-float {
+    position: absolute;
+    min-width: 200px;
+    bottom: 0px;
+    margin-top: auto;
+    margin-left: auto;
+    margin-right: auto;
+    z-index: 10000;
+    color: black;
+    background-color: white;
+    border-radius: 5px;
+    box-shadow: 0px 0px 2px 2px white;
+    margin: 0px;
+    padding: 0px;
+}
+.info-float * {
+    padding: 0px;
+    margin: 0px;
 }
 .table {
     width: 100vw;

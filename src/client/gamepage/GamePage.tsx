@@ -47,6 +47,25 @@ export default function GamePage(props: GamePageProperties) {
             }
         }, []
     )
+
+    let infoFloat = <></>;
+    if (props.instance) {
+        console.log("is not turn? " + !props.instance.isTurn())
+        if (!props.instance.isTurn()) {
+            console.log("wtf");
+            infoFloat = 
+                <div className="info-float">
+                    <p>Waiting for black</p>
+                </div>
+        }
+        else if (props.instance.isChecked()) {
+            infoFloat = 
+                <div className="info-float">
+                    <p>Checked!</p>
+                </div>
+        }
+    }
+
     return (
         <>
             <div className="game-page d-flex flex-column">
@@ -91,6 +110,7 @@ export default function GamePage(props: GamePageProperties) {
                             </div>
                         </TransformComponent>
                     </TransformWrapper>
+                    {infoFloat}
                 </div>
                 <PlayerInfo 
                     score={props.instance !== null ? [...props.instance.getCaptured()] : []}

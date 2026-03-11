@@ -24,6 +24,15 @@ export class Game {
      */
     public getBlackTaken(): Iterable<TamerlanePieceType> { return this.#blackTaken; }
 
+    #checked: boolean = false;
+    /**
+     * Whether or not the side whose turn it is is checked
+     */
+    public get checked(): boolean { return this.#checked; }
+
+    #checkmated: boolean = false;
+    public get checkmated(): boolean { return this.#checkmated; }
+
     public constructor() {
         this.#board = Board.buildStartingBoard();
         this.#turn = PlayerENUM.White;
@@ -38,12 +47,17 @@ export class Game {
     public trymove(move: MoveUnion): boolean {
         const result = this.#board.trymove(move, this.#turn);
         if (result.successful) {
+            // swap turn
             this.#turn = opposingPlayerTo(this.turn);
 
+            // if a piece was taken, add to correct players taken store
             if (result.taken) {
                 if (result.taken.side === PlayerENUM.Black) this.#blackTaken.push(result.taken.piece)
                 else this.#whiteTaken.push(result.taken.piece)
             }
+
+            this.#checked = this.#board.checkCheck(this.#turn);
+            this.#checkmated = this.#board.checkMate(this.turn);
 
             if (this.#turn === PlayerENUM.White) this.#turnNumber ++;
             return true;

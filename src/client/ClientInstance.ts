@@ -33,6 +33,15 @@ export class ClientInstance
         this.opponentName = opponentName;
     }
 
+    /**
+     * True if is this client's turn
+     */
+    public isTurn(): boolean {
+        return this.side === this.game.turn;
+    }
+    public isChecked(): boolean {
+        return this.game.checked;
+    }
 
     /**
      * @returns pieces this client captured
