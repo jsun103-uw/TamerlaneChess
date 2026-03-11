@@ -43,7 +43,7 @@ export class Board {
         // * Special board-level moves
 
         // king exchange
-        if (piece.piece === TamerlanePieces.King && position.kind === "board" && this.checkCheck(side)) {
+        if (!this.exchanged && piece.piece === TamerlanePieces.King && position.kind === "board" && this.checkCheck(side)) {
             for(const ally of this.getPieces()) {
                 if (ally.side !== side || ally.position.kind !== "board") continue;
                 yield new ExchangeMove(position, ally.position); 
@@ -253,6 +253,7 @@ export class Board {
             let atEnd = this.getPiece(move.end);
             this.setPiece(move.end, this.getPiece(move.start));
             this.setPiece(move.start, atEnd);
+            this.#exchangeFlag = true;
         }
         else throw new TypeError(`${typeof move} does not have a valid move kind`);
         this.applyPostMoveRules(move);
