@@ -1,9 +1,9 @@
 import React, { RefObject, useEffect, useRef, useState } from "react";
-import { requestJoin, requestMake, requestServers } from "./Client";
-import { BadResponse, JoinResponse, ServerInfo, ServerlistResponse } from "../common/Request";
+import { requestJoin, requestMake, requestServers } from "../Client";
+import { BadResponse, JoinResponse, ServerInfo, ServerlistResponse } from "../../common/Request";
 import { Server } from "http";
-import { Player } from "../common/Player";
-import { PATH_SERVERS } from "./Consts";
+import { Player } from "../../common/Player";
+import { PATH_SERVERS } from "../Consts";
 
 interface ServerPage {
     readonly onJoin?: (side: Player, token: number, instance: number) => (void);
