@@ -5,13 +5,11 @@
   "scripts": {
     "devser": "nodemon --watch src/common --watch src/server --ext ts --exec \"npm run buildserver && node build/server/server.js\"",
     "devweb": "vite",
-    "buildclient": "tsc -p tsconfig.client.json",
+    "buildclient": "vite build",
     "buildserver": "tsc -p tsconfig.server.json",
     "build": "npm run buildclient && npm run buildserver",
-    "startclient": "vite preview --outDir build/client",
-    "startserver": "node build/server/server.js",
-    "lint": "eslint .",
-    "preview": "npm run startclient"
+    "startclient": "vite",
+    "startserver": "node build/server/server.js"
   },
   "keywords": [],
   "author": "",
