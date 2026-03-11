@@ -30,11 +30,18 @@ export default function GamePage(props: GamePageProperties) {
     function trymove(move: MoveUnion) {
         props.instance?.postMove(move, clearMoves);
     }
+
+    function pingUpdate() {
+        if (movePolling.current) clearTimeout(movePolling.current);
+        movePolling.current = setTimeout(async () => {
+            await props.instance?.pollUpdate(clearMoves);
+            //set timer again
+            pingUpdate();
+        }, 200)
+    }
     useEffect(
         () => {
-            movePolling.current = setInterval(() => {
-                props.instance?.pollUpdate(clearMoves);
-            }, 100);
+            pingUpdate();
             return () => {
                 if (movePolling.current) clearInterval(movePolling.current);
             }

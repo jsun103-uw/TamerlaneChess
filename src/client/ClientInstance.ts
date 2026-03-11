@@ -75,7 +75,7 @@ export class ClientInstance
     /**
      * Asks server for updates, if waiting for opponent's move
      */
-    public pollUpdate(onSucceed: () => (void)) {
+    public async pollUpdate(onSucceed: () => (void)): Promise<void> {
         if (this.game.turn === this.side) return;
         const request: UpdateRequest = {
             request: TamerlaneRequestENUM.update,
@@ -83,7 +83,7 @@ export class ClientInstance
             token: this.token,
             turnNum: this.game.turnNumber,
         }
-        sendRequest(request, (resp) => this.handleMoveResponse(resp, onSucceed));
+        return sendRequest(request, (resp) => this.handleMoveResponse(resp, onSucceed));
     }
 
     public getMovesFor(pos: PositionUnion): Generator<MoveUnion> {

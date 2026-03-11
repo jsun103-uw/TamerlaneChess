@@ -3,8 +3,13 @@ import { BadResponse, ConnectRequest, JoinResponse, MakeRequest, GetServersReque
 const host = import.meta.env.VITE_WEBSERVER_HOST;
 console.log(`Looking for webserver at ${host}`);
 
-export function sendRequest(json: Object, handle: (resp: any) => any) {
-    fetch(`${host}/server`, {
+/**
+ * Sends a post request with a json object to the webserver identified in the environment.
+ * @param json object to send
+ * @param handle handler, if successful
+ */
+export function sendRequest(json: Object, handle: (resp: any) => any): Promise<void> {
+    return fetch(`${host}/server`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -14,14 +19,16 @@ export function sendRequest(json: Object, handle: (resp: any) => any) {
     ).then(resp => resp.json())
     .then(json => {
         handle(json);
+    }).catch(err => {
+            console.log(`Failed to send request: ${err}`);
     })
 }
 
-export function requestServers(handle: (resp: ServerlistResponse) => void): void {
+export function requestServers(handle: (resp: ServerlistResponse) => void): Promise<void> {
     const GetServer: ServerlistRequest = {
         request: TamerlaneRequestENUM.serverlist
     };
-    sendRequest(GetServer, json => {
+    return sendRequest(GetServer, json => {
         if (json.response 
             && json.response === TamerlaneResponseENUM.serverlist
             && json.servers

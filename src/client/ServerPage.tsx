@@ -12,7 +12,7 @@ interface ServerPage {
 
 export default function ServerPage(props: ServerPage) {
     const [servers, setServers] = useState<ServerInfo[]>([])
-    const serverTimeout: RefObject<NodeJS.Timeout | null> = useRef(null);
+    const serverPolling: RefObject<NodeJS.Timeout | null> = useRef(null);
  
     function handleResponse(resp: JoinResponse | BadResponse) {
         if (resp.response === "join") {
@@ -24,18 +24,21 @@ export default function ServerPage(props: ServerPage) {
     }
     // console.log(servers);
 
+    function pingUpdate() {
+        if (serverPolling.current) clearTimeout(serverPolling.current);
+        serverPolling.current = setTimeout(async () => {
+            await requestServers(handleServerlist)
+            //set timer again
+            pingUpdate();
+        }, 1000)
+    }
+
     function handleServerlist(resp: ServerlistResponse) { setServers(resp.servers) }
     useEffect(
         () => {
-            requestServers(handleServerlist);
-
-            if (serverTimeout.current !== null) clearInterval(serverTimeout.current);
-            serverTimeout.current = setInterval(() => {
-                requestServers(handleServerlist);
-            }, 500);
-
+            pingUpdate();
             return () => {
-                if (serverTimeout.current) clearInterval(serverTimeout.current);
+                if (serverPolling.current) clearTimeout(serverPolling.current);
             }
         }, []
     )
