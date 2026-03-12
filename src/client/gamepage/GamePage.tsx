@@ -34,11 +34,9 @@ export default function GamePage(props: GamePageProperties) {
     function trymove(move: MoveUnion) {
         props.instance?.postMove(move, clearMoves);
     }
-    function postend(move: MoveUnion) {
-        //TODO implement
-    }
-    function postrematch(move: MoveUnion) {
-        //TODO implement
+    function postend() {
+        if (props.instance) 
+            sendGameExit(props.instance.instanceNum, props.instance.token);
     }
 
     function pingUpdate() {
@@ -54,6 +52,14 @@ export default function GamePage(props: GamePageProperties) {
             pingUpdate();
             return () => {
                 if (movePolling.current) clearInterval(movePolling.current);
+            }
+        }, []
+    )
+    useEffect(
+        () => {
+            //upon exit, make sure to cancel the game
+            return () => {
+                postend();
             }
         }, []
     )
@@ -80,7 +86,6 @@ export default function GamePage(props: GamePageProperties) {
                 <div></div>
                 <PlayerInfo 
                     score={props.instance !== null ? [...props.instance.getLosses()] : []}
-                    name={props.instance?.opponentName ?? "opponent"}
                     side={props.instance !== null ? opposingPlayerTo(props.instance.side) : PlayerENUM.Black}
                 />
                 <div className="transform-stage">
@@ -122,19 +127,16 @@ export default function GamePage(props: GamePageProperties) {
                 </div>
                 <PlayerInfo 
                     score={props.instance !== null ? [...props.instance.getCaptured()] : []}
-                    name={props.instance?.displayName ?? "player"}
                     side={props.instance?.side ?? PlayerENUM.White}
                 />
             </div>
             {
                 (props.instance && props.instance.isGameEnded()) ?
                 <Endscreen 
-                    victory={props.instance.isWon()} 
-                    opponentName="temp" 
+                    victory={props.instance.getResult()} 
                     onExitSelected={
                         () => {
-                            if (props.instance) 
-                                sendGameExit(props.instance.instanceNum, props.instance.token);
+                            postend();
                             navigate(PATH_ROOT);
                         }
                     } 
