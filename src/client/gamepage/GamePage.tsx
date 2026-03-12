@@ -138,13 +138,6 @@ export default function GamePage(props: GamePageProperties) {
                             navigate(PATH_ROOT);
                         }
                     } 
-                    onRematchSelected={
-                        () => {
-                            if (props.instance) 
-                                sendGameExit(props.instance.instanceNum, props.instance.token);
-                            navigate(PATH_ROOT);
-                        }
-                    }
                 /> :
                 <></>
             }
