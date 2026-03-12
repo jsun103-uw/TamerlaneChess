@@ -55,14 +55,6 @@ export default function GamePage(props: GamePageProperties) {
             }
         }, []
     )
-    useEffect(
-        () => {
-            //upon exit, make sure to cancel the game
-            return () => {
-                postend();
-            }
-        }, []
-    )
 
     let infoFloat = <></>;
     if (props.instance) {
