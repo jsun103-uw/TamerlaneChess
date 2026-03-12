@@ -29,7 +29,7 @@ export class GameInstance {
     
 
     #lastAccessed: number = Date.now();
-    get lastAccessed(): number { return this.lastAccessed; }
+    get lastAccessed(): number { return this.#lastAccessed; }
 
     #lastMove: MoveUnion | null = null;
 
@@ -52,21 +52,20 @@ export class GameInstance {
     }
 
     public do(token: number, move: MoveUnion) {
-        // update metadata
-        this.#lastAccessed = Date.now();
         this.join(PlayerENUM.White);
-        console.log(`entering ${move} for ${token}`)
+        // console.log(`entering ${move} for ${token}`)
 
-        // 
         if ((this.game.turn === PlayerENUM.White && this.whiteToken === token)
             || (this.game.turn === PlayerENUM.Black && this.blackToken === token)
         ) {
+            // log access
+            this.#lastAccessed = Date.now();
+
             console.log(`doing ${move} for ${token}`)
             if (this.game.trymove(move)) {
                 this.#lastMove = move;
                 return move;
             }
-            console.log(`what ${move}`)
         }
         return null;
     }
@@ -89,6 +88,10 @@ export class GameInstance {
     public getUpdateFor(token: number, turnNum: number): MoveUnion | null {
         const side = this.sideOf(token);
         if (side === null) return null;
+
+        // log access
+        this.#lastAccessed = Date.now();
+
 
         // game hasn't started
         if (this.#lastMove === null) return null;

@@ -268,3 +268,24 @@ function handleEndRequest(request: any) {
         instances.delete(instanceNum);
     }
 }
+
+
+
+// Clear games that haven't been accessed within 30s
+const timeout_ms = 30000;
+function clearOld() {
+    const cur = Date.now();
+    let todel = []
+    for (const [k, v] of instances) {
+        console.log(`Time diff is ${v.lastAccessed - cur}`)
+        if (cur - v.lastAccessed > timeout_ms) {
+            todel.push(k);
+        }
+    }
+    todel.forEach(k => instances.delete(k));
+}
+
+// remove unused games
+const clearOldInterval = setInterval(() => {
+    clearOld();
+}, 1000);
