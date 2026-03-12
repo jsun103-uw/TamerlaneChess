@@ -67,7 +67,9 @@ export function requestRematch(instance: number, token: number, handle: (Respons
 
 export function sendGameExit(instance: number, token: number) {
     const request: GameExitRequest = {
-        request: "gameexit",
-        token: instance,
+        request: TamerlaneRequestENUM.gameexit,
+        instance: instance,
+        token: token,
     }
+    sendRequest(request, (_) => {});
 }

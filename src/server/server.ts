@@ -1,7 +1,7 @@
 import { convertMoveJson } from "../common/Convert.js";
 import { MoveUnion } from "../common/Move.js";
 import { Player, PlayerENUM } from "../common/Player.js";
-import { BadResponse, JoinResponse, MakeRequest, MoveResponse, NoResponse, RematchRequest, ServerInfo, ServerlistResponse, TamerlaneRequest, TamerlaneRequestENUM, TamerlaneResponseENUM, UpdateRequest } from "../common/Request.js";
+import { BadResponse, GameExitRequest, JoinResponse, MakeRequest, MoveResponse, NoResponse, RematchRequest, ServerInfo, ServerlistResponse, TamerlaneRequest, TamerlaneRequestENUM, TamerlaneResponseENUM, UpdateRequest } from "../common/Request.js";
 import { GameInstance } from "./GameInstance.js";
 import express from "express"
 import cors from "cors"
@@ -19,8 +19,6 @@ const port = process.env.PORT;
 const app = express();
 app.use(cors());
 app.post('/server', async (req, res) => {
-    console.log(req.url)
-
     if (req.method === 'POST') {
         let body = '';
 
@@ -52,6 +50,9 @@ app.post('/server', async (req, res) => {
                 break;
             case TamerlaneRequestENUM.rematch:
                 res.json(handleRematchRequest(data));
+                break;
+            case TamerlaneRequestENUM.gameexit:
+                handleEndRequest(data);
                 break;
             default:
                 res.json(handleBadRequest("Request not understood"));
@@ -248,4 +249,21 @@ function handleRematchRequest(request: any): JoinResponse | BadResponse {
     if (instance === undefined) return handleBadRequest(`instance ${instanceNum} not found`);
 
     return handleBadRequest(`Function not yet implemented`);
+}
+
+function handleEndRequest(request: any) {
+    const token = parseInt(request.token);
+    const instanceNum = parseInt(request.instance);
+    if (token === undefined || instanceNum === undefined) {
+        return;
+    }
+
+    //* check that instance exists
+    const instance = instances.get(instanceNum);
+    if (instance === undefined) return;
+    
+    // remove instance
+    if (instance.sideOf(token) !== null) {
+        instances.delete(instanceNum);
+    }
 }

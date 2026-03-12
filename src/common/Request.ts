@@ -6,7 +6,8 @@ export type TamerlaneRequest = typeof TamerlaneRequestENUM.move |
                                 typeof TamerlaneRequestENUM.serverlist |
                                 typeof TamerlaneRequestENUM.join |
                                 typeof TamerlaneRequestENUM.make |
-                                typeof TamerlaneRequestENUM.rematch;
+                                typeof TamerlaneRequestENUM.rematch |
+                                typeof TamerlaneRequestENUM.gameexit;
 export const TamerlaneRequestENUM = {
     move: "move",
     update: "update",
@@ -20,6 +21,7 @@ export const TamerlaneRequestENUM = {
 
 export interface GameExitRequest {
     readonly request: typeof TamerlaneRequestENUM.gameexit;
+    readonly instance: number;
     readonly token: number;
 }
 export interface GetServersRequest {
