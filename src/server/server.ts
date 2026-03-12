@@ -102,6 +102,7 @@ function handleServerlistRequest(): ServerlistResponse {
             playerSide: v.joinedWhite ? PlayerENUM.Black : PlayerENUM.White,
         })
     }
+    console.log(`${instances.size} Servers Active`)
     return {
         response: "serverlist",
         servers: servers,
