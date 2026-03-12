@@ -15,8 +15,13 @@ export const TamerlaneRequestENUM = {
     join: "join",
     make: "make",
     rematch: "rematch",
+    gameexit: "gameexit",
 } as const;
 
+export interface GameExitRequest {
+    readonly request: typeof TamerlaneRequestENUM.gameexit;
+    readonly token: number;
+}
 export interface GetServersRequest {
     readonly request: typeof TamerlaneRequestENUM.serverlist;
 }

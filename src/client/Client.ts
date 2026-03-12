@@ -1,4 +1,4 @@
-import { BadResponse, ConnectRequest, JoinResponse, MakeRequest, RematchRequest, GetServersRequest as ServerlistRequest, ServerlistResponse, TamerlaneRequestENUM, TamerlaneResponseENUM } from "../common/Request";
+import { BadResponse, ConnectRequest, GameExitRequest, JoinResponse, MakeRequest, RematchRequest, GetServersRequest as ServerlistRequest, ServerlistResponse, TamerlaneRequestENUM, TamerlaneResponseENUM } from "../common/Request";
 
 const host = import.meta.env.VITE_WEBSERVER_HOST;
 console.log(`Looking for webserver at ${host}`);
@@ -63,4 +63,11 @@ export function requestRematch(instance: number, token: number, handle: (Respons
         token: token,
     }
     return sendRequest(request, handle);
+}
+
+export function sendGameExit(instance: number, token: number) {
+    const request: GameExitRequest = {
+        request: "gameexit",
+        token: instance,
+    }
 }

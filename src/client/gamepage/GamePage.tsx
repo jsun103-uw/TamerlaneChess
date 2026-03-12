@@ -13,6 +13,7 @@ import PlayerInfo from "./PlayerInfo";
 import { TamerlanePieceType } from "../../common/TamerlanePieces";
 import { PATH_ROOT } from "../Consts";
 import { useNavigate } from "react-router-dom";
+import { sendGameExit } from "../Client";
 
 interface GamePageProperties {
     readonly instance: ClientInstance | null;
@@ -132,11 +133,15 @@ export default function GamePage(props: GamePageProperties) {
                     opponentName="temp" 
                     onExitSelected={
                         () => {
+                            if (props.instance) 
+                                sendGameExit(props.instance.instanceNum, props.instance.token);
                             navigate(PATH_ROOT);
                         }
                     } 
                     onRematchSelected={
                         () => {
+                            if (props.instance) 
+                                sendGameExit(props.instance.instanceNum, props.instance.token);
                             navigate(PATH_ROOT);
                         }
                     }
