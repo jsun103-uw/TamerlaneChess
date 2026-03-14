@@ -1,16 +1,15 @@
-import React, { useState, memo, useReducer, useRef, RefObject, useEffect } from "react";
+import React, { useState, useRef, RefObject, useEffect } from "react";
 import TamerlanePieces from "./TamerlanePieces";
 import { ClientInstance } from "../ClientInstance";
 import { TransformComponent, TransformWrapper } from "react-zoom-pan-pinch";
 import TamerlaneGrid from "./TamerlaneGrid";
 import PossibleMoves from "./PossibleMoves";
-import { BoardPosition, PositionUnion } from "../../common/Position";
+import { PositionUnion } from "../../common/Position";
 import './GamePage.css'
 import { MoveUnion } from "../../common/Move";
 import { opposingPlayerTo, PlayerENUM } from "../../common/Player";
 import Endscreen from "./Endscreen";
 import PlayerInfo from "./PlayerInfo";
-import { TamerlanePieceType } from "../../common/TamerlanePieces";
 import { PATH_ROOT } from "../Consts";
 import { useNavigate } from "react-router-dom";
 import { sendGameExit } from "../Client";
@@ -74,53 +73,56 @@ export default function GamePage(props: GamePageProperties) {
 
     return (
         <>
-            <div className="game-page d-flex flex-column">
-                <div></div>
-                <PlayerInfo 
-                    score={props.instance !== null ? [...props.instance.getLosses()] : []}
-                    side={props.instance !== null ? opposingPlayerTo(props.instance.side) : PlayerENUM.Black}
-                />
-                <div className="transform-stage">
-                    <TransformWrapper
-                        minScale={0.5}
-                        maxScale={1.2}
-                        limitToBounds={true}
-                        disablePadding={true}
-                        centerZoomedOut={true}
-                        maxPositionX={1000}
-                        maxPositionY={1000}
-                    >
-                        <TransformComponent>
-                            <div className="table">
-                                <div className="board">
-                                    <TamerlaneGrid side={props.instance?.side ?? PlayerENUM.White} />
-                                    <TamerlanePieces 
-                                        onSelect={(pos: PositionUnion) => {
-                                            if (props.instance) {
-                                                setMoves([...props.instance.getMovesFor(pos)]);
-                                            }
-                                        }}
-                                        pieces={props.instance ? [...props.instance.getPieces()] : []} 
-                                        side={props.instance?.side ?? PlayerENUM.White}
-                                    />
-                                    <PossibleMoves 
-                                        client={props.instance} 
-                                        possibleMoves={props.instance !== null ? [...moves] : []}
-                                        onSelect={(move: MoveUnion) => {
-                                            trymove(move);
-                                        }}
-                                        side={props.instance?.side ?? PlayerENUM.White}
-                                    />
-                                </div>
-                            </div>
-                        </TransformComponent>
-                    </TransformWrapper>
-                    {infoFloat}
-                </div>
-                <PlayerInfo 
-                    score={props.instance !== null ? [...props.instance.getCaptured()] : []}
-                    side={props.instance?.side ?? PlayerENUM.White}
-                />
+            <div className="game-page">
+                <section className="game-shell">
+                    <PlayerInfo 
+                        score={props.instance !== null ? [...props.instance.getLosses()] : []}
+                        side={props.instance !== null ? opposingPlayerTo(props.instance.side) : PlayerENUM.Black}
+                    />
+                    <div className="transform-stage">
+                        <div className="board-frame">
+                            <TransformWrapper
+                                minScale={0.5}
+                                maxScale={1.2}
+                                limitToBounds={true}
+                                disablePadding={true}
+                                centerZoomedOut={true}
+                                maxPositionX={1000}
+                                maxPositionY={1000}
+                            >
+                                <TransformComponent>
+                                    <div className="table">
+                                        <div className="board">
+                                            <TamerlaneGrid side={props.instance?.side ?? PlayerENUM.White} />
+                                            <TamerlanePieces 
+                                                onSelect={(pos: PositionUnion) => {
+                                                    if (props.instance) {
+                                                        setMoves([...props.instance.getMovesFor(pos)]);
+                                                    }
+                                                }}
+                                                pieces={props.instance ? [...props.instance.getPieces()] : []} 
+                                                side={props.instance?.side ?? PlayerENUM.White}
+                                            />
+                                            <PossibleMoves 
+                                                client={props.instance} 
+                                                possibleMoves={props.instance !== null ? [...moves] : []}
+                                                onSelect={(move: MoveUnion) => {
+                                                    trymove(move);
+                                                }}
+                                                side={props.instance?.side ?? PlayerENUM.White}
+                                            />
+                                        </div>
+                                    </div>
+                                </TransformComponent>
+                            </TransformWrapper>
+                        </div>
+                        {infoFloat}
+                    </div>
+                    <PlayerInfo 
+                        score={props.instance !== null ? [...props.instance.getCaptured()] : []}
+                        side={props.instance?.side ?? PlayerENUM.White}
+                    />
+                </section>
             </div>
             {
                 (props.instance && props.instance.isGameEnded()) ?

@@ -1,4 +1,52 @@
+.player-info {
+    margin-top: 0.95rem;
+    background: rgba(14, 12, 18, 0.64);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 16px;
+    padding: 0.8rem 1rem;
+}
+
+.player-info-heading {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+    align-items: baseline;
+}
+
+.player-info-heading p,
+.player-info-heading span {
+    margin: 0;
+}
+
+.player-info-heading p {
+    color: #ffd8ac;
+    font-weight: 700;
+}
+
+.player-info-heading span {
+    color: #e6d8bb;
+    font-size: 0.92rem;
+}
+
+.player-info-pieces {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin-top: 0.7rem;
+    min-height: 28px;
+}
+
 img.icon-captured {
-    width: 20px;
-    height: 20px;
+    width: 28px;
+    height: 28px;
+    padding: 0.15rem;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+@media (max-width: 640px) {
+    .player-info-heading {
+        flex-direction: column;
+        align-items: start;
+    }
 }

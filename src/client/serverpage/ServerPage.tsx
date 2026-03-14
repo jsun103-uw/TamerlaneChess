@@ -1,9 +1,7 @@
 import React, { RefObject, useEffect, useRef, useState } from "react";
 import { requestJoin, requestMake, requestServers } from "../Client";
 import { BadResponse, JoinResponse, ServerInfo, ServerlistResponse } from "../../common/Request";
-import { Server } from "http";
 import { Player } from "../../common/Player";
-import { PATH_SERVERS } from "../Consts";
 import './ServerPage.css'
 
 interface ServerPage {
@@ -13,6 +11,7 @@ interface ServerPage {
 
 export default function ServerPage(props: ServerPage) {
     const [servers, setServers] = useState<ServerInfo[]>([])
+    const [joinError, setJoinError] = useState<string>("");
     const serverPolling: RefObject<NodeJS.Timeout | null> = useRef(null);
     const serverName: RefObject<string> = useRef("");
  
@@ -22,13 +21,14 @@ export default function ServerPage(props: ServerPage) {
      */
     function handleResponse(resp: JoinResponse | BadResponse) {
         if (resp.response === "join") {
+            setJoinError("");
             if (props.onJoin) props.onJoin(resp.player, resp.token, resp.instance);
         }
         else {
+            setJoinError(resp.message);
             console.log(`Failed to join: ${resp.message}`);
         }
     }
-    // console.log(servers);
 
     function pingUpdate() {
         if (serverPolling.current) clearTimeout(serverPolling.current);
@@ -40,6 +40,7 @@ export default function ServerPage(props: ServerPage) {
     }
 
     function handleServerlist(resp: ServerlistResponse) { setServers(resp.servers) }
+
     useEffect(
         () => {
             pingUpdate();
@@ -49,43 +50,51 @@ export default function ServerPage(props: ServerPage) {
         }, []
     )
     return (
-        <div className="server-page">
-            <div className="server-create">
-                <div>
-                    <label 
-                        htmlFor="name" 
-                    >
-                        server name
+        <main className="server-page">
+            <section className="server-section server-create-panel">
+                <div className="server-create-controls">
+                    <label className="server-field" htmlFor="server-name">
+                        <span>server name</span>
+                        <input
+                            id="server-name"
+                            type="text"
+                            name="name"
+                            placeholder="hello"
+                            onChange={(e) => {
+                                serverName.current = e.target.value
+                            }}
+                        />
                     </label>
-                    <input 
-                        type="text" 
-                        name="name" 
-                        placeholder="hello"
-                        onChange={(e) => {
-                            serverName.current = e.target.value
-                        }
-                    }
-                    />
+                    <button className="server-action-button" onClick={() => requestMake(serverName.current, handleResponse)}>
+                        New Server
+                    </button>
                 </div>
-                <button onClick={() => requestMake(serverName.current, handleResponse)}>
-                    New Server
-                </button>
-            </div>
-            <div className="server-list">
                 {
-                    servers.map(
-                        server => (
-                            <button 
-                                key={server.instanceNumber}
-                                onClick={
-                                    () => requestJoin(server.instanceNumber, handleResponse)
-                                }>
-                                <p>{`${server.name}: Instance ${server.instanceNumber}, Playing as ${server.playerSide}`}</p> 
-                            </button>
-                        )
-                    )
+                    joinError.length > 0 ?
+                    <p className="server-error" role="status">{joinError}</p> :
+                    <></>
                 }
-            </div>
-        </div>
+            </section>
+
+            <section className="server-section">
+                <div className="server-list" role="list">
+                    {
+                        servers.map(
+                            server => (
+                                <button
+                                    className="server-card"
+                                    key={server.instanceNumber}
+                                    onClick={
+                                        () => requestJoin(server.instanceNumber, handleResponse)
+                                    }
+                                >
+                                    <p>{`${server.name}: Instance ${server.instanceNumber}, Playing as ${server.playerSide}`}</p>
+                                </button>
+                            )
+                        )
+                    }
+                </div>
+            </section>
+        </main>
     )
 }

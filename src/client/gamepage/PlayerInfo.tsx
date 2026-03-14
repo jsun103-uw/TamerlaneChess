@@ -10,15 +10,16 @@ export interface PlayerInfoProperties {
 }
 export default function PlayerInfo(props: PlayerInfoProperties) {
     return (
-        <div className="flex-wrap align-items-center player-info">
-            <div className="d-flex flex-row align-items-center">
-                {props.score.map(piece => (
+        <section className="player-info">
+            <div className="player-info-pieces">
+                {props.score.map((piece, index) => (
                     <img
                         className="icon-captured" 
+                        key={`${props.side}-${piece}-${index}`}
                         src={getImgSrc(piece, props.side)}
                     />
                 ))}
             </div>
-        </div>
+        </section>
     )
 }

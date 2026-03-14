@@ -2,44 +2,124 @@
     --tile-size: 64px;
 }
 
+.game-page {
+    --game-bg: radial-gradient(circle at 18% 18%, rgba(245, 216, 168, 0.28) 0%, transparent 32%),
+        radial-gradient(circle at 82% 14%, rgba(221, 127, 78, 0.22) 0%, transparent 36%),
+        linear-gradient(138deg, #241713 0%, #18212f 54%, #162d27 100%);
+    --game-text: #fef6e3;
+    --game-muted: #e6d8bb;
+    --game-panel: rgba(14, 12, 18, 0.64);
+    --game-line: rgba(255, 255, 255, 0.17);
+    --game-accent: #ffc184;
+
+    min-height: calc(100vh - var(--footer-size));
+    padding-bottom: calc(var(--footer-size) + 1rem);
+    color: var(--game-text);
+}
+
+.game-shell {
+    width: min(1120px, 100%);
+    margin: 0 auto;
+    padding: 1rem;
+}
+
+.game-header-panel {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(280px, 0.9fr);
+    gap: 0.9rem;
+    background: var(--game-bg);
+    border-radius: 22px;
+    border: 1px solid var(--game-line);
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.34);
+    padding: 1.35rem;
+}
+
+.game-kicker {
+    margin: 0;
+    color: var(--game-muted);
+    font-size: 0.78rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+}
+
+.game-header-panel h1 {
+    margin: 0.55rem 0 0;
+    font-size: clamp(1.9rem, 4.8vw, 3rem);
+    line-height: 1.04;
+    font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
+}
+
+.game-status-card {
+    background: rgba(12, 10, 16, 0.42);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 16px;
+    padding: 0.95rem 1rem;
+}
+
+.game-status-label {
+    margin: 0;
+    font-size: 0.74rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--game-muted);
+}
+
+.game-status-card h2 {
+    margin: 0.35rem 0 0;
+    font-size: 1.15rem;
+    color: var(--game-accent);
+}
+
+.game-status-card p:last-child {
+    margin-bottom: 0;
+    color: var(--game-muted);
+}
+
 .transform-stage {
-    /* width: 100vw;
-    height: 100vh; */
     display: flex;
     justify-content: center;
     align-items: center;
+    margin-top: 0.95rem;
     position: relative;
-    /* position: relative;
-    top: var(--footer-size);
-    left: 0px; 
-    right: 0px;
-    bottom: var(--footer-size); */
 }
+
 .info-float {
     position: absolute;
+    bottom: 0.65rem;
+    left: 50%;
+    transform: translateX(-50%);
     min-width: 200px;
-    bottom: 0px;
-    margin-top: auto;
-    margin-left: auto;
-    margin-right: auto;
-    z-index: 10000;
-    color: black;
-    background-color: white;
-    border-radius: 5px;
-    box-shadow: 0px 0px 2px 2px white;
-    margin: 0px;
-    padding: 0px;
+    z-index: 2;
+    color: #2a180f;
+    background: #fef6e3;
+    border-radius: 999px;
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.2);
+    margin: 0;
+    padding: 0.45rem 0.9rem;
 }
+
 .info-float * {
-    padding: 0px;
-    margin: 0px;
+    padding: 0;
+    margin: 0;
 }
+
+.board-frame {
+    width: 100%;
+    background: var(--game-panel);
+    border: 1px solid var(--game-line);
+    border-radius: 24px;
+    box-shadow: 0 16px 42px rgba(0, 0, 0, 0.3);
+    padding: 1rem;
+    overflow: hidden;
+}
+
 .table {
-    width: 100vw;
-    height: calc(100vh - calc(var(--footer-size) * 2));
+    width: 100%;
+    min-height: min(74vh, 720px);
     min-width: calc(var(--tile-size) * 13);
     min-height: calc(var(--tile-size) * 10);
 }
+
 .board {
     position: relative;
     top: 50%;
@@ -81,36 +161,29 @@
 
 }
 .tile-black {
-    background-color: brown;
+    background-color: #825638;
 }
 .tile-white {
-    background-color: tan;
+    background-color: #d5b486;
 }
 
-
-
-
-
-
-.game-page {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    gap: 0px;
-    padding: 0px;
-    background-color: aliceblue;
+@media (max-width: 900px) {
+    .game-header-panel {
+        grid-template-columns: 1fr;
+    }
 }
 
-.player-info {
-    width: 100%;
-    height: var(--footer-size);
-    background-color: black;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
+@media (max-width: 640px) {
+    .game-shell {
+        padding: 0.75rem;
+    }
 
-    margin: 0px;
+    .board-frame {
+        padding: 0.65rem;
+        border-radius: 18px;
+    }
+
+    .table {
+        min-height: 540px;
+    }
 }

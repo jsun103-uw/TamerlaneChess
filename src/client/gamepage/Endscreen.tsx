@@ -22,15 +22,16 @@ export default function Endscreen(props: EndscreenProperties) {
             break;
     }
     return (
-        <div className="endscreen">
-            <p>
-                {text}
-            </p>
-            <button
-                onClick={() => props.onExitSelected?.()}
-            >
-                Exit
-            </button>
+        <div className="endscreen-backdrop">
+            <div className="endscreen">
+                <p>{text}</p>
+                <button
+                    className="endscreen-button"
+                    onClick={() => props.onExitSelected?.()}
+                >
+                    Exit
+                </button>
+            </div>
         </div>
     )
 }
