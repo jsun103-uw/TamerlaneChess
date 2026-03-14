@@ -22,6 +22,8 @@ npm install --legacy-peer-deps
 
 ```
 
+The vulnerability has been identified to be from the flatted development-build sub-dependency, and is unlikely to be of issue for runtime builds
+
 **In backend server command line**
 
 ```
@@ -34,8 +36,9 @@ npm run devser
 npm run devweb
 ```
 
+Then go to the provided webserver link.
 
-## Architecture
+## Architecture Notes
 
 ### Network
 
@@ -43,7 +46,7 @@ We use a client-server architecture. To join a game, a client either requests to
 
 ### Game
 
-//TODO
+Pieces can calcualte their own pseudolegal moves, which does not consider board states like checks. For example, a rook's pseudo legal moves are all moves in a line up to the edge of the board, a friendly piece, or up to an including an enemy piece. Legal moves are then filtered from the pseudo legal ones by checking if the state is valid.
 
 # Proposal Limitations
 
