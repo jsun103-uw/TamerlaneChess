@@ -4,6 +4,9 @@ import { MoveUnion, TakeMove } from "./Move.js";
 import { opposingPlayerTo, Player, PlayerENUM } from "./Player.js";
 import { BoardPosition, PositionUnion } from "./Position.js";
 
+/**
+ * A unique piece. E.g., rook, elephant, camel.
+ */
 export class TamerlanePieceType {
     public readonly charRep: string;
     public readonly name: string;
@@ -23,6 +26,9 @@ export class TamerlanePieceType {
     }
 }
 
+/**
+ * A pawn type. Pawns promote to a set piece
+ */
 export class PawnType extends TamerlanePieceType {
     promotion: TamerlanePieceType;
     constructor(promotion: TamerlanePieceType,
@@ -34,6 +40,10 @@ export class PawnType extends TamerlanePieceType {
 
 type MoveRequestFunc = (board: Board, position: PositionUnion, side: Player) => Generator<MoveUnion>;
 
+/**
+ * A static library of all the possible piece types
+ * Pseudo-legal movements are constructed by turning a few movement types (diagonal, orthogonal, knight-like) and tweaking the parameters to get a generator that matches the legal moves 
+ */
 export class TamerlanePieces {
     //#region main units
     static Elephant: TamerlanePieceType = TamerlanePieces.createPiece(
@@ -185,10 +195,16 @@ export class TamerlanePieces {
     //#endregion 
 
     //#region move generators
+    /**
+     * A generator for a moveset that is one adjacent from position (diagonal + orthogonal)
+     */
     private static *getMovesKing(board: Board, position: PositionUnion, side: Player): Generator<MoveUnion> {
         yield *this.getMovesDiagonal(board, position, side, 0, 1);
         yield *this.getMovesOrthogonal(board, position, side, 0, 1);
     }
+    /**
+     * A generator for a moveset that includes a forward movement if unobstructed, and diagonal-forward attacking movement if an enemy is on the square. Forward direction depends on the side
+     */
     private static *getMovesPawn(board: Board, position: PositionUnion, side: Player): Generator<MoveUnion> {
         if (position.kind !== "board") return;
         
@@ -267,6 +283,11 @@ export class TamerlanePieces {
         }
     }
 
+    /**
+     * Templates for knight-like moves; 
+     * knight like moves move once in a diagonal direction, and then one or more times in an orthogonal direciton, in the direction of the diagonal. 
+     * This list is pairs of valid diagonal-orthogonal pairs
+     */
     static #knightTemplates: KnightTemplate[] = [
         { diagonal: { file: -1, rank: 1, }, straight: { file: 0, rank: 1, }, },
         { diagonal: { file: -1, rank: 1, }, straight: { file: -1, rank: 0, }, },
@@ -279,12 +300,6 @@ export class TamerlanePieces {
 
         { diagonal: { file: -1, rank: -1, }, straight: { file: 0, rank: -1, }, },
         { diagonal: { file: -1, rank: -1, }, straight: { file: -1, rank: 0, }, },
-    ]
-    static #adjacents: Vector2I[] = [
-        { file: 0, rank: 1, },
-        { file: 0, rank: -1, },
-        { file: 1, rank: 0, },
-        { file: -1, rank: 0, },
     ]
     /**
      * returns moves wher the unit jumps in an L shape (1 diagonal, configurable orthogonal).

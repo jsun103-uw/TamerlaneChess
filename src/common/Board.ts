@@ -9,6 +9,9 @@ import { BOARD_RANKS } from "./Consts.js";
 import { BOARD_FILES } from "./Consts.js";
 import { PawnType, TamerlanePieces, TamerlanePieceType } from "./TamerlanePieces.js";
 
+/**
+ * Represents the board in a tamerlane chess game and pieces on the board.
+ */
 export class Board {
     #field: BoardPiece[][];
     #citadelLeft: Citadel;
@@ -71,6 +74,11 @@ export class Board {
 
         return;
     }
+    /**
+     * 
+     * @param position Sets the piece at the specified position to piece
+     * @param piece 
+     */
     private setPiece(position: PositionUnion, piece: BoardPiece) {
         //If citadel, set the piece in the correct citadel position
         if (position.kind === "citadel") {
@@ -83,7 +91,9 @@ export class Board {
         else throw new TypeError(`${typeof position} is not a valid position kind`);
     }
 
-
+    /**
+     * Initializes an empty board
+     */
     private constructor() {
         this.#field = new Array<BoardPiece[]>(BOARD_FILES);
         for (let i = 0; i < BOARD_FILES; i ++) {
@@ -93,6 +103,9 @@ export class Board {
         this.#citadelLeft = new Citadel(CitadelPosition.getLeft())
         this.#citadelRight = new Citadel(CitadelPosition.getRight())
     }
+    /**
+     * @returns a copy of this board
+     */
     public clone(): Board {
         let board = new Board();
         for (const piece of this.getPieces()) {
@@ -100,6 +113,10 @@ export class Board {
         }
         return board;
     }
+    /**
+     * Replaces this boards pieces with the pieces from board
+     * @param board origin of pieces to replace
+     */
     private restore(board: Board) {
         for (let file = 0; file < BOARD_FILES; file ++) {
             for (let rank = 0; rank < BOARD_RANKS; rank ++) { 
@@ -110,6 +127,9 @@ export class Board {
         }
     }
 
+    /**
+     * @returns Creates a board for the starting state
+     */
     public static buildStartingBoard(): Board {
         let board = new Board();
         board.#field[0][0] = TamerlanePieces.Elephant.makeActive(PlayerENUM.White);
@@ -182,6 +202,9 @@ export class Board {
         return board;
     }
 
+    /**
+     * Returns a string representation of the board
+     */
     public debugGet(): string {
         let boardstr: string = "";
         for (let rank = BOARD_RANKS - 1; rank >= 0; rank --) {
@@ -212,6 +235,9 @@ export class Board {
         }
         return boardstr;
     }
+    /**
+     * Returns all the pieces on the board.
+     */
     public *getPieces(): Generator<PositionedTamerlanePiece> {
         for (let i = 0; i < BOARD_FILES; i ++) {
             for (let j = 0; j < BOARD_RANKS; j ++) {
@@ -260,10 +286,17 @@ export class Board {
         return taken;
         // return null;
     }
+    /**
+     * Post move rules such as pawn promotions.
+     */
     private applyPostMoveRules(move: MoveUnion) {
+        // Check bot the start and end, because in an exchange a pawn might make it to the final rank by being swapped to the start location of the king
         this.checkPromote(move.end);
         this.checkPromote(move.start);
     }
+    /**
+     * Replaces the piece at position with the pawn's promotion type if the piece is a pawn and if the location is at the end of the board 
+     */
     private checkPromote(position: BoardPosition) {
         const piece = this.getPiece(position);
         if (piece === null || !(piece.piece instanceof PawnType)) return;
@@ -276,6 +309,9 @@ export class Board {
         }
     }
 
+    /**
+     * @returns true if move contains search
+     */
     private static containsMove(moves: Iterable<MoveUnion>, search: MoveUnion): boolean {
         for(const move of moves) {
             if (move.kind === search.kind) {

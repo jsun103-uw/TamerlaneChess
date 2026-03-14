@@ -9,25 +9,56 @@ import { BadResponse, MoveRequest, MoveResponse, NoResponse, TamerlaneRequestENU
 import { TamerlanePieceType } from "../common/TamerlanePieces";
 import { sendRequest } from "./Client";
 
+/**
+ * A client's representation of a game and its player
+ */
 export class ClientInstance
 {
+    /**
+     * Not implemented; initally planned to name players
+     */
     public readonly opponentName: string;
     public readonly displayName: string;
 
+    /**
+     * The game instance
+     */
     public readonly game: Game;
 
+    /**
+     * This player's side
+     */
     public readonly side: Player;
+    /**
+     * identifying token to the server
+     */
     public readonly token: number;
 
+    /**
+     * Identifying number of the serverside instance
+     */
     public readonly instanceNum: number;
 
+    /**
+     * @returns true if a conclusion has been reached
+     */
     public isGameEnded(): boolean { return this.game.getResult(this.side) !== null; }
+
+    /**
+     * @returns the result of the game, or null if not yet completed
+     */
     public getResult(): GameResult | null {
         return this.game.getResult(this.side);
     }
+    /**
+     * @returns true if lost
+     */
     public isLost(): boolean {
         return this.getResult() === GameResult.Lost;
     }
+    /**
+     * @returns true if won
+     */
     public isWon(): boolean {
         return this.getResult() === GameResult.Won;
     }
@@ -73,10 +104,16 @@ export class ClientInstance
     public debugGetBoard(): string {
         return this.game.debugGetBoard();
     }
+    /**
+     * @returns all pieces on the board
+     */
     public getPieces(): Generator<PositionedTamerlanePiece> {
         return this.game.getPieces();
     }
 
+    /**
+     * @returns handles a move response by attempting to replicate the move on own game
+     */
     public receive(move: MoveUnion) {
         if (!this.game.trymove(move)) 
             console.error(`Client out of sync: Server made illegal move: \n${this.game.debugGetBoard()}\n${move.toString()} `);

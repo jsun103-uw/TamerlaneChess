@@ -72,7 +72,7 @@ app.listen((port), () => {
     console.log(`Server is running on ${port}`);
 })
 
-
+//#region functions
 
 function newInstance(name: string): [number, GameInstance] {
     const instance = new GameInstance(name);
@@ -81,7 +81,9 @@ function newInstance(name: string): [number, GameInstance] {
     return [num, instance];
 }
 
-
+/**
+ * Creates a bad request response with the message
+ */
 function handleBadRequest(message: string): BadResponse {
     return {
         response: TamerlaneResponseENUM.bad,
@@ -90,6 +92,9 @@ function handleBadRequest(message: string): BadResponse {
 }
 
 
+/**
+ * Returns a list of valid servers
+ */
 function handleServerlistRequest(): ServerlistResponse {
     const servers: ServerInfo[] = [];
     for (const [k, v] of instances) {
@@ -109,6 +114,9 @@ function handleServerlistRequest(): ServerlistResponse {
     }
 }
 
+/**
+ * Creates a game if the request was understood and satisfied
+ */
 function handleMakeRequest(request: MakeRequest): JoinResponse | BadResponse  {
     let name = request.name.trim();
     //if name is falsy (empty, undefined, null)
@@ -184,6 +192,9 @@ function handleMoveRequest(request: any): MoveResponse | BadResponse {
     }
 }
 
+/**
+ * Placves the player in the game and notify, if able. Otherwise, notify the failure.
+ */
 function handleJoinRequest(request: any): JoinResponse | BadResponse {
     if (request.request !== TamerlaneRequestENUM.join) {
         return handleBadRequest(`invalid valid join request`);
@@ -216,6 +227,9 @@ function handleJoinRequest(request: any): JoinResponse | BadResponse {
     }
 }
 
+/**
+ * Attempts to execute the move request. Returns a move response if successful, a bad response if the request was not understood, or noresponse if the move was parsed but illegal based on game rules
+ */
 function handleUpdateRequest(request: any): MoveResponse | BadResponse | NoResponse {
     const token = parseInt(request.token);
     const turnNum = parseInt(request.turnNum);
@@ -238,6 +252,10 @@ function handleUpdateRequest(request: any): MoveResponse | BadResponse | NoRespo
     }
 }
 
+
+/**
+ * Not implemented; intended to rematch without needing to join a new instnace
+ */
 function handleRematchRequest(request: any): JoinResponse | BadResponse {
     const token = parseInt(request.token);
     const instanceNum = parseInt(request.instance);
@@ -252,6 +270,9 @@ function handleRematchRequest(request: any): JoinResponse | BadResponse {
     return handleBadRequest(`Function not yet implemented`);
 }
 
+/**
+ * Cleans up the server as one player is no longer listening if the requester is actually a player. Does not return anything
+ */
 function handleEndRequest(request: any) {
     const token = parseInt(request.token);
     const instanceNum = parseInt(request.instance);
@@ -268,6 +289,15 @@ function handleEndRequest(request: any) {
         instances.delete(instanceNum);
     }
 }
+
+//#endregion
+
+//* Cleaning functions
+//*
+//* 
+//*
+//*
+//*
 
 
 

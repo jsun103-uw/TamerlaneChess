@@ -3,6 +3,9 @@ export const PlayerENUM = {
     White: "white",
     Black: "black",
 } as const;
+/**
+ * Returns white for black, and black for white
+ */
 export function opposingPlayerTo(player: Player) {
     if (player === PlayerENUM.White) return PlayerENUM.Black;
     else return PlayerENUM.White;

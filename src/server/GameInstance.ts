@@ -3,32 +3,52 @@ import { Game } from "../common/Game.js";
 import { MoveUnion } from "../common/Move.js";
 import { Player, PlayerENUM } from "../common/Player.js";
 
+/**
+ * Maximum token number
+ */
 const tokenRange: number = 2**48 - 1;
+/**
+ * A server's representation of a game
+ */
 export class GameInstance {
     public readonly game: Game = new Game();
 
     public readonly name: string;
 
+    // Tokens represent a player's identification. Players use token to authenticate themselves to the game instance, hidden via https
     public readonly whiteToken: number;
     public readonly blackToken: number;
+    /**
+     * @returns the token of the player side
+     */
     public tokenOf(player: Player): number {
         if (player === PlayerENUM.White) return this.whiteToken;
         else return this.blackToken;
     }
-    getFreeSide(): Player | null {
+    /**
+     * @returns The side that has yet to join, or null if full
+     */
+    public getFreeSide(): Player | null {
         if (this.joinedWhite && this.joinedBlack) return null;
         if (this.joinedWhite) return PlayerENUM.Black;
         return PlayerENUM.White;
     }
 
+    // Flags to check if a player has joined
     #joinedWhite: boolean = false;
     get joinedWhite() { return this.#joinedWhite; }
     #joinedBlack: boolean = false;
     get joinedBlack() { return this.#joinedBlack; }
+    /**
+     * True if a player has joined
+     */
     get full() { return this.#joinedBlack && this.joinedWhite; }
     
 
     #lastAccessed: number = Date.now();
+    /**
+     * The last time a client pinged this instnace
+     */
     get lastAccessed(): number { return this.#lastAccessed; }
 
     #lastMove: MoveUnion | null = null;
@@ -44,6 +64,9 @@ export class GameInstance {
         } while(black === this.whiteToken)
         this.blackToken = black;
     }
+    /**
+     * @returns the side of the player if token matches a player. Null if invalid token
+     */
     public sideOf(token: number): Player | null {
         if (this.whiteToken === token) return PlayerENUM.White;
         else if (this.blackToken === token) return PlayerENUM.Black;
@@ -89,7 +112,7 @@ export class GameInstance {
         const side = this.sideOf(token);
         if (side === null) return null;
 
-        // log access
+        // log access, keeps the game alive if a player is thinking for a long time
         this.#lastAccessed = Date.now();
 
 

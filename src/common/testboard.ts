@@ -1,3 +1,4 @@
+//! This file contains old tests ran to validate the board behavior
 //npx tsx src/common/testboard.ts
 import { Board } from "./Board.js";
 import { Game } from "./Game.js";

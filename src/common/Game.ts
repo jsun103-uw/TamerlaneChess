@@ -5,6 +5,9 @@ import { opposingPlayerTo, Player, PlayerENUM } from "./Player.js";
 import { PositionUnion } from "./Position.js";
 import { TamerlanePieceType } from "./TamerlanePieces.js";
 
+/**
+ * Represents a tamerlane chess game with a board state, turn information, and statistics (pieces taken)
+ */
 export class Game {
     #board: Board;
     #turn: Player;

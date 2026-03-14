@@ -1,3 +1,7 @@
+/**
+ * Not implemented. Initially intended for utility functions such as settings and user profiles
+ */
+
 import React from "react";
 import ChangeableText from "./ChangeableText";
 
